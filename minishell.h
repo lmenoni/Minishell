@@ -105,7 +105,7 @@ void    remove_two(t_token **head, t_token **t, t_data *data);
 
 //tokenization.c
 void    tokenize_input(t_data *data);
-void    add_pipe(t_data *data, char *s, int *idx);
+void    add_pipe(t_data *data, int *idx);
 void    add_redirect(t_data *data, char *s, int *idx, char c);
 void    add_argument(t_data *data, char *s, int *idx);
 int     argument_len(char *s);
@@ -115,7 +115,6 @@ void    print_tokens(t_token *token);
 void    add_token(t_token **first, char *s, tok_type type, t_data *data);
 t_token *token_new(char *content, tok_type type);
 tok_type    which_type(char c, int len);
-void    handle_quotes(char *quote, bool *in_quotes, char c, int *i);
 
 //free_mem.c
 void    free_token(t_token *token);
@@ -127,6 +126,8 @@ void    skip_spaces(char *s, int *i);
 int is_space(char c);
 void    print_files(t_flist *list);
 void    print_cmd_array(t_data *data);
+int parse_syntax_errors(t_token *token);
+void    reset_data(t_data *data);
 
 #endif
 

@@ -63,7 +63,10 @@ void    print_tokens(t_token *token)
 {
     while (token)
     {
-        ft_printf("String is (%s) of tipe (%d)\n", token->s, token->type);
+        ft_printf("String is (%s) of tipe (%d) ", token->s, token->type);
+        //if (token->prev)
+        //    ft_printf("Prev string is (%s)", token->prev->s);
+        ft_printf("\n");
         token = token->next;
     }
 }

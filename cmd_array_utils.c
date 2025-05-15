@@ -25,18 +25,18 @@ void    remove_token(t_token **t)
 
 void    remove_two(t_token **head, t_token **t, t_data *data)
 {
-    t_token *temp;
-    
-    temp = NULL;
     if ((*t) == (*head))
     {
         (*head) = (*t)->next->next;
         if (!(*t)->prev)
+        {   
+            (*head)->prev = NULL;
             data->token = (*head);
+        }
         else
         {
-            ft_printf("t is %p\n", (*t)->prev->next);
-            (*t)->prev->next = (*t)->next->next;
+            (*t)->prev->next = (*head);
+            (*head)->prev = (*t)->prev;
         }
         remove_token(t);
         remove_token(t);

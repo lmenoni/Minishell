@@ -12,6 +12,30 @@
 
 #include "minishell.h"
 
+void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
+{
+    t_token *t;
+
+    t = *head;
+    while (t && t->type != PIPE)
+    {
+        if (t->type >= 5)
+        {
+            if (t->type == REDI_IN)
+                add_file_node(&cmd->input, t->next->s, false);
+            else if (t->type == REDI_OUT)
+                add_file_node(&cmd->output, t->next->s, false);
+            else if (t->type == HERE_DOC)
+                add_file_node(&cmd->input, t->next->s, true);
+            else if (t->type == APPEND)
+                add_file_node(&cmd->output, t->next->s, true);
+            remove_two(head, &t, data);
+        }
+        else
+            t = t->next;
+    }
+}
+
 void    make_cmd_array(t_data *data)
 {
     t_token *curr;
@@ -59,28 +83,4 @@ t_cmd    *add_cmd_to_arr(t_data *data)
     data->cmd_arr = temp;
     data->cmd_count++;
     return (&(data->cmd_arr[i]));
-}
-
-void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
-{
-    t_token *t;
-
-    t = *head;
-    while (t && t->type != PIPE)
-    {
-        if (t->type >= 5)
-        {
-            if (t->type == REDI_IN)
-                add_file_node(&cmd->input, t->next->s, false);
-            else if (t->type == REDI_OUT)
-                add_file_node(&cmd->output, t->next->s, false);
-            else if (t->type == HERE_DOC)
-                add_file_node(&cmd->input, t->next->s, true);
-            else if (t->type == APPEND)
-                add_file_node(&cmd->output, t->next->s, true);
-            remove_two(head, &t, data);
-        }
-        else
-            t = t->next;
-    }
 }

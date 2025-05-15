@@ -63,3 +63,29 @@ void    print_files(t_flist *list)
     }
     printf("\n");
 }
+
+int parse_syntax_errors(t_token *token)
+{
+    while (token)
+    {
+        if (token->type == PIPE && !(token->next))
+            return (ft_printf("minishell: syntax error near unexpected token `newline'\n"));
+        if (token->type == PIPE && (!(token->prev) || token->next->type == PIPE))
+            return (ft_printf("minishell: syntax error near unexpected token `|'\n"));
+        if (token->type >= 5 && !(token->next))
+            return (ft_printf("minishell: syntax error near unexpected token `newline'\n"));
+        if (token->type >= 5 && (token->next->type >= 5 ||  token->next->type == PIPE))
+            return (ft_printf("minishell: syntax error near unexpected token `>'\n"));
+        token = token->next;
+    }
+    return (0);
+}
+
+void    reset_data(t_data *data)
+{
+    data->cmd_count = 0;
+    data->cmd_arr = NULL;
+    data->input = NULL;
+    data->last_token = NULL;
+    data->token = NULL;
+}

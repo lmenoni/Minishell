@@ -12,55 +12,6 @@
 
 #include "minishell.h"
 
-// int name_len(char *s)
-// {
-//     int i;
-    
-//     i = 0;
-//     while (!(is_space(s[i])))
-//         i++;
-//     return (i);
-// }
-
-// void    expand_quoted(t_token *curr)
-// {
-//     int i;
-//     int len;
-//     int name;
-
-//     i = 0;
-//     len = ft_strlen(curr->s);
-//     name = 0;
-//     while (curr->s[i] && curr->s[i] != '$')
-//         i++;
-//     name = name_len(&curr->s);
-//     i++;
-//     if (name > 1)
-    
-// }
-
-// void    expand_dollar(t_token *token)
-// {
-//     t_token *curr;
-
-//     curr = token;
-//     while (curr)
-//     {
-//         if (curr->type != STRING)
-//             expand_quoted(curr);
-//         curr = curr->next;
-//     }
-// }
-
-void    reset_data(t_data *data)
-{
-    data->cmd_count = 0;
-    data->cmd_arr = NULL;
-    data->input = NULL;
-    data->last_token = NULL;
-    data->token = NULL;
-}
-
 void    init_env(char **env, t_data *data)
 {
 	int i;
@@ -105,10 +56,13 @@ int main(int ac, char **av, char **e)
             break ;
         tokenize_input(&data);
         print_tokens(data.token);
+        if (!parse_syntax_errors(data.token))
+        {
         //expand_dollar(data.token);
         // prima di creare array fare parsing dei syntax error (senno seg)
-        make_cmd_array(&data);
-        print_cmd_array(&data);
+            make_cmd_array(&data);
+            print_cmd_array(&data);
+        }
         add_history(data.input);
         free(data.input);
         free_token(data.token);

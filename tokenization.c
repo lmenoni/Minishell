@@ -66,12 +66,10 @@ void    add_redirect(t_data *data, char *s, int *idx, char c)
 {
     int i;
     int len;
-    char type;
     char *r;
     
     i = 0;
     len = 0;
-    type = s[i];
     while (s[i] != '\0' && s[i] == c && i < 2)
         i++;
     len = i;
@@ -88,15 +86,10 @@ void    add_redirect(t_data *data, char *s, int *idx, char c)
     add_token(&data->token, r, which_type(c, len), data);
 }
 
-void    add_pipe(t_data *data, char *s, int *idx)
+void    add_pipe(t_data *data, int *idx)
 {
-    int i;
     char *r;
-    
-    i = 0;
-    while (s[i] != '\0' && s[i] == '|')
-        i++;
-    // if (i != 1) piu pipe consecutivi
+
     r = malloc((2) * sizeof(char));
     //copertura malloc
     r[0] = '|';
@@ -114,7 +107,7 @@ void    tokenize_input(t_data *data)
     {
         skip_spaces(data->input, &i);
         if (data->input[i] == '|')
-            add_pipe(data, &data->input[i], &i);
+            add_pipe(data, &i);
         else if (data->input[i] == '<' || data->input[i] == '>')
             add_redirect(data, &data->input[i], &i, data->input[i]);
         else
