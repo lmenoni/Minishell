@@ -1,0 +1,93 @@
+
+===============================
+ FUNZIONI READLINE (INPUT)
+===============================
+readline         : Legge una riga di input da terminale, con editing e history.
+rl_clear_history : Cancella la cronologia dei comandi.
+rl_on_new_line   : Segnala che è iniziata una nuova riga.
+rl_replace_line  : Sostituisce la riga corrente.
+rl_redisplay     : Aggiorna la riga nel terminale.
+add_history      : Aggiunge un comando alla history.
+
+===============================
+ FUNZIONI DI I/O
+===============================
+printf    : Stampa formattata su stdout.
+write     : Scrive su un file descriptor.
+read      : Legge da un file descriptor.
+strerror  : Descrizione di errore da errno.
+perror    : Stampa un errore da errno.
+
+===============================
+ GESTIONE MEMORIA
+===============================
+malloc    : Alloca memoria dinamica.
+free      : Libera memoria allocata.
+
+===============================
+ GESTIONE FILE/DIRECTORY
+===============================
+open      : Apre un file.
+access    : Verifica permessi su file.
+close     : Chiude un file descriptor.
+unlink    : Rimuove un file.
+stat      : Info su file (segue symlink).
+lstat     : Info su file (non segue symlink).
+fstat     : Info su file da file descriptor.
+getcwd    : Directory corrente.
+chdir     : Cambia directory corrente.
+dup       : Duplica file descriptor.
+dup2      : Duplica su fd specifico.
+opendir   : Apre una directory.
+readdir   : Legge contenuto directory.
+closedir  : Chiude directory.
+
+===============================
+ PROCESSI
+===============================
+fork      : Crea un processo figlio.
+wait      : Attende la fine di un figlio.
+waitpid   : Attende uno specifico figlio.
+wait3     : Attesa + info risorse.
+wait4     : Come wait3, ma con PID.
+exit      : Termina il processo.
+execve    : Esegue un nuovo programma.
+
+===============================
+ SEGNALI
+===============================
+signal        : Imposta un handler per segnali (obsoleto).
+sigaction     : Imposta un gestore avanzato per segnali.
+sigemptyset   : Inizializza set di segnali vuoto.
+sigaddset     : Aggiunge un segnale a un set.
+kill          : Invia un segnale a un processo.
+
+===============================
+ PIPE E COMUNICAZIONE
+===============================
+pipe      : Crea un canale tra processi.
+
+===============================
+ TERMINALE / TTY
+===============================
+isatty     : Verifica se è un terminale.
+ttyname    : Nome del terminale.
+ttyslot    : Slot del terminale.
+ioctl      : Controllo su device.
+tcsetattr  : Imposta attributi terminale.
+tcgetattr  : Legge attributi terminale.
+
+===============================
+ TERMCAP
+===============================
+tgetent    : Inizializza info su terminale.
+tgetflag   : Legge flag booleano.
+tgetnum    : Legge numero.
+tgetstr    : Legge stringa di controllo.
+tgoto      : Stringa movimento cursore.
+tputs      : Stampa stringa con controllo.
+
+===============================
+ AMBIENTE
+===============================
+getenv     : Ottiene valore variabile d’ambiente.
