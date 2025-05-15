@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 18:27:45 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/10 17:36:39 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/15 19:30:47 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ void    remove_two(t_token **head, t_token **t, t_data *data)
         if (!(*t)->prev)
             data->token = (*head);
         else
+        {
+            ft_printf("t is %p\n", (*t)->prev->next);
             (*t)->prev->next = (*t)->next->next;
+        }
         remove_token(t);
         remove_token(t);
         return ;

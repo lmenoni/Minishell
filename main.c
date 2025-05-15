@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/14 14:30:29 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:33:27 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ int main(int ac, char **av, char **e)
         tokenize_input(&data);
         print_tokens(data.token);
         //expand_dollar(data.token);
+        // prima di creare array fare parsing dei syntax error (senno seg)
         make_cmd_array(&data);
         print_cmd_array(&data);
         add_history(data.input);

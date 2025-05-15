@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/15 13:36:48 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:29:04 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,15 +104,11 @@ void    add_file_node(t_flist **head, char *s, bool x);
 void    remove_two(t_token **head, t_token **t, t_data *data);
 
 //tokenization.c
-void    define_token_add(t_data *data, char *s, int *idx);
 void    tokenize_input(t_data *data);
-
-//add_token.c
-void    add_string(t_data *data, char *s, int *idx, char c);
 void    add_pipe(t_data *data, char *s, int *idx);
 void    add_redirect(t_data *data, char *s, int *idx, char c);
-void    add_operator(t_data *data, char *s, int *idx);
 void    add_argument(t_data *data, char *s, int *idx);
+int     argument_len(char *s);
 
 //token_utils.c
 void    print_tokens(t_token *token);
