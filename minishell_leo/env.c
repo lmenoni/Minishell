@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/12 18:20:31 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:35:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void init_env(char **env, t_data *data)
 		add_env(data, env[i]);
 		i++;
 	}
+	data->old_path = NULL;
+	data->home_path = getenv("HOME");
+	data->current_path = getcwd(NULL, 4096);
 }
 
 void add_env(t_data *data, char *new_env)

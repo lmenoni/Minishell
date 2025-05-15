@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/12 18:43:28 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:48:06 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ int		open_file(char *file, int flags);
 // env
 void init_env(char **env, t_data *data);
 void add_env(t_data *data, char *s);
+char *check_env(t_data *data, char *var);
 
 
 // builtin

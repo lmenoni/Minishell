@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/12 18:43:22 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:35:33 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,6 @@ int main(int argc, char **argv, char **env)
     data = (t_data){0};
     data.env_data = NULL;
     init_env(env, &data);
-    data.old_path = getcwd(NULL, 4096);
-    data.current_path = getcwd(NULL, 4096);
     while (1)
     {
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
