@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:42:37 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/12 15:25:44 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/16 17:54:54 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,4 @@ tok_type    which_type(char c, int len)
     return (0);
 }
 
-void    print_tokens(t_token *token)
-{
-    while (token)
-    {
-        ft_printf("String is (%s) of tipe (%d) ", token->s, token->type);
-        //if (token->prev)
-        //    ft_printf("Prev string is (%s)", token->prev->s);
-        ft_printf("\n");
-        token = token->next;
-    }
-}
 

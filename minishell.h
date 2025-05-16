@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/15 17:29:04 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/16 18:12:43 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct  s_env
 {
     char			*e;
     struct s_env	*next;
-	struct s_env	*prev;
 }               t_env;
 
 typedef struct  s_flist
@@ -82,9 +81,9 @@ typedef struct s_cmd
 
 typedef struct  s_data
 {
-    //char        *curr_path;
-    //char        *old_path;
-    //char        *home_path;
+    char        *curr_path;
+    char        *old_path;
+    char        *home_path;
     t_env        *env_data;
     char        *input;
     t_cmd       *cmd_arr;
@@ -111,7 +110,6 @@ void    add_argument(t_data *data, char *s, int *idx);
 int     argument_len(char *s);
 
 //token_utils.c
-void    print_tokens(t_token *token);
 void    add_token(t_token **first, char *s, tok_type type, t_data *data);
 t_token *token_new(char *content, tok_type type);
 tok_type    which_type(char c, int len);
@@ -120,18 +118,34 @@ tok_type    which_type(char c, int len);
 void    free_token(t_token *token);
 void    free_flist(t_flist *flist);
 void    free_cmd_array(t_data *data);
+void    free_env(t_env *node);
 
 //utils.c
 void    skip_spaces(char *s, int *i);
 int is_space(char c);
-void    print_files(t_flist *list);
-void    print_cmd_array(t_data *data);
 int parse_syntax_errors(t_token *token);
 void    reset_data(t_data *data);
 
+//env.c
+t_env   *init_env(char **e, t_data *data);
+t_env   *new_env_node(char *s);
+
+//print.c
+void    print_tokens(t_token *token);
+void    print_files(t_flist *list);
+void    print_cmd_array(t_data *data);
+void    print_env(t_env *node);
+
+//here_doc.c
+void    do_here_doc(t_token *tok);
+char    *get_lines(char *s);
+char    *get_limiter(char *s);
+void    fill_limiter(char **r, char *s);
+int limiter_len(char *s);
+
+
 #endif
 
-// in caso di "   "qualcosa fare in modo che il token sia ""    "qualcosa"
 // cambiare metodo per la lista di file(una sola con un bbool per riconoscerli)
 // tutti gli argomenti che hanno "" o '' togliendo gli apici e espandere $ se tra ""
 //prima espandere $ dentro le virgolette poi quelli fuori e dividi con gli spazi i nuovi token

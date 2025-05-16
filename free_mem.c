@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:45:21 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/09 18:13:36 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/16 17:51:48 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,17 @@ void    free_cmd_array(t_data *data)
         i++;
     }
     free(data->cmd_arr);
+}
+
+void    free_env(t_env *node)
+{
+    t_env   *t;
+
+    while (node)
+    {
+        t = node;
+        node = node->next;
+        free(t->e);
+        free(t);
+    }
 }
