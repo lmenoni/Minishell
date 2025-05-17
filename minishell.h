@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 18:12:43 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/17 15:23:46 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ char    *get_lines(char *s);
 char    *get_limiter(char *s);
 void    fill_limiter(char **r, char *s);
 int limiter_len(char *s);
+bool    is_limiter_quoted(char *s);
 
 
 #endif

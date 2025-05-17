@@ -6,11 +6,25 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:03:18 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 18:04:07 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/17 15:25:41 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+bool    is_limiter_quoted(char *s)
+{
+    int i;
+
+    i = 0;
+    while (s[i] != '\0')
+    {
+        if (s[i] == '"' || s[i] == '\'')
+            return (false);
+        i++;
+    }
+    return (true);
+}
 
 int limiter_len(char *s)
 {
@@ -109,15 +123,17 @@ char    *get_lines(char *s)
 void    do_here_doc(t_token *tok)
 {
     char    *r;
+    bool    expand;
 
     r = NULL;
+    expand = is_limiter_quoted(tok->next->s);
     while (tok)
     {
         if (tok->type == HERE_DOC)
         {
             r = get_lines(tok->next->s);
-            // if (dollar_quoted(tok->next->s))
-            //     r = expand_dollar(r);
+            if (expand)
+                r = expand_dollar(r);
             free(tok->next->s);
             tok->next->s = r;
         }
