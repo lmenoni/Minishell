@@ -9,7 +9,7 @@ SOURCES = \
 	ft_putendl_fd.c ft_putnbr_fd.c ft_printf.c ft_printunsnbr.c ft_printhexa.c \
 	ft_putchar_fd.c ft_printpointer.c ft_printupphexa.c ft_printstr.c \
 	ft_printnbr.c get_next_line_bonus.c ft_bufflen.c ft_buffjoin.c\
-	ft_find.c ft_freemat.c ft_matlen.c
+	ft_find.c ft_freemat.c ft_matlen.c ft_merge.c
 BSOURCES = \
 	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c \
 	ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
