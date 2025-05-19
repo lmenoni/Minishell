@@ -6,56 +6,126 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/15 17:35:20 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 16:09:05 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void init_env(char **env, t_data *data)
+t_env   *new_env_node(char *s)
 {
-	int i;
-
-	i = 0;
-	data->env_data = NULL;
-	while (env[i])
-	{
-		add_env(data, env[i]);
-		i++;
-	}
-	data->old_path = NULL;
-	data->home_path = getenv("HOME");
-	data->current_path = getcwd(NULL, 4096);
+    t_env   *new;
+    
+    new = malloc(sizeof(t_env));
+    new->e = s;
+    new->next = NULL;
+    return (new);
 }
 
-void add_env(t_data *data, char *new_env)
+t_env   *init_env(char **e, t_data *data)
 {
-	t_env *new_node;
-	t_env *curr;
+    t_env   *first;
+    t_env   *curr;
+    t_env   *new;
+    int     i;
 
-	new_node = malloc(sizeof(t_env));
-	if (!new_node)
+    first = NULL;
+    i = 0;
+    while (e[i])
+    {
+        curr = first;
+        new = new_env_node(ft_strdup(e[i]));
+        if (!first)
+            first = new;
+        else
+        {
+            while (curr->next)
+                curr = curr->next;
+            curr->next = new;
+        }
+        i++;
+    }
+    data->current_path = getcwd(NULL, 0);
+    data->home_path = getenv("HOME");
+    data->old_path = NULL;
+    return (first);
+}
+
+char *check_env(t_data *data, char *var)
+{
+	t_env *temp;
+	int i;
+	
+	i = 0;
+	temp = data->env_data;
+	while (temp)
 	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
+		i = 0;
+		while (temp->e[i] != '\0' && temp->e[i] != '=')
+			i++;
+		if (ft_strncmp(temp->e, var, i) == 0)
+			return(&temp->e[i + 1]);
+		temp = temp->next;
 	}
-	new_node->e = ft_strdup(new_env);
-	if (!new_node->e)
+	return (NULL);
+}
+
+void update_env(t_data *data, char *var, char *str)
+{
+	t_env *temp;
+
+	temp = data->env_data;
+	while (temp)
 	{
-		free(new_node);
-		perror("strdup");
-		exit(EXIT_FAILURE);
+		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
+		{
+			free(temp->e);
+			temp->e = ft_strjoin(var, str);
+			break ;
+		}
+		temp = temp->next;
 	}
-	new_node->next = NULL;
+}
+
+void add_env(t_data *data, char *var)
+{
+	t_env *new;
+	t_env *temp;
+
+	new = new_env_node(ft_strdup(var));
 	if (!data->env_data)
+		data->env_data = new;
+	else
 	{
-		data->env_data = new_node;
-		return;
+		temp = data->env_data;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new;
 	}
-	curr = data->env_data;
-	while (curr->next)
-		curr = curr->next;
-	curr->next = new_node;
+}
+
+void delete_env(t_data *data, char *var)
+{
+	t_env *temp;
+	t_env *prev;
+
+	temp = data->env_data;
+	prev = NULL;
+	while (temp)
+	{
+		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
+		{
+			if (prev)
+				prev->next = temp->next;
+			else
+				data->env_data = temp->next;
+			free(temp->e);
+			free(temp);
+			return ;
+		}
+		prev = temp;
+		temp = temp->next;
+	}
 }
 
 void env(t_data *data)

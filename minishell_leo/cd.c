@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/16 18:50:53 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:28:33 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,37 +22,6 @@ OLDPWD inzia a NULL e viene comparto con il OLDPWD di env, viene settato il nost
 se la HOME non e' settata e arriva una stringa vuota, ritorna errore con HOME non settata (casi unset $HOME, $PWD, cd (vuoto)), mentre con ~ funziona sempre
 fare funzione safe_chdir per ridurre righe e che gestisce gli erorri anche
 */
-
-char *check_env(t_data *data, char *var)
-{
-	t_env *temp;
-	
-	temp = data->env_data;
-	while (temp)
-	{
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
-			return(&temp->e[ft_strlen(var) - 1]);
-		temp = temp->next;
-	}
-	return (NULL);
-}
-
-void update_env(t_data *data, char *var, char *str)
-{
-	t_env *temp;
-
-	temp = data->env_data;
-	while (temp)
-	{
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
-		{
-			free(temp->e);
-			temp->e = ft_strjoin(var, str);
-			break ;
-		}
-		temp = temp->next;
-	}
-}
 
 static void safe_chdir(char *path)
 {
@@ -91,32 +60,58 @@ static void cd_oldpwd(t_data *data)
 		if (check_env(data, "OLDPWD="))
 			update_env(data, "OLDPWD=", data->current_path);
 		ft_printf("%s\n", path);
+		free(data->old_path);
 		data->old_path = data->current_path;
-		data->current_path = getcwd(NULL, 4096);
+		data->current_path = getcwd(NULL, 0);
+		update_env(data, "PWD=", data->current_path);
 	}
-	else 
+	else
 		print_error("bash: cd: OLDPWD not set\n");
 }
 
 void cd_home(t_data *data)
 {
-	char *curr_path;
-
-	curr_path = getcwd(NULL, 4096);
-	update_env(data, "OLDPWD=", curr_path);
-	update_env(data, "PWD=", data->current_path);
 	if (check_env(data, "HOME=") != NULL)
 	{
+		update_env(data, "OLDPWD=", data->current_path);
+		free(data->old_path);
+		data->old_path = data->current_path;
 		safe_chdir(data->home_path);
-		free(data->current_path);
-		data->current_path = curr_path;
+		data->current_path = getcwd(NULL, 0);
+		update_env(data, "PWD=", data->current_path);
 	}
 	else
 	{
 		print_error("bash: cd: HOME not set\n");
-		free(curr_path);
 		return ;
 	}
+}
+
+void cd_tilde(t_data *data, char *new_path)
+{
+	char *joined_path;
+	
+	joined_path = ft_strjoin(data->home_path, new_path + 1);
+	if (new_path[0] == '~' && new_path[1] == '\0')
+	{
+		update_env(data, "OLDPWD=", data->current_path);
+		free(data->old_path);
+		data->old_path = data->current_path;
+		safe_chdir(data->home_path);
+		data->current_path = getcwd(NULL, 0);
+		update_env(data, "PWD=", data->current_path);
+	}
+	else if (new_path[0] == '~' && new_path[1] != '\0')
+	{
+		
+		update_env(data, "OLDPWD=", data->current_path);
+		free(data->old_path);
+		data->old_path = data->current_path;
+		safe_chdir(joined_path);
+		data->current_path = getcwd(NULL, 0);
+		update_env(data, "PWD=", data->current_path);
+	}
+	free(joined_path);
 }
 
 void cd(t_data *data)
@@ -129,37 +124,19 @@ void cd(t_data *data)
 		return ;
 	}
 	new_path = data->input_array[1];
-	
 	if (new_path == NULL)
 		cd_home(data);
-	else if (new_path[0] == '~' && new_path[1] == '\0')
-	{
-		update_env(data, "OLDPWD=", data->current_path);
-		safe_chdir(data->home_path);
-		update_env(data, "PWD=", data->current_path);
-	}	
-	else if (new_path[0] == '~' && new_path[1] != '\0')
-	{
-		data->old_path = getcwd(NULL, 4096);
-		if (chdir(ft_strjoin(data->home_path, new_path + 1)) != 0)
-		{
-			print_error("bash: cd: no such file or directory\n");
-			return ;
-		}
-		data->current_path = getcwd(NULL, 4096);
-	}
+	else if (new_path[0] == '~')// if (new_path[1] != '\0') strjoin(data->home_path, new_path + 1)
+		cd_tilde(data, new_path);
 	else if (new_path[0] == '-')
-	{
 		cd_oldpwd(data);
-	}
 	else if (new_path != NULL)
 	{
-		data->old_path = getcwd(NULL, 4096);
-		if (chdir(new_path) != 0)
-		{
-			print_error("bash: cd: no such file or directory\n");
-			return ;
-		}
-		data->current_path = getcwd(NULL, 4096);
+		free(data->old_path);
+		data->old_path = data->current_path;
+		update_env(data, "OLDPWD=", data->old_path);
+		safe_chdir(new_path);
+		data->current_path = getcwd(NULL, 0);
+		update_env(data, "PWD=", data->current_path);
 	}
 }

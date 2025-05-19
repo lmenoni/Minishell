@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/15 17:35:33 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 16:10:54 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ int define_input(t_data *data)
         return (add_env(data, data->input + 8), 1);
     else if (!ft_strncmp(data->input, "unset", 5))
         return (unset(data, data->input + 6), 1);
+    else if (!ft_strncmp(data->input, "test", 4))
+        return (printf("%s\n", check_env(data, "HOME=")), 1);
     return (1);
 }
 
@@ -74,8 +76,7 @@ int main(int argc, char **argv, char **env)
     (void)argv;
     t_data  data;
     data = (t_data){0};
-    data.env_data = NULL;
-    init_env(env, &data);
+    data.env_data = init_env(env, &data);
     while (1)
     {
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
@@ -87,11 +88,6 @@ int main(int argc, char **argv, char **env)
         define_input(&data);
         // tokenize_input(&data);
         // print_tokens(data.token);
-        if (!ft_strncmp(data.input, "exit", ft_strlen(data.input)))
-        {
-            free(data.input);
-            break;
-        }
         add_history(data.input);
         // ft_printf("Hai scritto: %s\n", data.input);
         free(data.input);

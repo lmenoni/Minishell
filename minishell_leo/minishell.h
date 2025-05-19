@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/15 17:48:06 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 15:55:41 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct  s_env
 {
     char			*e;
     struct s_env	*next;
-	struct s_env	*prev;
 }               t_env;
 
 typedef struct  s_export
@@ -112,9 +111,13 @@ void	heredoc(char **argv);
 int		open_file(char *file, int flags);
 
 // env
-void init_env(char **env, t_data *data);
-void add_env(t_data *data, char *s);
+t_env   *init_env(char **e, t_data *data);
+t_env   *new_env_node(char *s);
 char *check_env(t_data *data, char *var);
+char *check_env(t_data *data, char *var);
+void update_env(t_data *data, char *var, char *str);
+void delete_env(t_data *data, char *var);
+void add_env(t_data *data, char *var);
 
 
 // builtin

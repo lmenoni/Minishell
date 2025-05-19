@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 18:17:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/15 18:25:52 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 15:30:17 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,5 @@ void unset(t_data *data, char *var)
 		free(data->old_path);
 		data->old_path = NULL;
 	}
-	while (curr)
-	{
-		if (ft_strncmp(curr->e, var, ft_strlen(var)) == 0)
-		{
-			if (prev)
-				prev->next = curr->next;
-			else
-				data->env_data = curr->next;
-			free(curr->e);
-			free(curr);
-			return ;
-		}
-		prev = curr;
-		curr = curr->next;
-	}
+	delete_env(data, var);
 }

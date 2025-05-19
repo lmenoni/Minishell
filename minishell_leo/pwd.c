@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 18:39:51 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/12 18:43:18 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/19 15:02:07 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void pwd()
 {
 	char *current_path;
 
-	current_path = getcwd(NULL, 4096);
+	current_path = getcwd(NULL, 0);
 	if (current_path == NULL)
 	{
 		perror("getcwd");
