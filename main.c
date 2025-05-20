@@ -60,7 +60,7 @@ bool    remove_quotes(t_token *tok)
             if (ambs_redirect(tok))
                 return (false);
         }
-        
+
     }
 }
 
@@ -109,3 +109,4 @@ int main(int ac, char **av, char **e)
     rl_clear_history();
     return (0);
 }
+// le variabili che vengono espanse si dividono in nuovi token se contengono spazi tra parole es >< $.. o $a=echo ciao , $a
