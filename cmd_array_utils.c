@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 18:27:45 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 16:54:42 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/20 12:43:34 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void    remove_two(t_token **head, t_token **t, t_data *data)
     remove_token(t);
 }
 
-void    add_file_node(t_flist **head, char *s, bool x)
+void    add_file_node(t_flist **head, char *s, bool x, bool io)
 {
     t_flist *new;
     t_flist *temp;
@@ -58,6 +58,7 @@ void    add_file_node(t_flist **head, char *s, bool x)
     new = malloc(1 * sizeof(t_flist));
     new->s = s;
     new->x_factor = x;
+    new->io_bool = io;
     new->next = NULL;
     if (!(*head))
     {

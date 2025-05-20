@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 16:22:03 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/20 12:43:00 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct  s_flist
 {
     char            *s;
     bool            x_factor;
-    // bool            io_bool;
+    bool            io_bool;
     struct s_flist  *next;
 }                   t_flist;
 
@@ -72,8 +72,7 @@ typedef struct  s_token
 
 typedef struct s_cmd
 {
-    t_flist	*input;
-    t_flist	*output;
+    t_flist	*files;
     char	**args;
     bool    pipe_out;
     bool    pipe_in;
@@ -99,7 +98,7 @@ void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data);
 
 //cmd_array_utils.c
 void    get_args(t_cmd *cmd, t_token **curr);
-void    add_file_node(t_flist **head, char *s, bool x);
+void    add_file_node(t_flist **head, char *s, bool x, bool io);
 void    remove_two(t_token **head, t_token **t, t_data *data);
 
 //tokenization.c

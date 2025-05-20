@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 18:30:09 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/20 12:48:23 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,12 @@ int main(int ac, char **av, char **e)
         if (!data.input)
             break ;
         tokenize_input(&data);
-        //print_tokens(data.token);
+        print_tokens(data.token);
         if (!parse_syntax_errors(data.token))
         {
             do_here_doc(data.token, &data);
             expand_tokens(data.token, &data);
+            print_tokens(data.token);
             make_cmd_array(&data);
             print_cmd_array(&data);
         }

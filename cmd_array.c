@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 18:22:45 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/10 15:42:34 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/20 12:42:12 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
         if (t->type >= 5)
         {
             if (t->type == REDI_IN)
-                add_file_node(&cmd->input, t->next->s, false);
+                add_file_node(&cmd->files, t->next->s, false, false);
             else if (t->type == REDI_OUT)
-                add_file_node(&cmd->output, t->next->s, false);
+                add_file_node(&cmd->files, t->next->s, false, true);
             else if (t->type == HERE_DOC)
-                add_file_node(&cmd->input, t->next->s, true);
+                add_file_node(&cmd->files, t->next->s, true, false);
             else if (t->type == APPEND)
-                add_file_node(&cmd->output, t->next->s, true);
+                add_file_node(&cmd->files, t->next->s, true, true);
             remove_two(head, &t, data);
         }
         else

@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:45:21 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 17:51:48 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/20 12:44:36 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ void    free_cmd_array(t_data *data)
     i = 0;
     while (i < data->cmd_count)
     {
-        free_flist(data->cmd_arr[i].input);
-        free_flist(data->cmd_arr[i].output);
+        free_flist(data->cmd_arr[i].files);
         free(data->cmd_arr[i].args);
         i++;
     }
