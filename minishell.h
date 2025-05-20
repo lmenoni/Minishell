@@ -37,11 +37,8 @@
 
 typedef enum
 {
-    EXPAND,
     ARGUMENT,
-    STRING,
     PIPE,
-    OPERATOR,
     REDI_IN,
     REDI_OUT,
     HERE_DOC,

@@ -130,7 +130,6 @@ void do_here_doc(t_token *tok, t_data *data)
 		if (tok->type == HERE_DOC)
 		{
 			r = get_lines(tok->next->s);
-			ft_printf("HERE DOC IS %s\n", r);
 			if (is_limiter_quoted(tok->next->s))
 				r = expand_dollar(r, data);
 			free(tok->next->s);
