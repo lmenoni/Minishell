@@ -6,11 +6,21 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 18:23:50 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:30:09 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void    expand_tokens(t_token *tok, t_data *data)
+{
+    while (tok)
+    {
+        if (!tok->prev || tok->prev->type != HERE_DOC)
+            tok->s = expand_dollar(tok->s, data);
+        tok = tok->next;
+    }
+}
 
 int main(int ac, char **av, char **e)
 {
@@ -30,7 +40,8 @@ int main(int ac, char **av, char **e)
         //print_tokens(data.token);
         if (!parse_syntax_errors(data.token))
         {
-            do_here_doc(data.token);
+            do_here_doc(data.token, &data);
+            expand_tokens(data.token, &data);
             make_cmd_array(&data);
             print_cmd_array(&data);
         }

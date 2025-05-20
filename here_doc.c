@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:03:18 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 12:46:07 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/19 17:40:44 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,20 +120,19 @@ char *get_lines(char *s)
 	return (NULL);
 }
 
-void do_here_doc(t_token *tok)
+void do_here_doc(t_token *tok, t_data *data)
 {
 	char *r;
-	bool expand;
 
 	r = NULL;
-	expand = is_limiter_quoted(tok->next->s);
 	while (tok)
 	{
 		if (tok->type == HERE_DOC)
 		{
 			r = get_lines(tok->next->s);
-			if (expand)
-				r = expand_dollar(r);
+			ft_printf("HERE DOC IS %s\n", r);
+			if (is_limiter_quoted(tok->next->s))
+				r = expand_dollar(r, data);
 			free(tok->next->s);
 			tok->next->s = r;
 		}

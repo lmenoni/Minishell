@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:14:17 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 12:37:11 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/19 14:24:38 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,5 +92,6 @@ char	*ft_find(const char *s, int c);
 void	ft_freemat(void **mat, size_t j);
 int		ft_matlen(char **mat);
 char	*ft_merge(char *s1, char *s2);
+char	*ft_strndup(const char *s, size_t n);
 
 #endif
