@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/19 16:09:05 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:47:42 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,15 @@ void delete_env(t_data *data, char *var)
 	}
 }
 
-void env(t_data *data)
+void env(t_data *data, char **input_array)
 {
 	t_env *curr;
 
+	if (input_array[1] != NULL)
+	{
+		print_error("bash: env: too many arguments\n");
+		return ;
+	}
 	curr = data->env_data;
 	while (curr && curr->e)
 	{

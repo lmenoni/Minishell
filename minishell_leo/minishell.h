@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 15:55:41 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:51:09 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,9 @@ typedef enum
 typedef struct  s_env
 {
     char			*e;
+    char            *x;
     struct s_env	*next;
 }               t_env;
-
-typedef struct  s_export
-{
-    char			*x;
-    struct s_export	*next;
-	struct s_export	*prev;
-}               t_export;
 
 typedef struct  s_token
 {
@@ -114,17 +108,18 @@ int		open_file(char *file, int flags);
 t_env   *init_env(char **e, t_data *data);
 t_env   *new_env_node(char *s);
 char *check_env(t_data *data, char *var);
-char *check_env(t_data *data, char *var);
 void update_env(t_data *data, char *var, char *str);
 void delete_env(t_data *data, char *var);
 void add_env(t_data *data, char *var);
 
+// export
+void export (t_data *data, char **args);
 
 // builtin
 void    echo(t_data *data);
 void cd(t_data *data);
 void unset(t_data *data, char *var);
-void env(t_data *data);
+void env(t_data *data, char **input_array);
 void pwd();
 
 void    print_cd(t_data *data);
