@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/20 12:43:00 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/21 17:59:15 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 #define MINISHELL_H
 
 #include "my_libft/libft.h"
-#include <sys/types.h>      // opendir, readdir, closedir, stat, lstat, fstat, wait, waitpid, etc.
-#include <sys/stat.h>       // stat, lstat, fstat, mkdir, etc.
-#include <dirent.h>         // opendir, readdir, closedir
-#include <string.h>         // strerror, etc.
-#include <signal.h>         // signal, sigaction, sigemptyset, sigaddset, kill
-#include <sys/wait.h>       // wait, waitpid, wait3, wait4
-#include <termios.h>        // tcsetattr, tcgetattr
-#include <term.h>           // tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs
-#include <sys/ioctl.h>      // ioctl
-#include <readline/readline.h>  // readline, rl_clear_history, etc.
-#include <readline/history.h>   // add_history, etc.
-#include <errno.h>          // errno, perror, strerror
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <string.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <termios.h>
+#include <term.h>
+#include <sys/ioctl.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <errno.h>
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"

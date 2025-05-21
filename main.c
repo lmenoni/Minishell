@@ -6,7 +6,7 @@
 /*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/20 12:48:23 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/05/21 18:02:57 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,10 @@ void    skip_quotes(char *s, char quote, int *idx)
 bool    ambs_redirect(t_token *tok)
 {
     int i;
-    char    quote;
-    bool    in_quote;
 
     i = 0;
-    quote = 0;
-    in_quote = false;
-    skip_spaces(s, &i);
-    if (s[i] == '\0')
+    skip_spaces(tok->s, &i);
+    if (tok->s[i] == '\0')
         return (true);
     while (tok->s[i] != '\0' && !is_space(tok->s[i]))
     {
@@ -44,8 +40,8 @@ bool    ambs_redirect(t_token *tok)
         else
             i++;
     }
-    skip_spaces(s, &i);
-    if (s[i] != '\0')
+    skip_spaces(tok->s, &i);
+    if (tok->s[i] != '\0')
         return (true);
     return (false)
 }
