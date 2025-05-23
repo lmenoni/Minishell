@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/20 16:51:21 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/23 15:33:05 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int define_input(t_data *data)
     else if (!ft_strncmp(data->input, "add env", 7))
         return (add_env(data, data->input + 8), 1);
     else if (!ft_strncmp(data->input, "unset", 5))
-        return (unset(data, data->input + 6), 1);
+        return (unset(data, data->input_array), 1);
     else if (!ft_strncmp(data->input, "export", 6))
         return (export(data, data->input_array), 1);
     return (1);

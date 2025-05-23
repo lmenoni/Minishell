@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/20 16:47:42 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/23 15:35:03 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,18 @@ void delete_env(t_data *data, char *var)
 		temp = temp->next;
 	}
 }
+
+// void parse_env(t_data *data)
+// {
+// 	t_env *curr;
+
+// 	curr = data->env_data;
+// 	while (curr && curr->e)
+// 	{
+// 		if (ft_strchr(curr->e, '='))
+// 		{}
+// 	}
+// }
 
 void env(t_data *data, char **input_array)
 {

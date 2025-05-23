@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/20 17:12:19 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/23 15:40:11 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 /*
 controlla se già esiste e nel caso aggiornarlo solo se non è vuoto, ma se c'è l'uguale va gestito come stringa nulla (es. a="")
+ritorna erroe se il nome della variabile non inizia con una lettera o underscore
+b==="a="a -> b="==a=a" arriva senza virgolette quindi bisogna controllare che dopo l'uguale tutto il resto va virgolettato come stringa
 */
 
-void parse_export(t_data *data, char *var)
-{
+// void parse_export(t_data *data, char *var)
+// {
 	
-}
+// }
 
 void export (t_data *data, char **args)
 {
@@ -45,8 +47,8 @@ void export (t_data *data, char **args)
 		}
 	}
 	else
-	{
+	{//da sistemare
 		while (args[j])
-			parse_export(data, args[j++]);
+			add_env(data, args[j++]);
 	}
 }
