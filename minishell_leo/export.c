@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/23 15:40:11 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/24 19:18:34 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,31 @@
 controlla se già esiste e nel caso aggiornarlo solo se non è vuoto, ma se c'è l'uguale va gestito come stringa nulla (es. a="")
 ritorna erroe se il nome della variabile non inizia con una lettera o underscore
 b==="a="a -> b="==a=a" arriva senza virgolette quindi bisogna controllare che dopo l'uguale tutto il resto va virgolettato come stringa
+controllare come mi arriva l'argomento, se con o senza apici singoli, in caso con bisogna rimuoverli
 */
 
-// void parse_export(t_data *data, char *var)
-// {
-	
-// }
+int parse_export(char **args)
+{
+	int i;
+	i = 0;
 
-void export (t_data *data, char **args)
+	while (args[i])
+	{
+		if (args[i][0] == '=' || (!ft_isalpha(args[i][0]) && args[i][0] != '_'))
+		{
+			print_error("bash: export: not a valid identifier\n");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+void export (t_data *data)
 {
 	t_env *temp;
+	char **args;
+	args = data->input_array;
 	int i;
 	int j;
 
@@ -39,7 +54,7 @@ void export (t_data *data, char **args)
 			i = 0;
 			while (temp->e[i] != '\0' && temp->e[i] != '=')
 				i++;
-			if (i > 0)
+			if (i > 0 && temp->e[i] == '=')
 				printf("declare -x %.*s=\"%s\"\n", i, temp->e, &temp->e[i + 1]);
 			else
 				printf("declare -x %s\n", temp->e);
@@ -47,8 +62,19 @@ void export (t_data *data, char **args)
 		}
 	}
 	else
-	{//da sistemare
+	{
 		while (args[j])
-			add_env(data, args[j++]);
+		{
+			if (parse_export(&args[j]) == 1)
+			{
+				j++;
+				continue;
+			}
+			else
+			{
+				add_env(data, args[j]);
+				j++;
+			}
+		}
 	}
 }

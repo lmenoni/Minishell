@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/23 15:33:05 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/24 19:23:52 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,25 @@ void    tokenize_input(t_data *data)
 
 int define_input(t_data *data)
 {
-    if (!ft_strncmp(data->input, "echo", 4))
-        return (echo(data), 1);
-    else if (!ft_strncmp(data->input, "cd", 2))
-        return (cd(data), 1);
-    else if (!ft_strncmp(data->input, "pwd", 3))
-        return (pwd(), 1);
-    else if (!ft_strncmp(data->input, "debug cd", 8))
-        return (print_cd(data), 1);
-    else if (!ft_strncmp(data->input, "env", 3))
-        return (env(data, data->input_array), 1);
-    else if (!ft_strncmp(data->input, "add env", 7))
-        return (add_env(data, data->input + 8), 1);
-    else if (!ft_strncmp(data->input, "unset", 5))
-        return (unset(data, data->input_array), 1);
-    else if (!ft_strncmp(data->input, "export", 6))
-        return (export(data, data->input_array), 1);
-    return (1);
+	if (!ft_strncmp(data->input, "echo", 4))
+		return (echo(data), 1);
+	else if (!ft_strncmp(data->input, "cd", 2))
+		return (cd(data), 1);
+	else if (!ft_strncmp(data->input, "pwd", 3))
+		return (pwd(), 1);
+	else if (!ft_strncmp(data->input, "debug cd", 8))
+		return (print_cd(data), 1);
+	else if (!ft_strncmp(data->input, "env", 3))
+		return (env(data, data->input_array), 1);
+	else if (!ft_strncmp(data->input, "add env", 7))
+		return (add_env(data, data->input + 8), 1);
+	else if (!ft_strncmp(data->input, "unset", 5))
+		return (unset(data, data->input_array), 1);
+	else if (!ft_strncmp(data->input, "export", 6))
+		return (export(data), 1);
+	else if (!ft_strncmp(data->input, "clear", 4))
+		return(system("clear"), 1);  
+	return (1);
 }
 
 int main(int argc, char **argv, char **env)
