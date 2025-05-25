@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/23 15:35:03 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/25 19:45:29 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char *check_env(t_data *data, char *var)
 void update_env(t_data *data, char *var, char *str)
 {
 	t_env *temp;
-
+	
 	temp = data->env_data;
 	while (temp)
 	{
