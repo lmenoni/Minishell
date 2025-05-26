@@ -105,8 +105,8 @@ char *get_lines(char *s)
 	while (1)
 	{
 		line = NULL;
-		line = readline(">");
-		if (ft_strncmp(line, limiter, ft_strlen(line)) == 0)
+		line = readline("> ");
+		if (line[0] != '\0' && ft_strncmp(line, limiter, ft_strlen(line)) == 0)
 		{
 			free(line);
 			free(limiter);
@@ -131,7 +131,7 @@ void do_here_doc(t_token *tok, t_data *data)
 		{
 			r = get_lines(tok->next->s);
 			if (is_limiter_quoted(tok->next->s))
-				r = expand_dollar(r, data);
+				r = expand_dollar(r, data, true);
 			free(tok->next->s);
 			tok->next->s = r;
 		}

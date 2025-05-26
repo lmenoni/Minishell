@@ -39,6 +39,7 @@ typedef enum
 {
     ARGUMENT,
     PIPE,
+    DOLLAR,
     REDI_IN,
     REDI_OUT,
     HERE_DOC,
@@ -63,6 +64,7 @@ typedef struct  s_token
 {
     char			*s;
     tok_type		type;
+    struct s_token  *attach;
     struct s_token	*next;
 	struct s_token	*prev;
 }               t_token;
@@ -140,7 +142,7 @@ void    fill_limiter(char **r, char *s);
 int limiter_len(char *s);
 bool    is_limiter_quoted(char *s);
 
-char *expand_dollar(char *s, t_data *data);
+char *expand_dollar(char *s, t_data *data, bool expand);
 
 #endif
 

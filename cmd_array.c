@@ -19,7 +19,7 @@ void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
     t = *head;
     while (t && t->type != PIPE)
     {
-        if (t->type >= 2)
+        if (t->type >= 3)
         {
             if (t->type == REDI_IN)
                 add_file_node(&cmd->files, t->next->s, false, false);

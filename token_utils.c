@@ -21,6 +21,7 @@ t_token *token_new(char *content, tok_type type)
 	token->s = content;
 	token->next = NULL;
 	token->prev = NULL;
+	token->attach = NULL;
 	token->type = type;
 	return (token);
 }

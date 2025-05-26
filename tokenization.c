@@ -12,7 +12,12 @@
 
 #include "minishell.h"
 
-int argument_len(char *s)
+void	add_dollar(t_data *data, char *s, int *idx)
+{
+	
+}
+
+int argument_len(char *s, tok_type last_token)
 {
 	int i;
 	char quote;
@@ -20,14 +25,7 @@ int argument_len(char *s)
 
 	i = 0;
 	quote = 0;
-	if (s[i] != '\0' && (s[i] == '"' || s[i] == '\''))
-	{
-		in_quote = true;
-		quote = s[i];
-		i++;
-	}
-	else
-		in_quote = false;
+	in_quote = false;
 	while (in_quote || (!in_quote && s[i] != '\0' && s[i] != ' ' && s[i] != '|' && s[i] != '<' && s[i] != '>'))
 	{
 		if ((!in_quote && (s[i] == '"' || s[i] == '\'')) || quote == s[i])
@@ -35,6 +33,8 @@ int argument_len(char *s)
 			in_quote = !in_quote;
 			quote = s[i];
 		}
+		if (last_token != HERE_DOC && !in_quote && s[i] == '$' && s[i + 1] != '\0' && !is_space(s[i + 1]) && s[i + 1] != '"' && s[i + 1] != '\'')
+			break ;
 		i++;
 	}
 	return (i);
@@ -47,7 +47,7 @@ void add_argument(t_data *data, char *s, int *idx)
 	char *r;
 
 	i = 0;
-	len = argument_len(s);
+	len = argument_len(s, data->last_token->type);
 	r = malloc((len + 1) * sizeof(char));
 	// copertura malloc
 	while (i < len)
@@ -108,7 +108,9 @@ void tokenize_input(t_data *data)
 			add_pipe(data, &i);
 		else if (data->input[i] == '<' || data->input[i] == '>')
 			add_redirect(data, &data->input[i], &i, data->input[i]);
-		else
+		else if (data->input[i] == '$' && data->input[i + 1] != '\0' && data->input[i + 1] != ' ' && data->last_token->type != HERE_DOC)
+			add_dollar(data, &data->input[i], &i);
+		else if (data->input[i] != '\0')
 			add_argument(data, &data->input[i], &i);
 	}
 }

@@ -18,7 +18,7 @@ void    remove_token(t_token **t)
 
     temp = (*t);
     (*t) = (*t)->next;
-    if (temp && temp->type >= 2)
+    if (temp && temp->type >= 3)
         free(temp->s);
     free(temp);
 }
@@ -78,14 +78,14 @@ void    get_args(t_cmd *cmd, t_token **curr)
     
     temp = *curr;
     i = 0;
-    while (temp && temp->type != PIPE && temp->type < 2)
+    while (temp && temp->type != PIPE && temp->type < 3)
     {
         temp = temp->next;
         i++;
     }
     cmd->args = malloc((i + 1) * sizeof(char *));
     i = 0;
-    while(*curr && (*curr)->type != PIPE && (*curr)->type < 2)
+    while(*curr && (*curr)->type != PIPE && (*curr)->type < 3)
     {
         cmd->args[i] = (*curr)->s;
         *curr = (*curr)->next;

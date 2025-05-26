@@ -12,63 +12,53 @@
 
 #include "minishell.h"
 
-void    skip_quotes(char *s, char quote, int *idx)
-{
-    bool    in_quote;
+// void    skip_quotes(char *s, char quote, int *idx)
+// {
+//     bool    in_quote;
 
-    in_quote = true;
-    while (s[*idx] != '\0' && in_quote)
-    {
-        if (s[*idx] == quote)
-            in_quote = false;
-        *idx = *idx + 1;
-    }
-}
+//     in_quote = true;
+//     while (s[*idx] != '\0' && in_quote)
+//     {
+//         if (s[*idx] == quote)
+//             in_quote = false;
+//         *idx = *idx + 1;
+//     }
+// }
 
-bool    ambs_redirect(t_token *tok)
-{
-    int i;
+// bool    ambs_redirect(t_token *tok)
+// {
+//     int i;
 
-    i = 0;
-    skip_spaces(tok->s, &i);
-    if (tok->s[i] == '\0')
-        return (true);
-    while (tok->s[i] != '\0' && !is_space(tok->s[i]))
-    {
-        if (tok->s[i] != '"' || tok->s[i] != '\'')
-            skip_quotes(&(tok->s[i]), tok->s[i], &i);
-        else
-            i++;
-    }
-    skip_spaces(tok->s, &i);
-    if (tok->s[i] != '\0')
-        return (true);
-    return (false)
-}
+//     i = 0;
+//     skip_spaces(tok->s, &i);
+//     if (tok->s[i] == '\0')
+//         return (true);
+//     while (tok->s[i] != '\0' && !is_space(tok->s[i]))
+//     {
+//         if (tok->s[i] != '"' || tok->s[i] != '\'')
+//             skip_quotes(&(tok->s[i]), tok->s[i], &i);
+//         else
+//             i++;
+//     }
+//     skip_spaces(tok->s, &i);
+//     if (tok->s[i] != '\0')
+//         return (true);
+//     return (false);
+// }
 
-bool    remove_quotes(t_token *tok)
-{
-    while (tok)
-    {
-        if (tok->prev && tok->prev->type != PIPE
-            && tok->prev->type != ARGUMENT && tok->prev->type != HERE_DOC)
-        {
-            if (ambs_redirect(tok))
-                return (false);
-        }
+// bool    remove_quotes(t_token *tok)
+// {
+//     while (tok)
+//     {
+//         if (tok->prev && tok->prev->type != PIPE
+//             && tok->prev->type != ARGUMENT && tok->prev->type != HERE_DOC)
+//         {
+//             if (ambs_redirect(tok))
+//                 return (false);
+//         }
 
-    }
-}
-
-void    expand_tokens(t_token *tok, t_data *data)
-{
-    while (tok)
-    {
-        if (!tok->prev || tok->prev->type != HERE_DOC)
-            tok->s = expand_dollar(tok->s, data);
-        tok = tok->next;
-    }
-}
+//     }
+// }
 
 int main(int ac, char **av, char **e)
 {
@@ -85,13 +75,11 @@ int main(int ac, char **av, char **e)
         if (!data.input)
             break ;
         tokenize_input(&data);
-        //print_tokens(data.token);
+        print_tokens(data.token);
         if (!parse_syntax_errors(data.token))
         {
             do_here_doc(data.token, &data);
-            expand_tokens(data.token, &data);
-            remove_quotes(data.token);
-            //print_tokens(data.token);
+            print_tokens(data.token);
             make_cmd_array(&data);
             print_cmd_array(&data);
         }
@@ -105,4 +93,4 @@ int main(int ac, char **av, char **e)
     rl_clear_history();
     return (0);
 }
-// le variabili che vengono espanse si dividono in nuovi token se contengono spazi tra parole es >< $.. o $a=echo ciao , $a
+//scrivere adddollar e farre in modo che si setti attach in add dollar e add argument se va fatto 

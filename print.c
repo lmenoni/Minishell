@@ -31,6 +31,7 @@ void    print_tokens(t_token *token)
         ft_printf("\n");
         token = token->next;
     }
+    ft_printf("---------------------------------------\n");
 }
 
 void    print_cmd_array(t_data *data)
