@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/25 19:45:29 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/27 17:43:13 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,18 +128,6 @@ void delete_env(t_data *data, char *var)
 	}
 }
 
-// void parse_env(t_data *data)
-// {
-// 	t_env *curr;
-
-// 	curr = data->env_data;
-// 	while (curr && curr->e)
-// 	{
-// 		if (ft_strchr(curr->e, '='))
-// 		{}
-// 	}
-// }
-
 void env(t_data *data, char **input_array)
 {
 	t_env *curr;
@@ -152,6 +140,11 @@ void env(t_data *data, char **input_array)
 	curr = data->env_data;
 	while (curr && curr->e)
 	{
+		if (!ft_strchr(curr->e, '='))
+		{
+			curr = curr->next;
+			continue;
+		}
 		printf("%s\n", curr->e);
 		curr = curr->next;
 	}
