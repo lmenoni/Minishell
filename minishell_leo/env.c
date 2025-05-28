@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: igilani <igilani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/27 17:43:13 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/28 17:58:46 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char *check_env(t_data *data, char *var)
 		i = 0;
 		while (temp->e[i] != '\0' && temp->e[i] != '=')
 			i++;
-		if (ft_strncmp(temp->e, var, i) == 0)
+		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
 			return(&temp->e[i + 1]);
 		temp = temp->next;
 	}
@@ -94,7 +94,10 @@ void add_env(t_data *data, char *var)
 
 	new = new_env_node(ft_strdup(var));
 	if (!data->env_data)
+	{
+		printf("Adding new env variable: %s\n", var);
 		data->env_data = new;
+	}
 	else
 	{
 		temp = data->env_data;
