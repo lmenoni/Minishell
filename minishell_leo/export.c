@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: igilani <igilani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/27 18:32:59 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/28 13:54:58 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,17 +79,18 @@ void add_export(t_data *data, char **args)
 			{
 				temp = ft_strjoin("=", ft_strjoin(check_env(data, args[i]), args[i] + ft_strlen(var_name) + 2));
 				update_env(data, var_name, temp);
-				free(temp);
+				
 			}
 			else
 			{
 				temp = ft_strjoin(var_name, args[i] + ft_strlen(var_name) + 1);
 				add_env(data, temp);
 			}
+			free(temp);
 		}
+		free(var_name);
 		i++;
 	}
-	free(var_name);
 }
 
 void export (t_data *data, char **args)
