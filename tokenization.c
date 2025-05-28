@@ -12,12 +12,31 @@
 
 #include "minishell.h"
 
-void	add_dollar(t_data *data, char *s, int *idx)
+void	add_dollar(t_data *data, char *s, int *idx, bool attach)
 {
-	
+	int	i;
+	int	len;
+	char *r;
+
+	i = 1;
+	len = 0;
+	//ft_printf("adding dollar\n");
+	while (s[i] != '\0' && !is_space(s[i]) && s[i] != '"' && s[i] != '\'' && s[i] != '$' && s[i] != '|' && s[i] != '<' && s[i] != '>')
+		i++;
+	len = i;
+	r = malloc((len + 1) * sizeof(char));
+	i = 0;
+	while (i < len)
+	{
+		r[i] = s[i];
+		i++;
+		*idx = *idx + 1;
+	}
+	r[i] = '\0';
+	add_token(r, DOLLAR, data, attach);
 }
 
-int argument_len(char *s, tok_type last_token)
+int argument_len(char *s, t_token *last_token)
 {
 	int i;
 	char quote;
@@ -33,21 +52,21 @@ int argument_len(char *s, tok_type last_token)
 			in_quote = !in_quote;
 			quote = s[i];
 		}
-		if (last_token != HERE_DOC && !in_quote && s[i] == '$' && s[i + 1] != '\0' && !is_space(s[i + 1]) && s[i + 1] != '"' && s[i + 1] != '\'')
+		if ((!last_token || (last_token && last_token->type != HERE_DOC)) && !in_quote && s[i] == '$' && s[i + 1] != '\0' && !is_space(s[i + 1]) && s[i + 1] != '"' && s[i + 1] != '\'')
 			break ;
 		i++;
 	}
 	return (i);
 }
 
-void add_argument(t_data *data, char *s, int *idx)
+void add_argument(t_data *data, char *s, int *idx, bool attach)
 {
 	int i;
 	int len;
 	char *r;
 
 	i = 0;
-	len = argument_len(s, data->last_token->type);
+	len = argument_len(s, data->last_token);
 	r = malloc((len + 1) * sizeof(char));
 	// copertura malloc
 	while (i < len)
@@ -57,7 +76,7 @@ void add_argument(t_data *data, char *s, int *idx)
 		*idx = *idx + 1;
 	}
 	r[i] = '\0';
-	add_token(&data->token, r, ARGUMENT, data);
+	add_token(r, ARGUMENT, data, attach);
 }
 
 void add_redirect(t_data *data, char *s, int *idx, char c)
@@ -81,7 +100,7 @@ void add_redirect(t_data *data, char *s, int *idx, char c)
 		*idx = *idx + 1;
 	}
 	r[i] = '\0';
-	add_token(&data->token, r, which_type(c, len), data);
+	add_token(r, which_type(c, len), data, false);
 }
 
 void add_pipe(t_data *data, int *idx)
@@ -93,7 +112,7 @@ void add_pipe(t_data *data, int *idx)
 	r[0] = '|';
 	r[1] = '\0';
 	*idx = *idx + 1;
-	add_token(&data->token, r, PIPE, data);
+	add_token(r, PIPE, data, false);
 }
 
 void tokenize_input(t_data *data)
@@ -104,13 +123,23 @@ void tokenize_input(t_data *data)
 	while (data->input[i] != '\0')
 	{
 		skip_spaces(data->input, &i);
-		if (data->input[i] == '|')
+		if (data->input[i] != '\0' && data->input[i] == '|')
 			add_pipe(data, &i);
-		else if (data->input[i] == '<' || data->input[i] == '>')
+		else if (data->input[i] != '\0' && (data->input[i] == '<' || data->input[i] == '>'))
 			add_redirect(data, &data->input[i], &i, data->input[i]);
-		else if (data->input[i] == '$' && data->input[i + 1] != '\0' && data->input[i + 1] != ' ' && data->last_token->type != HERE_DOC)
-			add_dollar(data, &data->input[i], &i);
+		else if (data->input[i] != '\0' && data->input[i] == '$' && data->input[i + 1] != '\0' && data->input[i + 1] != ' ' && (!data->last_token || (data->last_token && data->last_token->type != HERE_DOC)))
+		{
+			if (i != 0 && !is_space(data->input[i - 1]) && data->last_token && data->last_token->type <= 1)
+				add_dollar(data, &data->input[i], &i, true);
+			else
+				add_dollar(data, &data->input[i], &i, false);
+		}
 		else if (data->input[i] != '\0')
-			add_argument(data, &data->input[i], &i);
+		{
+			if (i != 0 && !is_space(data->input[i - 1]) && data->last_token && data->last_token->type <= 1)
+				add_argument(data, &data->input[i], &i, true);
+			else
+				add_argument(data, &data->input[i], &i, false);
+		}
 	}
 }

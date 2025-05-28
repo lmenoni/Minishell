@@ -12,54 +12,6 @@
 
 #include "minishell.h"
 
-// void    skip_quotes(char *s, char quote, int *idx)
-// {
-//     bool    in_quote;
-
-//     in_quote = true;
-//     while (s[*idx] != '\0' && in_quote)
-//     {
-//         if (s[*idx] == quote)
-//             in_quote = false;
-//         *idx = *idx + 1;
-//     }
-// }
-
-// bool    ambs_redirect(t_token *tok)
-// {
-//     int i;
-
-//     i = 0;
-//     skip_spaces(tok->s, &i);
-//     if (tok->s[i] == '\0')
-//         return (true);
-//     while (tok->s[i] != '\0' && !is_space(tok->s[i]))
-//     {
-//         if (tok->s[i] != '"' || tok->s[i] != '\'')
-//             skip_quotes(&(tok->s[i]), tok->s[i], &i);
-//         else
-//             i++;
-//     }
-//     skip_spaces(tok->s, &i);
-//     if (tok->s[i] != '\0')
-//         return (true);
-//     return (false);
-// }
-
-// bool    remove_quotes(t_token *tok)
-// {
-//     while (tok)
-//     {
-//         if (tok->prev && tok->prev->type != PIPE
-//             && tok->prev->type != ARGUMENT && tok->prev->type != HERE_DOC)
-//         {
-//             if (ambs_redirect(tok))
-//                 return (false);
-//         }
-
-//     }
-// }
-
 int main(int ac, char **av, char **e)
 {
     t_data  data;
@@ -93,4 +45,4 @@ int main(int ac, char **av, char **e)
     rl_clear_history();
     return (0);
 }
-//scrivere adddollar e farre in modo che si setti attach in add dollar e add argument se va fatto 
+//dopo eseguito gli heredoc espando variabili tra quote rimuovendole prima, poi espando i token dollar splittando argomenti in diversi token e facendo attach del caso e controlli per ambig_redi

@@ -38,8 +38,8 @@
 typedef enum
 {
     ARGUMENT,
-    PIPE,
     DOLLAR,
+    PIPE,
     REDI_IN,
     REDI_OUT,
     HERE_DOC,
@@ -104,11 +104,11 @@ void    remove_two(t_token **head, t_token **t, t_data *data);
 void    tokenize_input(t_data *data);
 void    add_pipe(t_data *data, int *idx);
 void    add_redirect(t_data *data, char *s, int *idx, char c);
-void    add_argument(t_data *data, char *s, int *idx);
-int     argument_len(char *s);
+void    add_argument(t_data *data, char *s, int *idx, bool attach);
+int     argument_len(char *s, t_token *last_token);
 
 //token_utils.c
-void    add_token(t_token **first, char *s, tok_type type, t_data *data);
+void    add_token(char *s, tok_type type, t_data *data, bool attach);
 t_token *token_new(char *content, tok_type type);
 tok_type    which_type(char c, int len);
 

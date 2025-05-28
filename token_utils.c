@@ -26,25 +26,27 @@ t_token *token_new(char *content, tok_type type)
 	return (token);
 }
 
-void add_token(t_token **first, char *s, tok_type type, t_data *data)
+void add_token(char *s, tok_type type, t_data *data, bool attach)
 {
 	t_token *new;
 	t_token *curr;
 
 	new = token_new(s, type);
-	if (!(*first))
+	if (!(data->token))
 	{
-		*first = new;
+		data->token = new;
 		data->last_token = new;
-		return;
+		return ;
 	}
-	curr = *first;
+	curr = data->token;
 	while (curr->next)
 		curr = curr->next;
 	curr->next = new;
 	new->prev = curr;
+	if (attach)
+		new->attach = data->last_token;
 	data->last_token = new;
-	return;
+	return ;
 }
 
 tok_type which_type(char c, int len)
