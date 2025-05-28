@@ -1,113 +1,35 @@
 {
-   known_issue_1
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:strdup
-   fun:_nc_trim_sgr0
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
+    RL readline leaks
+    Memcheck:Leak
+    ...
+    fun:readline
+}
+{
+    RL add_history leaks
+    Memcheck:Leak
+    ...
+    fun:add_history
 }
 
+# IGNORE OTHER EXECUTABLES' LEAKS
 {
-   known_issue_2
+   MALLOC FAILURE OF /usr/bin/*
    Memcheck:Leak
-   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   obj:/usr/bin/*
+}
+{
+   CALLOC FAILURE of /usr/bin/*
+   Memcheck:Leak
+   fun:calloc
+   ...
+   obj:/usr/bin/*
+}
+{
+   REALLOC FAILURE of /usr/bin/*
+   Memcheck:Leak
    fun:realloc
-   fun:xrealloc
-   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
-   fun:rl_expand_prompt
-   fun:rl_set_prompt
-   fun:readline
-   fun:main
+   ...
+   obj:/usr/bin/*
 }
-
-{
-   known_issue_3
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:xmalloc
-   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-
-{
-   known_issue_4
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:strdup
-   fun:_nc_first_db
-   fun:_nc_read_entry2
-   fun:_nc_setupterm
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-
-{
-   known_issue_5
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:_nc_doalloc
-   fun:_nc_tiparm
-   fun:_nc_trim_sgr0
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-
-{
-   known_issue_6
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:strdup
-   fun:_nc_setupterm
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-
-{
-   known_issue_7
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:_nc_doalloc
-   fun:_nc_trim_sgr0
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-
-{
-   known_issue_8
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:tsearch
-   fun:_nc_tiparm
-   fun:_nc_trim_sgr0
-   fun:tgetent_sp
-   fun:_rl_init_terminal_io
-   fun:rl_initialize
-   fun:readline
-   fun:main
-}
-

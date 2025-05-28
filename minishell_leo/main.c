@@ -6,11 +6,24 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/25 18:31:37 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/28 14:31:01 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void    free_env(t_env *node)
+{
+    t_env   *t;
+
+    while (node)
+    {
+        t = node;
+        node = node->next;
+        free(t->e);
+        free(t);
+    }
+}
 
 void    define_token_add(t_data *data, char *s, int *idx)
 {
@@ -96,5 +109,7 @@ int main(int argc, char **argv, char **env)
         free_token(data.token);
     }
     rl_clear_history();
+    ft_freemat((void**)data.input_array, ft_matlen(data.input_array));
+    free_env(data.env_data);
     return (0);
 }
