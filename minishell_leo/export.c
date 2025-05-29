@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/28 18:28:19 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:45:55 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ ritorna erroe se il nome della variabile non inizia con una lettera o underscore
 b==="a="a -> b="==a=a" arriva senza virgolette quindi bisogna controllare che dopo l'uguale tutto il resto va virgolettato come stringa
 controllare come mi arriva l'argomento, se con o senza apici singoli, in caso con bisogna rimuoverli
 se la variabile esiste già, bisogna aggiornarla con il nuovo valore, ma se si passa il nome della varibile senza valore bisogna non aggiornarla, ma se viene inserito un uguale bisogna aggiornarla con una stringa vuota
+controllare fino all'uguale per evitare che variabili con nomi uguali e differenti da un solo carattere non vengano sovrascritte
+se c'e _= non modificare la variabile ne stamparla
 
 if (i > 0 && env->e[i] == '=')
 	printf("declare -x %.*s=\"%s\"\n", i, env->e, &env->e[i + 1]);//da cambiare con write
@@ -61,19 +63,16 @@ char *get_var_name(char *var)
 
 void export_plus(t_data *data, char *args, char *var_name)
 {
-	char *temp;
 	char *replace;
 	
 	if (check_env(data, var_name) != NULL)
 	{
-		temp = ft_strjoin(check_env(data, var_name), args + ft_strlen(var_name) + 2);
-		replace = ft_strjoin("=", temp);
+		replace = ft_strjoin(check_env(data, var_name), args + ft_strlen(var_name) + 1);
 		update_env(data, var_name, replace);
-		free(temp);
 	}
 	else
 	{
-		replace = ft_strjoin(var_name, args + ft_strlen(var_name) + 1);
+		replace = ft_strjoin(var_name, args + (ft_strlen(var_name) + 1));
 		add_env(data, replace);
 	}
 	free(replace);
@@ -99,10 +98,10 @@ void export_case(t_data *data, char **args)
 	while (args[i])
 	{
 		parse_result = parse_export(args[i]);
-		var_name = get_var_name(args[i]);
-		if (parse_result == 0)
+		var_name = ft_strjoin(get_var_name(args[i]), "=");
+		if (parse_result == 0 && ft_strncmp(var_name, "_=", 2) != 0)
 			export_add(data, args[i], var_name);
-		else if (parse_result == 2)
+		else if (parse_result == 2 && ft_strncmp(var_name, "_=", 2) != 0)
 			export_plus(data, args[i], var_name);
 		free(var_name);
 		i++;
@@ -111,28 +110,14 @@ void export_case(t_data *data, char **args)
 
 void print_export(t_env *env, int i)
 {
-	if (i > 0 && env->e[i] == '=')
-	{
-	    char *var_name = get_var_name(env->e);
-	    char *part1 = ft_strjoin("declare -x ", var_name);
-	    char *part2 = ft_strjoin(part1, "=\"");
-	    char *part3 = ft_strjoin(part2, &env->e[i + 1]);
-	    char *full_str = ft_strjoin(part3, "\"\n");
-	    write(STDOUT_FILENO, full_str, ft_strlen(full_str));
-	    free(var_name);
-	    free(part1);
-	    free(part2);
-	    free(part3);
-	    free(full_str);
-	}
-	else
-	{
-	    char *part1 = ft_strjoin("declare -x ", env->e);
-	    char *full_str = ft_strjoin(part1, "\n");
-	    write(STDOUT_FILENO, full_str, ft_strlen(full_str));
-	    free(part1);
-	    free(full_str);
-	}
+    if (i > 0 && env->e[i] == '=' && ft_strncmp(env->e, "_=", 2) != 0)
+    {
+        char *var_name = get_var_name(env->e);
+        ft_printf("declare -x %s=\"%s\"\n", var_name, &env->e[i + 1]);
+        free(var_name);
+    }
+    else if (ft_strncmp(env->e, "_=", 2) != 0)
+        ft_printf("declare -x %s\n", env->e);
 }
 
 void export(t_data *data, char **args)

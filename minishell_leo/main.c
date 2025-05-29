@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/28 14:31:01 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:55:32 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,13 @@ int define_input(t_data *data)
 	else if (!ft_strncmp(data->input, "export", 6))
 		return (export(data, data->input_array), 1);
 	else if (!ft_strncmp(data->input, "clear", 4))
-		return(system("clear"), 1);  
-	return (1);
+		return(system("clear"), 1);
+    else if (!ft_strncmp(data->input, "exit", 4))
+        return (exit_shell(data, data->input_array), 1);
+    else if (!ft_strncmp(data->input, "./minishell", 11))
+        return (system("./minishell"), 1);
+    else
+	    return (1);
 }
 
 int main(int argc, char **argv, char **env)

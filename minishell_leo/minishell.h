@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/25 18:31:20 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:39:24 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct  s_data
     char        *current_path;
     char        *old_path;
     char        *home_path;
+    int         exit_status;
     t_token     *token;
     t_token     *last_token;
     t_env       *env_data;
@@ -121,6 +122,7 @@ void cd(t_data *data);
 void unset(t_data *data, char **var);
 void env(t_data *data, char **input_array);
 void pwd();
+void exit_shell(t_data *data, char **args);
 
 void    print_cd(t_data *data);
 #endif

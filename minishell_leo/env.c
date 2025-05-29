@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/28 17:58:46 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:58:21 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,10 @@ char *check_env(t_data *data, char *var)
 		i = 0;
 		while (temp->e[i] != '\0' && temp->e[i] != '=')
 			i++;
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
+		if (strncmp(temp->e, var, ft_strlen(var)) == 0)
+		{
 			return(&temp->e[i + 1]);
+		}
 		temp = temp->next;
 	}
 	return (NULL);
@@ -111,9 +113,11 @@ void delete_env(t_data *data, char *var)
 {
 	t_env *temp;
 	t_env *prev;
+	char	*temp_var;
 
 	temp = data->env_data;
 	prev = NULL;
+	temp_var = ft_strjoin(var, "=");
 	while (temp)
 	{
 		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
@@ -148,7 +152,7 @@ void env(t_data *data, char **input_array)
 			curr = curr->next;
 			continue;
 		}
-		printf("%s\n", curr->e);
+		ft_printf("%s\n", curr->e);
 		curr = curr->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/19 18:28:33 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:20:32 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ UNSET HOME funziona sempre ma non viene risettato se unsettato
 una volta fatto UNSET di una variabile, non viene piu' risettata
 OLDPWD funziona solo se e' settato
 il comando pwd funziona sempre
-OLDPWD inzia a NULL e viene comparto con il OLDPWD di env, viene settato il nosto OLDPWD ad ogni chiamata di cd e messo a NULL ogni volta che in unset viene fatto l'unset di OLDPWD
 se la HOME non e' settata e arriva una stringa vuota, ritorna errore con HOME non settata (casi unset $HOME, $PWD, cd (vuoto)), mentre con ~ funziona sempre
 fare funzione safe_chdir per ridurre righe e che gestisce gli erorri anche
+
+appena viene aperto minishell, OLDPWD non e' settato e cd - non funziona
 */
 
 static void safe_chdir(char *path)

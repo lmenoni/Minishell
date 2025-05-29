@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:43:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/08 15:30:43 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:58:40 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void echo(t_data *data)
 		i = 1;
 	if (data->input_array[i] == NULL)
 	{
-		printf("\n");
+		ft_printf("\n");
 		return ;
 	}
 	while (data->input_array[i])

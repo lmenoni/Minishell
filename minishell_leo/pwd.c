@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 18:39:51 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/19 15:02:07 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:58:51 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ void pwd()
 		perror("getcwd");
 		exit(EXIT_FAILURE);
 	}
-	printf("%s\n", current_path);
+	ft_printf("%s\n", current_path);
 	free(current_path);
 }
