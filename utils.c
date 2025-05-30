@@ -42,6 +42,33 @@ int parse_syntax_errors(t_token *token)
     return (0);
 }
 
+int	is_quoted(char *s, char *to_check)
+{
+	bool	in_quote;
+	char	quote;
+
+	quote = 0;
+	in_quote = false;
+	while (s != to_check)
+	{
+		if ((*s == '"' || *s == '\'') && (quote == *s || quote == 0))
+		{
+			in_quote = !in_quote;
+			quote = *s;
+		}
+		if (!in_quote)
+			quote = 0;
+		s++;
+	}
+	if (*to_check == quote && in_quote)
+		return (0);
+	if (in_quote && quote == '\'')
+		return (1);
+	if (in_quote && quote == '"')
+		return (2);
+	return (0);
+}
+
 void    reset_data(t_data *data)
 {
     data->cmd_count = 0;

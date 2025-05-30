@@ -107,8 +107,8 @@ int main(int ac, char **av, char **e)
         if (!parse_syntax_errors(data.token))
         {
             do_here_doc(data.token, &data);
-            print_tokens(data.token);
             expand(data.token, &data);
+            print_tokens(data.token);
             make_cmd_array(&data);
             print_cmd_array(&data);
         }
@@ -122,5 +122,6 @@ int main(int ac, char **av, char **e)
     rl_clear_history();
     return (0);
 }
-//testare la rimozione delle quote (test: "ciao'"' mond"o')
-//dopo eseguito gli heredoc espando variabili tra quote rimuovendole prima, poi espando i token dollar splittando argomenti in diversi token e facendo attach del caso e controlli per ambig_redi
+//parsing dell'open quote
+//provare a vedere se here doc si puo fare dopo aver espanso etolto le quote, stando attenti ovviamente a non espandere il limiter, obbiettivo ottimizzare visto che la funzione get limiter e limiter len non hanno senso
+//poi espando i token dollar splittando argomenti in diversi token e facendo attach del caso e controlli per ambig_redi

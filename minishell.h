@@ -105,6 +105,7 @@ void    tokenize_input(t_data *data);
 void    add_pipe(t_data *data, int *idx);
 void    add_redirect(t_data *data, char *s, int *idx, char c);
 void    add_argument(t_data *data, char *s, int *idx, bool attach);
+void	add_dollar(t_data *data, char *s, int *idx, bool attach);
 int     argument_len(char *s, t_token *last_token);
 
 //token_utils.c
@@ -143,6 +144,11 @@ void    fill_limiter(char **r, char *s);
 int limiter_len(char *s);
 bool    is_limiter_quoted(char *s);
 
+//expansion.c
+char	*get_expanded_var(char *s, int *idx, t_data *data);
+void	while_not_var(char *s, char *t, int *i, bool expand);
+char *check_env(t_data *data, char *var);
+int	is_quoted(char *s, char *to_check);
 char *expand_dollar(char *s, t_data *data, bool expand);
 
 #endif
