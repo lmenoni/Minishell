@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/29 17:55:32 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/30 17:50:57 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ int main(int argc, char **argv, char **env)
     t_data  data;
     data = (t_data){0};
     data.env_data = init_env(env, &data);
+    add_env(&data, "OLDPWD");
     while (1)
     {
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);

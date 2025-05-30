@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/29 17:20:32 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/30 19:16:49 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ se la HOME non e' settata e arriva una stringa vuota, ritorna errore con HOME no
 fare funzione safe_chdir per ridurre righe e che gestisce gli erorri anche
 
 appena viene aperto minishell, OLDPWD non e' settato e cd - non funziona
+bisogna controllare se OLDPWD esiste per poterlo aggiornare, quindi aggiungere check_env(data, "OLDPWD=") ma tenere sempre conto del =
 */
 
 static void safe_chdir(char *path)
@@ -72,9 +73,12 @@ static void cd_oldpwd(t_data *data)
 
 void cd_home(t_data *data)
 {
+	char *added_equal;
+
+	added_equal = ft_strjoin("=", data->current_path);
 	if (check_env(data, "HOME=") != NULL)
 	{
-		update_env(data, "OLDPWD=", data->current_path);
+		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		safe_chdir(data->home_path);
@@ -91,11 +95,13 @@ void cd_home(t_data *data)
 void cd_tilde(t_data *data, char *new_path)
 {
 	char *joined_path;
+	char *added_equal;
 	
 	joined_path = ft_strjoin(data->home_path, new_path + 1);
+	added_equal = ft_strjoin("=", data->current_path);
 	if (new_path[0] == '~' && new_path[1] == '\0')
 	{
-		update_env(data, "OLDPWD=", data->current_path);
+		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		safe_chdir(data->home_path);
@@ -104,8 +110,7 @@ void cd_tilde(t_data *data, char *new_path)
 	}
 	else if (new_path[0] == '~' && new_path[1] != '\0')
 	{
-		
-		update_env(data, "OLDPWD=", data->current_path);
+		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		safe_chdir(joined_path);
@@ -113,12 +118,27 @@ void cd_tilde(t_data *data, char *new_path)
 		update_env(data, "PWD=", data->current_path);
 	}
 	free(joined_path);
+	free(added_equal);
+}
+
+void cd_execution(t_data *data, char *new_path)
+{
+	char *added_equal;
+
+	free(data->old_path);
+	data->old_path = data->current_path;
+	added_equal = ft_strjoin("=", data->old_path);
+	update_env(data, "OLDPWD", added_equal);
+	free(added_equal);
+	safe_chdir(new_path);
+	data->current_path = getcwd(NULL, 0);
+	update_env(data, "PWD=", data->current_path);
 }
 
 void cd(t_data *data)
 {
 	char *new_path;
-
+	
 	if (cd_parse(data) == 0)
 	{
 		print_error("bash: cd: too many arguments\n");
@@ -132,12 +152,5 @@ void cd(t_data *data)
 	else if (new_path[0] == '-')
 		cd_oldpwd(data);
 	else if (new_path != NULL)
-	{
-		free(data->old_path);
-		data->old_path = data->current_path;
-		update_env(data, "OLDPWD=", data->old_path);
-		safe_chdir(new_path);
-		data->current_path = getcwd(NULL, 0);
-		update_env(data, "PWD=", data->current_path);
-	}
+		cd_execution(data, new_path);
 }

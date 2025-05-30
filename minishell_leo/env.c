@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/29 15:58:21 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/30 17:42:33 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,7 @@ void add_env(t_data *data, char *var)
 
 	new = new_env_node(ft_strdup(var));
 	if (!data->env_data)
-	{
-		printf("Adding new env variable: %s\n", var);
 		data->env_data = new;
-	}
 	else
 	{
 		temp = data->env_data;

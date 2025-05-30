@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:34:47 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/29 17:59:11 by igilani          ###   ########.fr       */
+/*   Updated: 2025/05/30 17:18:40 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void exit_execution(int exit_status)
 
 void exit_shell(t_data *data, char **args)
 {
-
     if (args[1] == NULL)
     {
         data->exit_status = 0;
