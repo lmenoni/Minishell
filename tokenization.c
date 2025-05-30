@@ -21,7 +21,9 @@ void	add_dollar(t_data *data, char *s, int *idx, bool attach)
 	i = 1;
 	len = 0;
 	//ft_printf("adding dollar\n");
-	while (s[i] != '\0' && !is_space(s[i]) && s[i] != '"' && s[i] != '\'' && s[i] != '$' && s[i] != '|' && s[i] != '<' && s[i] != '>')
+	while (s[i] != '\0' && !is_space(s[i]) && s[i] != '"'
+		&& s[i] != '\'' && s[i] != '$' && s[i] != '|'
+		&& s[i] != '<' && s[i] != '>')
 		i++;
 	len = i;
 	r = malloc((len + 1) * sizeof(char));
@@ -45,14 +47,17 @@ int argument_len(char *s, t_token *last_token)
 	i = 0;
 	quote = 0;
 	in_quote = false;
-	while (in_quote || (!in_quote && s[i] != '\0' && s[i] != ' ' && s[i] != '|' && s[i] != '<' && s[i] != '>'))
+	while (in_quote || (!in_quote && s[i] != '\0'
+		&& s[i] != ' ' && s[i] != '|' && s[i] != '<' && s[i] != '>'))
 	{
 		if ((!in_quote && (s[i] == '"' || s[i] == '\'')) || quote == s[i])
 		{
 			in_quote = !in_quote;
 			quote = s[i];
 		}
-		if ((!last_token || (last_token && last_token->type != HERE_DOC)) && !in_quote && s[i] == '$' && s[i + 1] != '\0' && !is_space(s[i + 1]) && s[i + 1] != '"' && s[i + 1] != '\'')
+		if ((!last_token || (last_token && last_token->type != HERE_DOC))
+			&& !in_quote && s[i] == '$' && s[i + 1] != '\0'
+			&& !is_space(s[i + 1]) && s[i + 1] != '"' && s[i + 1] != '\'')
 			break ;
 		i++;
 	}

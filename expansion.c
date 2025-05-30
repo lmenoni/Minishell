@@ -25,7 +25,7 @@ char *check_env(t_data *data, char *var)
 		while (temp->e[i] != '\0' && temp->e[i] != '=')
 			i++;
 		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
-			return(&temp->e[i + 1]);
+			return (&temp->e[i + 1]);
 		temp = temp->next;
 	}
 	return (NULL);

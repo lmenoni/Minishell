@@ -139,17 +139,18 @@ void    print_env(t_env *node);
 //here_doc.c
 void    do_here_doc(t_token *tok, t_data *data);
 char    *get_lines(char *s);
-char    *get_limiter(char *s);
-void    fill_limiter(char **r, char *s);
-int limiter_len(char *s);
 bool    is_limiter_quoted(char *s);
 
 //expansion.c
 char	*get_expanded_var(char *s, int *idx, t_data *data);
 void	while_not_var(char *s, char *t, int *i, bool expand);
 char *check_env(t_data *data, char *var);
-int	is_quoted(char *s, char *to_check);
 char *expand_dollar(char *s, t_data *data, bool expand);
+
+//utils_2.c
+char    *get_unquoted(char *s);
+int len_wo_quotes(char *s);
+int parse_quotes(char *input);
 
 #endif
 

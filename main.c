@@ -12,63 +12,9 @@
 
 #include "minishell.h"
 
-int len_wo_quotes(char *s)
+void    do_dollar(t_token *tok, t_data *data)
 {
-    int i;
-    int len;
 
-    i = 0;
-    len = 0;
-    while (s[i] != '\0')
-    {
-        if ((s[i] == '"' || s[i] == '\'') && !is_quoted(s, &s[i]))
-            i++;
-        else
-        {
-            i++;
-            len++;
-        }
-    }
-    return (len);
-}
-
-char    *get_unquoted(char *s)
-{
-    int i;
-    int j;
-    char    *r;
-
-    i = 0;
-    j = 0;
-    while (s[i] != '\0' && s[i] != '"' && s[i] != '\'')
-        i++;
-    if (s[i] == '\0')
-        return (s);
-    r = malloc((len_wo_quotes(s) + 1) * sizeof(char));
-    i = 0;
-    while (s[i] != '\0')
-    {
-        if ((s[i] == '"' && is_quoted(s, &s[i]) != 1 ) || (s[i] == '\'' && is_quoted(s, &s[i]) != 2))
-            i++;
-        else
-        {
-            r[j] = s[i];
-            i++;
-            j++;
-        }
-    }
-    r[j] = '\0';
-    return (free(s), r);
-}
-
-void    remove_quotes(t_token *tok)
-{
-    while (tok)
-    {
-        if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)))
-            tok->s = get_unquoted(tok->s);
-        tok = tok->next;
-    }
 }
 
 void    do_quoted(t_token *tok, t_data *data)
@@ -76,7 +22,10 @@ void    do_quoted(t_token *tok, t_data *data)
     while (tok)
     {
         if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)))
+        {
             tok->s = expand_dollar(tok->s, data, false);
+            tok->s = get_unquoted(tok->s);
+        }
         tok = tok->next;
     }
 }
@@ -84,8 +33,7 @@ void    do_quoted(t_token *tok, t_data *data)
 void    expand(t_token *tok, t_data *data)
 {
     do_quoted(tok, data);
-    remove_quotes(tok);
-    //do_dollar;
+    do_dollar(tok, data);
 }
 
 int main(int ac, char **av, char **e)
@@ -102,15 +50,18 @@ int main(int ac, char **av, char **e)
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
         if (!data.input)
             break ;
-        tokenize_input(&data);
-        print_tokens(data.token);
-        if (!parse_syntax_errors(data.token))
+        if (!parse_quotes(data.input))
         {
-            do_here_doc(data.token, &data);
-            expand(data.token, &data);
+            tokenize_input(&data);
             print_tokens(data.token);
-            make_cmd_array(&data);
-            print_cmd_array(&data);
+            if (!parse_syntax_errors(data.token))
+            {
+                do_here_doc(data.token, &data);
+                expand(data.token, &data);
+                print_tokens(data.token);
+                make_cmd_array(&data);
+                print_cmd_array(&data);
+            }
         }
         add_history(data.input);
         free(data.input);

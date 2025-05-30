@@ -20,78 +20,10 @@ bool is_limiter_quoted(char *s)
 	while (s[i] != '\0')
 	{
 		if (s[i] == '"' || s[i] == '\'')
-			return (false);
+			return (true);
 		i++;
 	}
-	return (true);
-}
-
-int limiter_len(char *s)
-{
-	int i;
-	int len;
-	char quote;
-	bool in_quote;
-
-	i = 0;
-	quote = 0;
-	len = 0;
-	in_quote = false;
-	while (s[i] != '\0')
-	{
-		if ((!in_quote && (s[i] == '"' || s[i] == '\'')) || quote == s[i])
-		{
-			in_quote = !in_quote;
-			quote = s[i];
-			i++;
-		}
-		else
-		{
-			i++;
-			len++;
-		}
-	}
-	return (len);
-}
-
-void fill_limiter(char **r, char *s)
-{
-	int i;
-	int j;
-	char quote;
-	bool in_quote;
-
-	i = 0;
-	quote = 0;
-	j = 0;
-	in_quote = false;
-	while (s[i] != '\0')
-	{
-		if ((!in_quote && (s[i] == '"' || s[i] == '\'')) || quote == s[i])
-		{
-			in_quote = !in_quote;
-			quote = s[i];
-			i++;
-		}
-		else
-		{
-			(*r)[j] = s[i];
-			i++;
-			j++;
-		}
-	}
-	(*r)[j] = '\0';
-}
-
-char *get_limiter(char *s)
-{
-	int len;
-	char *r;
-
-	len = limiter_len(s);
-	r = malloc((len + 1) * sizeof(char));
-	fill_limiter(&r, s);
-	return (r);
+	return (false);
 }
 
 char *get_lines(char *s)
@@ -100,7 +32,7 @@ char *get_lines(char *s)
 	char *line;
 	char *limiter;
 
-	limiter = get_limiter(s);
+	limiter = get_unquoted(s);
 	r = NULL;
 	while (1)
 	{
@@ -123,16 +55,17 @@ char *get_lines(char *s)
 void do_here_doc(t_token *tok, t_data *data)
 {
 	char *r;
+	bool	quoted;
 
 	r = NULL;
 	while (tok)
 	{
 		if (tok->type == HERE_DOC)
 		{
+			quoted = is_limiter_quoted(tok->next->s);
 			r = get_lines(tok->next->s);
-			if (is_limiter_quoted(tok->next->s))
+			if (!quoted)
 				r = expand_dollar(r, data, true);
-			free(tok->next->s);
 			tok->next->s = r;
 		}
 		tok = tok->next;
