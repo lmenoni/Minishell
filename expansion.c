@@ -37,7 +37,34 @@ bool	single_quoted(char *s, char *to_check)
 			in_quote = !in_quote;
 		s++;
 	}
+	if (in_quote && *to_check == '\'')
+		return (false);
 	return (in_quote);
+}
+
+int	is_quoted(char *s, char *to_check)
+{
+	bool	in_quote;
+	char	quote;
+
+	quote = 0;
+	in_quote = false;
+	while (s != to_check)
+	{
+		if ((*s == '"' || *s == '\'') && (quote == *s || quote == 0))
+		{
+			in_quote = !in_quote;
+			quote = *s;
+		}
+		s++;
+	}
+	if (*to_check == quote && in_quote)
+		return (0);
+	if (in_quote && quote == '\'')
+		return (1);
+	if (in_quote && quote == '"')
+		return (2);
+	return (0);
 }
 
 char *check_env(t_data *data, char *var)
@@ -52,94 +79,151 @@ char *check_env(t_data *data, char *var)
 		i = 0;
 		while (temp->e[i] != '\0' && temp->e[i] != '=')
 			i++;
-		if (ft_strncmp(temp->e, var, i) == 0)
+		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
 			return(&temp->e[i + 1]);
 		temp = temp->next;
 	}
 	return (NULL);
 }
 
-char	*get_before_var(char *s, bool expand)
+void	while_not_var(char *s, char *t, int *i, bool expand)
 {
-	int	i;
-	int	j;
-	char	*r;
-	
-	i = 0;
-	j = 0;
-	if (*s == '\0')
-		return (NULL);
-	while (s[i] != '\0')
+	while (t[*i] != '\0')
 	{
-		if (s[i] == '$' && s[i + 1] != '\0' && !isspace(s[i + 1]) && expand)
+		if (t[*i] == '$'
+			&& (!is_space(t[*i + 1]) && t[*i + 1] != '\0' && t[*i + 1] != '"' && t[*i + 1] != '\'')
+			&& (is_quoted(s, &t[*i]) != 1 || expand))
 			break ;
-		i++;
+		if (t[*i] == '$' && is_quoted(s, &t[*i]) == 0 && (t[*i + 1] == '"' || t[*i + 1] == '\''))
+			break ;
+		*i = *i + 1;
 	}
-	r = malloc((i + 1) * sizeof(char));
-	while (j < i)
-	{
-		r[j] = s[j];
-		j++;
-	}
-	r[j] = '\0';
-	return (r);
 }
-// get beforevar va modificata in modo che non si fermi a variabili tra single quote e rimuova le quote se non siamo in heredoc
 
-
-char	*get_var(char **s, t_data *data)
+char	*get_expanded_var(char *s, int *idx, t_data *data)
 {
 	int	i;
-	char	*r;
 	char	*name;
+	char	*r;
 
-	i = 0;
-	r = NULL;
-	while (**s != '\0')
-	{
-		if (**s == '$' && *(*s + 1) != '\0' && !isspace(*(*s + 1)))
-		{
-			(*s)++;
-			while ((*s)[i] != '\0' && !isspace((*s)[i])
-				&& (*s)[i] != '"' && (*s)[i] != '\'')
-				i++;
-			name = ft_strndup(*s, i);
-			r = ft_strdup(check_env(data, name));
-			while (**s != '\0' && !isspace(**s)
-				&& **s != '"' && **s != '\'' )
-				(*s)++;
-			return (free(name), r);
-		}
-		(*s)++;
-	}
+	if (s[0] == '\0')
+		return (NULL);
+	i = 1;
+	while (s[i] != '\0' && s[i] != '$' && s[i] != '"' && s[i] != '\'' && !is_space(s[i]))
+		i++;
+	name  = ft_buffjoin(ft_strndup(&s[1], (i - 1)), "=");
+	r = ft_strdup(check_env(data, name));
+	free(name);
+	*idx = *idx + i;
 	return (r);
 }
-//get var va modificata in modo che non prenda in considerazione variabili tra single quote se non stiamo facendo here doc
 
-char *expand_dollar(char *s, t_data *data, bool expand)
+char	*expand_dollar(char *s, t_data *data, bool expand)
 {
+	int	i;
+	char	*t;
 	char	*r;
-	char	*var;
-	char	*temp;
-	char	*buff;
 
+	i = 0;
+	t = s;
 	r = NULL;
-	temp = s;
-	buff = get_before_var(s, expand);
-	var = get_var(&s, data);
-	if (!var && *s == '\0')
-		return (free(buff), temp);
-	while (1)
+	while (t[i] != '\0')
 	{
-		
-		if (!var && !buff && *s == '\0')
-			return (free(temp), r);
-		r = ft_merge(r, buff);
-		r = ft_merge(r, var);
-		buff = get_before_var(s, expand);
-		var = get_var(&s, data);
+		while_not_var(s, t, &i, expand);
+		if (!r)
+			r = ft_strndup(t, i);
+		else
+			r = ft_merge(r, ft_strndup(t, i));
+		r = ft_merge(r, get_expanded_var(&t[i], &i, data));
+		t += i;
+		i = 0;
 	}
+	free(s);
+	return (r);
 }
+
+// char	*get_before_var(char *s, bool expand)
+// {
+// 	int	i;
+// 	int	j;
+// 	char	*r;
+	
+// 	i = 0;
+// 	j = 0;
+// 	if (*s == '\0')
+// 		return (NULL);
+// 	while (s[i] != '\0')
+// 	{
+// 		if (s[i] == '$' && s[i + 1] != '\0' && !isspace(s[i + 1]) && expand)
+// 			break ;
+// 		i++;
+// 	}
+// 	r = malloc((i + 1) * sizeof(char));
+// 	while (j < i)
+// 	{
+// 		r[j] = s[j];
+// 		j++;
+// 	}
+// 	r[j] = '\0';
+// 	return (r);
+// }
+// // get beforevar va modificata in modo che non si fermi a variabili tra single quote e rimuova le quote se non siamo in heredoc
+
+
+// char	*get_var(char **s, t_data *data)
+// {
+// 	int	i;
+// 	char	*r;
+// 	char	*name;
+
+// 	i = 0;
+// 	r = NULL;
+// 	while (**s != '\0')
+// 	{
+// 		if (**s == '$' && *(*s + 1) != '\0' && !isspace(*(*s + 1)))
+// 		{
+// 			(*s)++;
+// 			while ((*s)[i] != '\0' && !isspace((*s)[i])
+// 				&& (*s)[i] != '"' && (*s)[i] != '\'')
+// 				i++;
+// 			name = ft_strndup(*s, i);
+// 			ft_printf("name is %s\n", name);
+// 			r = ft_strdup(check_env(data, name));
+// 			while (**s != '\0' && !isspace(**s)
+// 				&& **s != '"' && **s != '\'' )
+// 				(*s)++;
+// 			return (free(name), r);
+// 		}
+// 		(*s)++;
+// 	}
+// 	return (r);
+// }
+// //get var va modificata in modo che non prenda in considerazione variabili tra single quote se non stiamo facendo here doc
+
+// char *expand_dollar(char *s, t_data *data, bool expand)
+// {
+// 	char	*r;
+// 	char	*var;
+// 	char	*temp;
+// 	char	*buff;
+
+// 	r = NULL;
+// 	temp = s;
+// 	buff = get_before_var(s, expand);
+// 	var = get_var(&s, data);
+// 	ft_printf("%s\n", var);
+// 	if (!var && *s == '\0')
+// 		return (free(buff), temp);
+// 	while (1)
+// 	{
+// 		if (!var && !buff && *s == '\0')
+// 			return (free(temp), r);
+// 		r = ft_merge(r, buff);
+// 		r = ft_merge(r, var);
+// 		buff = get_before_var(s, expand);
+// 		var = get_var(&s, data);
+// 	}
+// }
 // espansione $?, da gestire una volta scritta la esecuzione
 // in caso di here doc non vanno tolte le quote e espande anche variabili tra singel quote
 /*idea di tokenizzare anche le i dollari se e solo se fuori da quote di qualsiasi tip

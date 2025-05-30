@@ -123,6 +123,7 @@ void    skip_spaces(char *s, int *i);
 int is_space(char c);
 int parse_syntax_errors(t_token *token);
 void    reset_data(t_data *data);
+int	is_quoted(char *s, char *to_check);
 
 //env.c
 t_env   *init_env(char **e, t_data *data);
