@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
+//bisogna rivedere il controllo su OLDPWD perché potrebbe sbagliare con una variabile con lo stesso nome ma con una lettera di differenza. Controllare su bash quando si unsetta OLDPWD.
+
 #include "minishell.h"
 
 void unset(t_data *data, char **var)
