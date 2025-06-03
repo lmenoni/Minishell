@@ -59,6 +59,7 @@ void    add_file_node(t_flist **head, char *s, bool x, bool io)
     new->s = s;
     new->x_factor = x;
     new->io_bool = io;
+    new->amb_redi = false;
     new->next = NULL;
     if (!(*head))
     {

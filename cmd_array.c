@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+void    handle_amb_redi(t_flist *file, t_token *tok)
+{
+    if (tok->next->type != AMB_REDI)
+        return ;
+    while (file->next)
+        file = file->next;
+    file->amb_redi = true;
+}
+
 void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
 {
     t_token *t;
@@ -29,6 +38,7 @@ void    add_files_to_arr(t_cmd *cmd, t_token **head, t_data *data)
                 add_file_node(&cmd->files, t->next->s, true, false);
             else if (t->type == APPEND)
                 add_file_node(&cmd->files, t->next->s, true, true);
+            handle_amb_redi(cmd->files, t);
             remove_two(head, &t, data);
         }
         else

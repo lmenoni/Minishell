@@ -25,7 +25,7 @@ void    print_tokens(t_token *token)
 {
     while (token)
     {
-        ft_printf("String is (%s) of tipe (%d) attach is (%p)", token->s, token->type, token->attach);
+        ft_printf("String is (%s) of tipe (%d)", token->s, token->type);
         //if (token->prev)
         //    ft_printf("Prev string is (%s)", token->prev->s);
         ft_printf("\n");
@@ -69,7 +69,7 @@ void    print_files(t_flist *list)
             type = "input";
         else
             type = "output";
-        printf("%s (%s)(%d)",type, t->s, t->x_factor);
+        printf("%s (name: %s)(level: %d)(amb: %d)",type, t->s, t->x_factor, t->amb_redi);
         if (t->next)
             printf(", ");
         t = t->next;

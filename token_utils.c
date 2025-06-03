@@ -21,12 +21,11 @@ t_token *token_new(char *content, tok_type type)
 	token->s = content;
 	token->next = NULL;
 	token->prev = NULL;
-	token->attach = NULL;
 	token->type = type;
 	return (token);
 }
 
-void add_token(char *s, tok_type type, t_data *data, bool attach)
+void add_token(char *s, tok_type type, t_data *data)
 {
 	t_token *new;
 	t_token *curr;
@@ -43,8 +42,6 @@ void add_token(char *s, tok_type type, t_data *data, bool attach)
 		curr = curr->next;
 	curr->next = new;
 	new->prev = curr;
-	if (attach)
-		new->attach = data->last_token;
 	data->last_token = new;
 	return ;
 }

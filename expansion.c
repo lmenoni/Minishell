@@ -86,18 +86,3 @@ char	*expand_dollar(char *s, t_data *data, bool expand)
 	free(s);
 	return (r);
 }
-
-// espansione $?, da gestire una volta scritta la esecuzione
-/*idea di tokenizzare anche le i dollari se e solo se fuori da quote di qualsiasi tip
-crearre un nuovo puntatore attached nei nodi token, se il doken $ è direttammente collegato a una stringa attached diventera lultimo token creato
-se invece viene creato un nodo strinng e trova qualcosa direttamente attaccato e l'ultimo token creato è doollaro attached diventer quel token
-tutto questo solo se lultimo nodo aggiunto non è here doc
-una volta eseguito here doc e fatto il syntax parsing espandiamo
-i token string vengono sollevati dalle quote salvandosi però se ci sono single quotes(essendo che i $ fuori dalle quote sono in token diversi adesso se ci sono delle single quotes sicuramente la varriabile eè tra esse e non va espansa)
-non espandiamo la variabile
-nei token $ invece eseguiamo l'espansione 
-tokeniziamo in caso siano piu parole separate da spazi
-e poi controlliamo
-1 se il primo carattere è ' ' e ha uun attached non bisogna joinare con il prev  e se il prev-->prev è un redirect in tal caso è amb_redi
-2 se ci sono degli spazi in fondo non va fatto il join con il next(qui next->attached si setta a NULL) anche qui bisogna controllare se c'è un amb_redi
-una volta fatti i join del caso i token creati vengono infilati tra i token e possiamo continuare*/

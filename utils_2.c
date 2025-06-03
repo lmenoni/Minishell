@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+int tok_len(t_token *tok)
+{
+    int len;
+
+    len = 0;
+    while (tok)
+    {
+        tok = tok->next;
+        len++;
+    }
+    return (len);
+}
+
 char    *get_unquoted(char *s)
 {
     int i;
