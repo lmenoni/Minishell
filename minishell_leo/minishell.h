@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/03 15:27:59 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/03 22:43:40 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,7 @@ t_token *token_new(char *content, tok_type type);
 //free_mem.c
 void    free_token(t_token *token);
 
-//utils.c
-void    skip_spaces(char *s, int *i);
-int is_space(char c);
+//error_handle.c
 void print_error(char *s);
 
 //pipex
