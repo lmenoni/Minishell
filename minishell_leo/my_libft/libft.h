@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:14:17 by lmenoni           #+#    #+#             */
-/*   Updated: 2024/11/19 14:14:22 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/03 15:30:48 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,6 @@ size_t	ft_bufflen(const char *str);
 char	*ft_find(const char *s, int c);
 void	ft_freemat(void **mat, size_t j);
 int		ft_matlen(char **mat);
+int		ft_strcmp(const char *s1, const char *s2);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/30 17:50:57 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:11:57 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ int define_input(t_data *data)
 		return (print_cd(data), 1);
 	else if (!ft_strncmp(data->input, "env", 3))
 		return (env(data, data->input_array), 1);
-	else if (!ft_strncmp(data->input, "add env", 7))
-		return (add_env(data, data->input + 8), 1);
 	else if (!ft_strncmp(data->input, "unset", 5))
 		return (unset(data, data->input_array), 1);
 	else if (!ft_strncmp(data->input, "export", 6))
@@ -97,7 +95,8 @@ int main(int argc, char **argv, char **env)
     t_data  data;
     data = (t_data){0};
     data.env_data = init_env(env, &data);
-    add_env(&data, "OLDPWD");
+    if (!check_env(&data, "OLDPWD"))
+		add_env(&data, "OLDPWD");
     while (1)
     {
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);

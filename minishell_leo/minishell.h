@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/29 16:39:24 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/03 15:27:59 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void add_env(t_data *data, char *var);
 
 // export
 void export (t_data *data ,char **args);
+char *get_var_name(char *var);
 
 // builtin
 void    echo(t_data *data);

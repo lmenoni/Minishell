@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/05/30 17:42:33 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/03 15:33:07 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_env   *new_env_node(char *s)
     return (new);
 }
 
-t_env   *init_env(char **e, t_data *data)
+t_env   *init_env(char **env, t_data *data)
 {
     t_env   *first;
     t_env   *curr;
@@ -31,10 +31,10 @@ t_env   *init_env(char **e, t_data *data)
 
     first = NULL;
     i = 0;
-    while (e[i])
+    while (env[i])
     {
         curr = first;
-        new = new_env_node(ft_strdup(e[i]));
+        new = new_env_node(ft_strdup(env[i]));
         if (!first)
             first = new;
         else
@@ -110,14 +110,14 @@ void delete_env(t_data *data, char *var)
 {
 	t_env *temp;
 	t_env *prev;
-	char	*temp_var;
+	char	*var_name;
 
 	temp = data->env_data;
 	prev = NULL;
-	temp_var = ft_strjoin(var, "=");
 	while (temp)
 	{
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
+		var_name = get_var_name(temp->e);
+		if (ft_strcmp(var_name, var) == 0)
 		{
 			if (prev)
 				prev->next = temp->next;
@@ -125,11 +125,13 @@ void delete_env(t_data *data, char *var)
 				data->env_data = temp->next;
 			free(temp->e);
 			free(temp);
+			free(var_name);
 			return ;
 		}
 		prev = temp;
 		temp = temp->next;
 	}
+	free(var_name);
 }
 
 void env(t_data *data, char **input_array)
