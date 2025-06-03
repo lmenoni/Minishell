@@ -2,7 +2,7 @@
 
 void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
 {
-    if ((*tok)->prev && (*tok)->prev->type >= 3)
+    if ((*tok)->prev && (*tok)->prev->type >= 3 && tok_len(new) > 1)
     {
         (*tok)->type = AMB_REDI;
         free_token(new);
@@ -15,6 +15,7 @@ void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
     }
     else
         data->token = new;
+    new->type = ARGUMENT;
     if ((*tok)->next)
     {
         while (new->next)
