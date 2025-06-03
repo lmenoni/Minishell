@@ -75,6 +75,9 @@ typedef struct s_cmd
     char	**args;
     bool    pipe_out;
     bool    pipe_in;
+    int     in_fd;
+    int     ou_fd;
+    char    *path;
 }			t_cmd;
 
 typedef struct  s_data
@@ -88,6 +91,7 @@ typedef struct  s_data
     t_token     *token;
     t_token     *last_token;
     int         cmd_count;
+    int         **pipe;
 }               t_data;
 
 //cmd_array.c
@@ -151,7 +155,7 @@ char    *get_unquoted(char *s);
 int len_wo_quotes(char *s);
 int parse_quotes(char *input);
 int tok_len(t_token *tok);
-//-------------------------------------------------
+
 //manage_expansion.c
 void    expand(t_token *tok, t_data *data);
 void    tokenize_string(t_token **new, char **arr, int i, t_data *data);

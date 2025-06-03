@@ -12,296 +12,6 @@
 
 #include "minishell.h"
 
-void    while_var(char *s, int *i)
-{
-    *i = *i + 1;
-    while(s[*i] != '\0' && s[*i] != '$' && s[*i] != '"' && s[*i] != '\'')
-        *i = *i + 1;
-}
-
-void    while_string(char *s, int *i)
-{
-    while (s[*i] != '\0')
-    {
-        if (s[*i] == '$' && s[*i + 1] != '\0' && !is_space(s[*i + 1]) && is_quoted(s, &s[*i]) == 0)
-            break ;
-        *i = *i + 1;
-    }
-}
-
-int count_pieces(char *s)
-{
-    int i;
-    int r;
-
-    i = 0;
-    r = 0;
-    while (s[i] != '\0')
-    {
-        if (s[i] != '$')
-        {
-            while_string(s, &i);
-            r++;
-        }
-        else
-        {
-            if (s[i + 1] == '"' || s[i + 1] == '\'' || s[i + 1] == '$')
-                i++;
-            else
-            {
-                while_var(s, &i);
-                r++;
-            }
-        }
-    }
-    return (r);
-}
-
-void    fill_array(char *t, int *i, int *j, char **r)
-{
-    if (t[*i] != '$')
-    {
-        while_string(t, i);
-        r[*j] = ft_strndup(t, *i);
-        *j = *j + 1;
-    }
-    else
-    {
-        if (t[*i + 1] == '"' || t[*i + 1] == '\'' || t[*i + 1] == '$')
-            *i = *i + 1;
-        else
-        {
-            while_var(t, i);
-            r[*j] = ft_strndup(t, *i);
-            *j = *j + 1;
-        }
-    }
-}
-
-char    **split_token(char *s)
-{
-    int j;
-    int i;
-    char    **r;
-    char    *t;
-
-    i = 0;
-    j = 0;
-    t = s;
-    r = malloc((count_pieces(s) + 1) * sizeof(char *));
-    while (t[i] != '\0')
-    {
-        fill_array(t, &i, &j, r);
-        t += i;
-        i = 0;
-    }
-    r[j] = NULL;
-    return (r);
-}
-
-void    add_temp(char *content, t_token **first)
-{
-    t_token *new;
-    t_token *curr;
-
-    new = token_new(content, AMB_REDI);
-    if (!(*first))
-        *first = new;
-    else
-    {
-        curr = *first;
-        while (curr->next)
-            curr = curr->next;
-        curr->next = new;
-        new->prev = curr;
-    }
-}
-
-t_token *create_temp(char *s)
-{
-    int j;
-    int len;
-    char    *str;
-    t_token *r;
-
-    j = 0;
-    len = 0;
-    r = NULL;
-    if (s[0] == '\0')
-        return (add_temp(ft_strdup(s), &r), r);
-    while (s[j] != '\0')
-    {
-        len = 0;
-        skip_spaces(s, &j);
-        if (s[j] != '\0')
-        {
-            while (s[j + len] != '\0' && !is_space(s[j + len]))
-                len++;
-            str = ft_strndup(&s[j], len);
-            add_temp(str, &r);
-            j += len;
-        }
-    }
-    return (r);
-}
-
-char    last_char(char *s)
-{
-    if (*s == '\0')
-        return ('\0');
-    while (*(s + 1) != '\0')
-        s++;
-    return (*s);
-}
-
-void    add_to_new(t_token **new, char **arr, int i, t_token **temp)
-{
-    t_token *last;
-    t_token *curr;
-
-    last = *new;
-    while (last->next)
-        last = last->next;
-    if ((last->type != AMB_REDI && !is_space(arr[i][0]))
-        || (last->type == AMB_REDI && !is_space(arr[i][0])
-        && !is_space(last_char(arr[i - 1]))))
-    {
-        curr = *temp;
-        *temp = (*temp)->next;
-        last->s = ft_merge(last->s, curr->s);
-        last->type = AMB_REDI;
-        free(curr);
-    }
-    if (*temp)
-    {
-        last->next = *temp;
-        (*temp)->prev = last;
-    }
-}
-
-void    tokenize_dollar(t_token **new, char **arr, int i, t_data *data)
-{
-    t_token *temp;
-
-    temp = NULL;
-    arr[i] = expand_dollar(arr[i], data, false);
-    temp = create_temp(arr[i]);
-    if (temp == NULL)
-        return ;
-    if (!(*new))
-    {
-        *new = temp;
-        return ;
-    }
-    add_to_new(new, arr, i, &temp);
-}
-
-void    tokenize_string(t_token **new, char **arr, int i, t_data *data)
-{
-    t_token *curr;
-    t_token *temp;
-
-    curr = *new;
-    while (curr && curr->next)
-        curr = curr->next;
-    arr[i] = expand_dollar(arr[i], data, false);
-    arr[i] = get_unquoted(arr[i]);
-    if (*new)
-    {
-        if (!is_space(last_char(arr[i - 1])))
-        {
-            curr->s = ft_buffjoin(curr->s, arr[i]);
-            return ;
-        }
-    }
-    temp = token_new(ft_strdup(arr[i]), ARGUMENT);
-    if (!(*new))
-    {
-        *new = temp;
-        return ;
-    }
-    curr->next = temp;
-    temp->prev = curr;
-}
-
-void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
-{
-    if ((*tok)->prev && (*tok)->prev->type >= 3 && tok_len(new) > 1)
-    {
-        (*tok)->type = AMB_REDI;
-        free_token(new);
-        return ;
-    }
-    else if ((*tok)->prev)
-    {
-        new->prev = (*tok)->prev;
-        (*tok)->prev->next = new;
-    }
-    else
-        data->token = new;
-    new->type = ARGUMENT;
-    if ((*tok)->next)
-    {
-        while (new->next)
-            new = new->next;
-        (*tok)->next->prev = new;
-        new->next = (*tok)->next;
-    }
-    free((*tok)->s);
-    free(*tok);
-    *tok = new;
-}
-
-void    handle_unquoted_expansion(t_token **tok, t_data *data)
-{
-    char    **arr;
-    int     i;
-    t_token *new;
-
-    i = 0;
-    new = NULL;
-    arr = split_token((*tok)->s);
-    while (arr[i] != NULL)
-    {
-        if (arr[i][0] == '$')
-            tokenize_dollar(&new, arr, i, data);
-        else
-            tokenize_string(&new, arr, i, data);
-        i++;
-    }
-    ft_freemat((void **)arr, ft_matlen(arr));
-    add_to_token_struct(tok, data, new);
-}
-
-bool    is_dollar_quoted(char *s)
-{
-    int i;
-
-    i = 0;
-    while (s[i] != '\0')
-    {
-        if (s[i] == '$' && s[i + 1] != '\0' && !is_space(s[i + 1]) && is_quoted(s, &s[i]) == 0)
-            return (false);
-        i++;
-    }
-    return (true);
-}
-
-void    expand(t_token *tok, t_data *data)
-{
-    while (tok)
-    {
-        if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)) && is_dollar_quoted(tok->s))
-        {
-            tok->s = expand_dollar(tok->s, data, false);
-            tok->s = get_unquoted(tok->s);
-        }
-        else if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)) && !is_dollar_quoted(tok->s))
-            handle_unquoted_expansion(&tok, data);
-        tok = tok->next;
-    }
-}
-
 bool    parsing(t_data *data)
 {
     if (parse_quotes(data->input))
@@ -316,6 +26,92 @@ bool    parsing(t_data *data)
     make_cmd_array(data);
     print_cmd_array(data);
     return (true);
+}
+
+bool    open_out(t_flist *t, t_cmd *cmd)
+{
+    int fd;
+
+    fd = 0;
+    if (t->x_factor)
+        fd = open(t->s, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else
+        fd = open(t->s, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0)
+        return (ft_printf("minishell: %s: ", t->s), perror(""), false);
+    cmd->ou_fd = fd;
+    return (true);
+}
+
+bool    open_in(t_flist *t, t_cmd *cmd)
+{
+    int fd;
+
+    fd = 0;
+    if (t->x_factor)
+        fd = create_temp_file(t->s);
+    else
+        fd = open(t->s, O_RDONLY);
+    //gestione file temporaneo dell'heredoc
+}
+
+bool    do_open(t_cmd *cmd)
+{
+    t_flist *t;
+
+    t = cmd->files;
+    while(t)
+    {
+        if (cmd->in_fd != 0)
+            close(cmd->in_fd);
+        if (cmd->ou_fd != 0)
+            close(cmd->ou_fd);
+        if (t->amb_redi)
+            return (ft_printf("minishell: %s: ambigous redirect\n", t->s), false);
+        if (t->io_bool)
+        {
+            if (!open_out(t, cmd))
+                return (false);
+        }
+        else
+        {
+            if (!open_in(t, cmd))
+                return (false);
+        }
+        t = t->next;
+    }
+    return (true);
+}
+
+void    execute(t_cmd cmd_d, t_data *data)
+{
+    int pid;
+
+    pid = 0;
+    pid = fork();
+    if (pid == -1)
+        ft_printf("fork error");
+    if (pid == 0)
+    {
+        if (!do_open(&cmd_d))
+            return ;
+    }
+    /*apertura file con controlli di open, amb_redi e creazione file temp HERE_DOC
+    controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
+    se non e' built in otteniamo il path al comando(se non gia assoluto) e eventuale errore
+    mandiamo alla esecuzione di execve*/
+}
+
+void    execution(t_data *data)
+{
+    int i;
+
+    i = 0;
+    while (i < data->cmd_count)
+    {
+        execute(data->cmd_arr[i], data);
+        i++;
+    }
 }
 
 int main(int ac, char **av, char **e)
@@ -335,6 +131,8 @@ int main(int ac, char **av, char **e)
         if (parsing(&data))
         {
             ft_printf("READY FOR EXECUTE\n");
+            if (pipe(data.pipe) != -1)
+                execution(&data);
         }
         add_history(data.input);
         free(data.input);
@@ -347,4 +145,4 @@ int main(int ac, char **av, char **e)
     return (0);
 }
 
-//CORREGGERE HERE_DOC CHIUSO SUBITO CON LIMITER, ESPANSIONE SEGFOULTA
+//gestione $?, gestione signal in here_doc

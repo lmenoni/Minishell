@@ -64,8 +64,10 @@ void do_here_doc(t_token *tok, t_data *data)
 		{
 			quoted = is_limiter_quoted(tok->next->s);
 			r = get_lines(tok->next->s);
-			if (!quoted)
+			if (!quoted && r)
 				r = expand_dollar(r, data, true);
+			else if (!r)
+				r = ft_strdup("\0");
 			tok->next->s = r;
 		}
 		tok = tok->next;
