@@ -28,6 +28,39 @@ bool    parsing(t_data *data)
     return (true);
 }
 
+bool    no_more_input(t_flist *t)
+{
+    t_flist *curr;
+
+    curr = t->next;
+    while (curr)
+    {
+        if (!(curr->io_bool))
+            return (false);
+        curr = curr->next;
+    }
+    return (true);
+}
+
+int     create_temp_file(char *content, t_data *data, t_cmd *cmd)
+{
+    char    *name;
+    char    *path;
+    int     fd;
+
+    fd = 0;
+    name = ft_itoa(data->n_hd);
+    path = ft_strjoin(".tmp_hd_n", name);
+    fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0700);
+    if (fd < 0)
+        return (free(name), free(path), fd);
+    ft_putstr_fd(content, fd);
+    close(fd);
+    fd = open(path, O_RDONLY);
+    unlink(path);
+    return (free(name), free(path), fd);
+}
+
 bool    open_out(t_flist *t, t_cmd *cmd)
 {
     int fd;
@@ -43,19 +76,23 @@ bool    open_out(t_flist *t, t_cmd *cmd)
     return (true);
 }
 
-bool    open_in(t_flist *t, t_cmd *cmd)
+bool    open_in(t_flist *t, t_cmd *cmd, t_data *data)
 {
     int fd;
 
     fd = 0;
-    if (t->x_factor)
-        fd = create_temp_file(t->s);
+    if (t->x_factor && no_more_input(t));
+        fd = create_temp_file(t->s, data, cmd);
     else
         fd = open(t->s, O_RDONLY);
+    if (fd < 0)
+        return (ft_printf("minishell: %s: ", t->s), perror(""), false);
+    cmd->in_fd = fd;
+    return (true);
     //gestione file temporaneo dell'heredoc
 }
 
-bool    do_open(t_cmd *cmd)
+bool    do_open(t_cmd *cmd, t_data *data)
 {
     t_flist *t;
 
@@ -75,7 +112,7 @@ bool    do_open(t_cmd *cmd)
         }
         else
         {
-            if (!open_in(t, cmd))
+            if (!open_in(t, cmd, data))
                 return (false);
         }
         t = t->next;
@@ -88,16 +125,21 @@ void    execute(t_cmd cmd_d, t_data *data)
     int pid;
 
     pid = 0;
+    // if (ft_strcmp(cmd_d.args[0], "exit") == 0 && !cmd_d.pipe_in && !cmd_d.pipe_out)
+    //     handle_exit();
     pid = fork();
     if (pid == -1)
-        ft_printf("fork error");
+        ft_printf("fork error\n");
     if (pid == 0)
     {
-        if (!do_open(&cmd_d))
+        if (!do_open(&cmd_d), data)
             return ;
+        // // if (is_builtin(cmd_d.args[0]))
+        // //     exec_builtin(&cmd_d, data);
+        // cmd_d.path = get_path(cmd_d.args[0], data);
+        // do_execve()
     }
-    /*apertura file con controlli di open, amb_redi e creazione file temp HERE_DOC
-    controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
+    /*controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
     se non e' built in otteniamo il path al comando(se non gia assoluto) e eventuale errore
     mandiamo alla esecuzione di execve*/
 }
@@ -110,6 +152,7 @@ void    execution(t_data *data)
     while (i < data->cmd_count)
     {
         execute(data->cmd_arr[i], data);
+        data->n_hd++;
         i++;
     }
 }

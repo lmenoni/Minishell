@@ -78,6 +78,7 @@ typedef struct s_cmd
     int     in_fd;
     int     ou_fd;
     char    *path;
+    char    *temp_file;
 }			t_cmd;
 
 typedef struct  s_data
@@ -91,7 +92,8 @@ typedef struct  s_data
     t_token     *token;
     t_token     *last_token;
     int         cmd_count;
-    int         **pipe;
+    //int         **pipe;
+    int         n_hd;
 }               t_data;
 
 //cmd_array.c
