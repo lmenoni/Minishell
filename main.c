@@ -168,7 +168,7 @@ void    execute(t_cmd cmd, t_data *data)
         if (data->pipe)
             set_pipe(&cmd, data);
         if (!do_open(&cmd, data))
-            return ;
+            return ; //deve liberare la memoria e fare exit non return
         if (cmd.in_fd != 0)
             dup2(cmd.in_fd, STDIN_FILENO);
         if (cmd.ou_fd != 0)
@@ -235,7 +235,6 @@ int main(int ac, char **av, char **e)
         {
             ft_printf("READY FOR EXECUTE\n");
             create_pipe_arr(&data);
-            // if (pipe(data.pipe) != -1)
             execution(&data);
         }
         add_history(data.input);
@@ -250,3 +249,5 @@ int main(int ac, char **av, char **e)
 }
 
 //gestione $?, gestione signal in here_doc
+//gestione fallimento pipe array, controllare open funzionino correttamente
+//, fare execve e funzioni per liberare tutta la memoria nei figli(va stritta quella del pipearr)
