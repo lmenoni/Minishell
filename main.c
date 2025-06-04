@@ -173,8 +173,11 @@ void    execute(t_cmd cmd, t_data *data)
             dup2(cmd.in_fd, STDIN_FILENO);
         if (cmd.ou_fd != 0)
             dup2(cmd.ou_fd, STDOUT_FILENO);
-        cmd.path = get_path(cmd.args[0], data);
-        // do_execve()
+        if (!define_input(data, &cmd))
+        {
+            cmd.path = get_path(cmd.args[0], data);
+            // do_execve()
+        }
         exit (0);
     }
     /*controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
