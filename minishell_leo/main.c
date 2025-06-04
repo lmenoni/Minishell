@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/03 18:11:57 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/04 14:52:03 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,42 +25,42 @@ void    free_env(t_env *node)
     }
 }
 
-void    define_token_add(t_data *data, char *s, int *idx)
-{
-    // non so come cazzo farlo dio merda
-    if (s[0] == '|')
-        return (add_pipe(data, s, idx));
-    else if (s[0] == '<' || s[0] == '>')
-        return (add_redirect(data, s, idx));
-    else if (s[0] == '$')
-        return (add_operator(data, s, idx));
-    else
-        return (add_argument(data, s, idx));
-    return ;
-}
+// void    define_token_add(t_data *data, char *s, int *idx)
+// {
+//     // non so come cazzo farlo dio merda
+//     if (s[0] == '|')
+//         return (add_pipe(data, s, idx));
+//     else if (s[0] == '<' || s[0] == '>')
+//         return (add_redirect(data, s, idx));
+//     else if (s[0] == '$')
+//         return (add_operator(data, s, idx));
+//     else
+//         return (add_argument(data, s, idx));
+//     return ;
+// }
 
-void    tokenize_input(t_data *data)
-{
-    int     i;
-    bool    in_quotes;
+// void    tokenize_input(t_data *data)
+// {
+//     int     i;
+//     bool    in_quotes;
     
-    i = 0;
-    in_quotes = false;
-    while (data->input[i] != '\0')
-    {
-        skip_spaces(data->input, &i);
-        if (data->input[i] == '"')
-        {
-            in_quotes = !in_quotes;
-            i++;
-        }
-        if (data->input[i] != '\0' && in_quotes)
-            add_string(data, &data->input[i], &i);
-        skip_spaces(data->input, &i);
-        if (data->input[i] != '\0' && data->input[i] != '"' && !in_quotes)
-            define_token_add(data, &data->input[i], &i);
-    }
-}
+//     i = 0;
+//     in_quotes = false;
+//     while (data->input[i] != '\0')
+//     {
+//         skip_spaces(data->input, &i);
+//         if (data->input[i] == '"')
+//         {
+//             in_quotes = !in_quotes;
+//             i++;
+//         }
+//         if (data->input[i] != '\0' && in_quotes)
+//             add_string(data, &data->input[i], &i);
+//         skip_spaces(data->input, &i);
+//         if (data->input[i] != '\0' && data->input[i] != '"' && !in_quotes)
+//             define_token_add(data, &data->input[i], &i);
+//     }
+// }
 
 int define_input(t_data *data)
 {

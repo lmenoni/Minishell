@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/03 23:08:40 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/04 17:33:35 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool    parsing(t_data *data)
         return (false);
     do_here_doc(data->token, data);
     expand(data->token, data);
-    //print_tokens(data->token);
+    // print_tokens(data->token);
     make_cmd_array(data);
     // print_cmd_array(data);
     return (true);
@@ -102,44 +102,43 @@ bool    parsing(t_data *data)
 //     mandiamo alla esecuzione di execve*/
 // }
 
-int define_input(t_data *data)
+int define_input(t_data *data, t_cmd *cmd)
 {
-	if (!ft_strncmp(data->cmd_arr->args[0], "echo", 4))
-		return (echo(data), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "cd", 2))
-		return (cd(data), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "pwd", 3))
+	if (!ft_strncmp(cmd->args[0], "echo", 4))
+		return (echo(cmd->args), 1); //modificare con cmd->args
+    else if (!ft_strncmp(cmd->args[0], "cd", 2))
+		return (cd(data, cmd->args), 1);
+	else if (!ft_strncmp(cmd->args[0], "pwd", 3))
 		return (pwd(), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "debug cd", 8))
+	else if (!ft_strncmp(cmd->args[0], "debug cd", 8))
 		return (print_cd(data), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "env", 3))
-		return (env(data, data->cmd_arr->args), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "unset", 5))
-		return (unset(data, data->cmd_arr->args), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "export", 6))
-		return (export(data, data->cmd_arr->args), 1);
-	else if (!ft_strncmp(data->cmd_arr->args[0], "clear", 4))
+	else if (!ft_strncmp(cmd->args[0], "env", 3))
+		return (env(data, cmd->args), 1);
+	else if (!ft_strncmp(cmd->args[0], "unset", 5))
+		return (unset(data, cmd->args), 1);
+	else if (!ft_strncmp(cmd->args[0], "export", 6))
+		return (export(data, cmd->args), 1);
+	else if (!ft_strncmp(cmd->args[0], "clear", 4))
 		return(system("clear"), 1);
-    else if (!ft_strncmp(data->cmd_arr->args[0], "exit", 4))
-        return (exit_shell(data, data->cmd_arr->args), 1);
-    else if (!ft_strncmp(data->cmd_arr->args[0], "./minishell", 11))
+    else if (!ft_strncmp(cmd->args[0], "exit", 4))
+        return (exit_shell(data, cmd), 1);
+    else if (!ft_strncmp(cmd->args[0], "./minishell", 11))
         return (system("./minishell"), 1);
     else
 	    return (1);
 }
 
-void    execution(t_data *data)
-{
-    int i;
+// void    execution(t_data *data, t_cmd cmd)
+// {
+//     int i;
 
-    i = 0;
-    while (i < data->cmd_count)
-    {
-        // execute(data->cmd_arr[i], data);
-        define_input(data);
-        i++;
-    }
-}
+//     i = 0;
+//     while (i < data->cmd_count)
+//     {
+//         execute(data->cmd_arr[i], data);
+//         i++;
+//     }
+// }
 
 int main(int ac, char **av, char **e)
 {
@@ -159,9 +158,10 @@ int main(int ac, char **av, char **e)
             break ;
         if (parsing(&data))
         {
+            define_input(&data, &data.cmd_arr[0]);
             // ft_printf("READY FOR EXECUTE\n");
             // if (pipe(data.pipe) != -1)
-            execution(&data);
+            // execution(&data, data.cmd_arr[0]);
         }
         add_history(data.input);
         free(data.input);

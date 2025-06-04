@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/03 23:19:09 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/04 17:06:12 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ static void safe_chdir(char *path)
 	}
 }
 
-static int cd_parse(t_data *data)
+static int cd_parse(char **args)
 {
 	int i;
 
 	i = 0;
-	while (data->cmd_arr->args[++i])
+	while (args[++i])
 	{
 		if (i >= 2)
 			return (0);
@@ -59,9 +59,9 @@ static void cd_oldpwd(t_data *data)
 		else
 			path = check_env(data, "OLDPWD=");
 		chdir(path);
+		ft_printf("%s\n", path); // Controllare perché la prima volta che viene usato // cd - non stampa nulla (valgrind segnala un invalid read)
 		if (check_env(data, "OLDPWD="))
 			update_env(data, "OLDPWD=", data->current_path);
-		ft_printf("%s\n", path); // Controllare perché la prima volta che viene usato // cd - non stampa nulla (valgrind segnala un invalid read)
 		free(data->old_path);
 		data->old_path = data->current_path;
 		data->current_path = getcwd(NULL, 0);
@@ -135,16 +135,16 @@ void cd_execution(t_data *data, char *new_path)
 	update_env(data, "PWD=", data->current_path);
 }
 
-void cd(t_data *data)
+void cd(t_data *data, char **args)
 {
 	char *new_path;
 	
-	if (cd_parse(data) == 0)
+	if (cd_parse(args) == 0)
 	{
 		print_error("bash: cd: too many arguments\n");
 		return ;
 	}
-	new_path = data->cmd_arr->args[1];
+	new_path = args[1];
 	if (new_path == NULL)
 		cd_home(data);
 	else if (new_path[0] == '~')// if (new_path[1] != '\0') strjoin(data->home_path, new_path + 1)

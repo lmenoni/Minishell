@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:43:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/03 22:55:27 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/04 17:01:07 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,26 @@ int check_echo_flag(char **input_array)
 	return (j - 1);
 }
 
-void echo(t_data *data)
+void echo(char **args)
 {
 	int i;
 	int flag;
-	flag = check_echo_flag(data->cmd_arr->args);
+	flag = check_echo_flag(args);
 
 	if (flag > 0)
 		i = flag + 1;
 	else
 		i = 1;
-	if (data->cmd_arr->args[i] == NULL)
+	if (args[i] == NULL)
 	{
 		ft_printf("\n");
 		return ;
 	}
-	while (data->cmd_arr->args[i])
+	while (args[i])
 	{
-		ft_printf("%s", data->cmd_arr->args[i]);
+		ft_printf("%s", args[i]);
 		i++;
-		if (data->cmd_arr->args[i])
+		if (args[i])
 			ft_printf(" ");
 	}
 	if (!flag)

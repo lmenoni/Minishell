@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/03 22:59:10 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/04 17:04:57 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ typedef enum
 typedef struct  s_env
 {
     char			*e;
-    char            *x;
     struct s_env	*next;
 }               t_env;
 
@@ -189,12 +188,12 @@ void export (t_data *data ,char **args);
 char *get_var_name(char *var);
 
 // builtin
-void    echo(t_data *data);
-void cd(t_data *data);
+void echo(char **args);
+void cd(t_data *data, char **args);
 void unset(t_data *data, char **var);
 void env(t_data *data, char **input_array);
 void pwd();
-void exit_shell(t_data *data, char **args);
+void exit_shell(t_data *data, t_cmd *cmd);
 
 //error_handle.c
 void print_error(char *s);
