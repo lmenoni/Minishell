@@ -82,17 +82,18 @@ typedef struct s_cmd
 
 typedef struct  s_data
 {
-    char        *curr_path;
-    char        *old_path;
-    char        *home_path;
     t_env        *env_data;
-    char        *input;
     t_cmd       *cmd_arr;
     t_token     *token;
     t_token     *last_token;
-    int         cmd_count;
+    char        *curr_path;
+    char        *old_path;
+    char        *home_path;
+    char        *input;
     int         **pipe;
+    int         cmd_count;
     int         cmd_name;
+    int         status;
 }               t_data;
 
 //cmd_array.c
@@ -122,6 +123,7 @@ void    free_token(t_token *token);
 void    free_flist(t_flist *flist);
 void    free_cmd_array(t_data *data);
 void    free_env(t_env *node);
+void    free_pipe(int **pipe, int n);
 
 //utils.c
 void    skip_spaces(char *s, int *i);
@@ -178,11 +180,26 @@ int count_pieces(char *s);
 void    while_string(char *s, int *i);
 void    while_var(char *s, int *i);
 
+//execution.c
+pid_t    execute(t_cmd cmd, t_data *data);
+void    do_execve(t_cmd *cmd, t_data *data);
+void    handle_fds(t_cmd *cmd, t_data *data);
+char    *get_path(char *cmd, t_data *data);
+void    wait_status(t_data *data, pid_t last_pid);
 
+//fds.c
+bool    do_open(t_cmd *cmd, t_data *data);
+bool    open_in(t_flist *t, t_cmd *cmd, t_data *data);
+bool    open_out(t_flist *t, t_cmd *cmd);
+void    set_pipe(t_cmd *cmd, t_data *data);
+int     create_temp_file(char *content, t_data *data)
+
+//utils_4.c
+char    **ft_matdup(char **mat);
+void    free_all(t_data *data, t_cmd *cmd);
+void    free_data(t_data *data);
+bool    is_in_pipe(int fd, int **pipe, t_data *data);
+bool    no_more_input(t_flist *t);
+void    create_pipe_arr(t_data *data);
 
 #endif
-
-// cambiare metodo per la lista di file(una sola con un bbool per riconoscerli)
-// tutti gli argomenti che hanno "" o '' togliendo gli apici e espandere $ se tra ""
-//prima espandere $ dentro le virgolette poi quelli fuori e dividi con gli spazi i nuovi token
-// i token $ espansi creando token divisi da spazi

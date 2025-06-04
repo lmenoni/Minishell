@@ -61,6 +61,96 @@ int     create_temp_file(char *content, t_data *data)
     return (free(name), free(path), fd);
 }
 
+char    *get_path(char *cmd, t_data *data)
+{
+    char    **fpath;
+    char    *t;
+    char    *r;
+    int     i;
+
+    i = 0;
+    if (cmd[0] == '/')
+        return (ft_strdup(cmd));
+    fpath = ft_split(check_env(data, "PATH="), ':');
+    if (!fpath)
+        return (NULL);
+    t = ft_strjoin("/", cmd);
+    while(fpath[i])
+    {
+        r = ft_strjoin(fpath[i], t);
+		if (access(r, F_OK) == 0 && access(r, X_OK) == 0)
+			return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1))
+                , free(t), r);
+		free(r);
+		i++;
+    }
+    return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1)), free(t), NULL);
+}
+
+bool    is_in_pipe(int fd, int **pipe, t_data *data)
+{
+    int i;
+
+    i = 0;
+    while (i < (data->cmd_count - 1))
+    {
+        if (fd == pipe[i][0] || fd == pipe[i][1])
+            return (true);
+        i++;
+    }
+    return (false);
+}
+
+void    free_pipe(int **pipe, int n)
+{
+    int i;
+
+    i = 0;
+    while (i < n)
+    {
+        close(pipe[i][0]);
+        close(pipe[i][1]);
+        free(pipe[i]);
+        i++;
+    }
+    free(pipe);
+}
+
+void    free_data(t_data *data)
+{
+    if (data->input)
+        free(data->input);
+    if (data->token)
+        free_token(data->token);
+    if (data->cmd_arr)
+        free_cmd_array(data);
+    if (data->env_data)
+        free_env(data->env_data);
+    if (data->curr_path)
+        free(data->curr_path);
+    if (data->pipe)
+        free_pipe(data->pipe, (data->cmd_count - 1));
+}
+
+void    free_all(t_data *data, t_cmd *cmd)
+{
+    if (cmd->in_fd != -1  && cmd->in_fd != 0 && !is_in_pipe(cmd->in_fd, data->pipe, data))
+        close(cmd->in_fd);
+    if (cmd->ou_fd != -1  && cmd->ou_fd != 0 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
+        close(cmd->ou_fd);
+    if (cmd->path)
+        free(cmd->path);
+    free_data(data);
+}
+
+void    set_pipe(t_cmd *cmd, t_data *data)
+{
+    if (data->cmd_name > 0)
+        cmd->in_fd = data->pipe[data->cmd_name - 1][0];
+    if (data->cmd_name < (data->cmd_count - 1))
+        cmd->ou_fd = data->pipe[data->cmd_name][1];
+}
+
 bool    open_out(t_flist *t, t_cmd *cmd)
 {
     int fd;
@@ -98,9 +188,9 @@ bool    do_open(t_cmd *cmd, t_data *data)
     t = cmd->files;
     while(t)
     {
-        if (cmd->in_fd != 0)
+        if (t->io_bool == 0 && cmd->in_fd > 2 && !is_in_pipe(cmd->in_fd, data->pipe, data))
             close(cmd->in_fd);
-        if (cmd->ou_fd != 0)
+        if (t->io_bool == 1 && cmd->ou_fd > 2 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
             close(cmd->ou_fd);
         if (t->amb_redi)
             return (ft_printf("minishell: %s: ambigous redirect\n", t->s), false);
@@ -119,45 +209,64 @@ bool    do_open(t_cmd *cmd, t_data *data)
     return (true);
 }
 
-void    set_pipe(t_cmd *cmd, t_data *data)
+void    handle_fds(t_cmd *cmd, t_data *data)
 {
-    if (data->cmd_name > 0)
-        cmd->in_fd = data->pipe[data->cmd_name - 1][0];
-    if (data->cmd_name < (data->cmd_count - 1))
-        cmd->ou_fd = data->pipe[data->cmd_name][1];
-}
-
-char    *get_path(char *cmd, t_data *data)
-{
-    char    **fpath;
-    char    *t;
-    char    *r;
-    int     i;
-
-    i = 0;
-    if (cmd[0] == '/')
-        return (ft_strdup(cmd));
-    fpath = ft_split(check_env(data, "PATH="), ':');
-    if (!fpath)
-        return (NULL);
-    t = ft_strjoin("/", cmd);
-    while(fpath[i])
+    if (data->pipe)
+        set_pipe(cmd, data);
+    if (!do_open(cmd, data))
     {
-        r = ft_strjoin(fpath[i], t);
-		if (access(r, F_OK) == 0 && access(r, X_OK) == 0)
-			return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1))
-                , free(t), r);
-		free(r);
-		i++;
+        free_all(data, cmd);
+        exit(1);
     }
-    return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1)), free(t), NULL);
+    if (cmd->in_fd != 0)
+        dup2(cmd->in_fd, STDIN_FILENO);
+    if (cmd->ou_fd != 0)
+        dup2(cmd->ou_fd, STDOUT_FILENO);
 }
 
-void    execute(t_cmd cmd, t_data *data)
+char    **ft_matdup(char **mat)
 {
-    int pid;
+    int len;
+    int i;
+    char    **r;
 
-    pid = 0;
+    len = ft_matlen(mat);
+    i = 0;
+    r = malloc((len + 1) * sizeof(char *));
+    if (!r)
+        return (NULL);
+    while (i < len)
+    {
+        r[i] = ft_strdup(mat[i]);
+        i++;
+    }
+    r[i] = NULL;
+    return (r);
+}
+
+void    do_execve(t_cmd *cmd, t_data *data)
+{
+    char *path;
+    char **args;
+
+    path = ft_strdup(cmd->path);
+    args = ft_matdup(cmd->args);
+    if (cmd->in_fd != -1  && cmd->in_fd != 0 && !is_in_pipe(cmd->in_fd, data->pipe, data))
+        close(cmd->in_fd);
+    if (cmd->ou_fd != -1  && cmd->ou_fd != 0 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
+        close(cmd->ou_fd);
+    free(cmd->path);
+    free_data(data);
+    execve(path, args, NULL);
+    free(path);
+    ft_freemat((void **)args, ft_matlen(args));
+    exit(126);
+}
+
+pid_t    execute(t_cmd cmd, t_data *data)
+{
+    pid_t pid;
+
     // if (ft_strcmp(cmd_d.args[0], "exit") == 0 && !cmd_d.pipe_in && !cmd_d.pipe_out)
     //     handle_exit();
     pid = fork();
@@ -165,39 +274,56 @@ void    execute(t_cmd cmd, t_data *data)
         ft_printf("fork error\n");
     if (pid == 0)
     {
-        if (data->pipe)
-            set_pipe(&cmd, data);
-        if (!do_open(&cmd, data))
-            return ; //deve liberare la memoria e fare exit non return
-        if (cmd.in_fd != 0)
-            dup2(cmd.in_fd, STDIN_FILENO);
-        if (cmd.ou_fd != 0)
-            dup2(cmd.ou_fd, STDOUT_FILENO);
-        if (!define_input(data, &cmd))
+        handle_fds(&cmd, data);
+        // if (!define_input(data, &cmd))
+        // {
+        cmd.path = get_path(cmd.args[0], data);
+        if (!cmd.path)
         {
-            cmd.path = get_path(cmd.args[0], data);
-            // do_execve()
+            free_all(data, &cmd);
+            exit(127);
         }
-        exit (0);
+        do_execve(&cmd, data);
+        // }
     }
-    /*controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
-    se non e' built in otteniamo il path al comando(se non gia assoluto) e eventuale errore
-    mandiamo alla esecuzione di execve*/
+    return (pid);
+}
+
+void    wait_status(t_data *data, pid_t last_pid)
+{
+    pid_t   ended;
+    int status;
+
+    status = 0;
+    while (1)
+    {
+        ended = wait(&status);
+        if (ended <= 0)
+            break ;
+        if (ended == last_pid)
+        {
+            if (WIFEXITED(status))
+                data->status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                data->status = (128 + WTERMSIG(status));
+        }
+    }
 }
 
 void    execution(t_data *data)
 {
     int i;
+    pid_t   last_pid;
 
     i = 0;
     while (i < data->cmd_count)
     {
-        execute(data->cmd_arr[i], data);
+        last_pid = execute(data->cmd_arr[i], data);
         data->cmd_name++;
         i++;
     }
-    while (!wait(NULL))
-        ;
+    free_pipe(data->pipe, (data->cmd_count - 1));
+    wait_status(data, last_pid);
 }
 
 void    create_pipe_arr(t_data *data)
@@ -233,7 +359,7 @@ int main(int ac, char **av, char **e)
             break ;
         if (parsing(&data))
         {
-            ft_printf("READY FOR EXECUTE\n");
+            //ft_printf("READY FOR EXECUTE\n");
             create_pipe_arr(&data);
             execution(&data);
         }
