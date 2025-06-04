@@ -24,7 +24,7 @@ bool    parsing(t_data *data)
     expand(data->token, data);
     //print_tokens(data->token);
     make_cmd_array(data);
-    print_cmd_array(data);
+    //print_cmd_array(data);
     return (true);
 }
 
@@ -42,14 +42,14 @@ bool    no_more_input(t_flist *t)
     return (true);
 }
 
-int     create_temp_file(char *content, t_data *data, t_cmd *cmd)
+int     create_temp_file(char *content, t_data *data)
 {
     char    *name;
     char    *path;
     int     fd;
 
     fd = 0;
-    name = ft_itoa(data->n_hd);
+    name = ft_itoa(data->cmd_count);
     path = ft_strjoin(".tmp_hd_n", name);
     fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0700);
     if (fd < 0)
@@ -81,15 +81,14 @@ bool    open_in(t_flist *t, t_cmd *cmd, t_data *data)
     int fd;
 
     fd = 0;
-    if (t->x_factor && no_more_input(t));
-        fd = create_temp_file(t->s, data, cmd);
+    if (t->x_factor && no_more_input(t))
+        fd = create_temp_file(t->s, data);
     else
         fd = open(t->s, O_RDONLY);
     if (fd < 0)
         return (ft_printf("minishell: %s: ", t->s), perror(""), false);
     cmd->in_fd = fd;
     return (true);
-    //gestione file temporaneo dell'heredoc
 }
 
 bool    do_open(t_cmd *cmd, t_data *data)
@@ -120,7 +119,41 @@ bool    do_open(t_cmd *cmd, t_data *data)
     return (true);
 }
 
-void    execute(t_cmd cmd_d, t_data *data)
+void    set_pipe(t_cmd *cmd, t_data *data)
+{
+    if (data->cmd_name > 0)
+        cmd->in_fd = data->pipe[data->cmd_name - 1][0];
+    if (data->cmd_name < (data->cmd_count - 1))
+        cmd->ou_fd = data->pipe[data->cmd_name][1];
+}
+
+char    *get_path(char *cmd, t_data *data)
+{
+    char    **fpath;
+    char    *t;
+    char    *r;
+    int     i;
+
+    i = 0;
+    if (cmd[0] == '/')
+        return (ft_strdup(cmd));
+    fpath = ft_split(check_env(data, "PATH="), ':');
+    if (!fpath)
+        return (NULL);
+    t = ft_strjoin("/", cmd);
+    while(fpath[i])
+    {
+        r = ft_strjoin(fpath[i], t);
+		if (access(r, F_OK) == 0 && access(r, X_OK) == 0)
+			return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1))
+                , free(t), r);
+		free(r);
+		i++;
+    }
+    return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1)), free(t), NULL);
+}
+
+void    execute(t_cmd cmd, t_data *data)
 {
     int pid;
 
@@ -132,12 +165,17 @@ void    execute(t_cmd cmd_d, t_data *data)
         ft_printf("fork error\n");
     if (pid == 0)
     {
-        if (!do_open(&cmd_d), data)
+        if (data->pipe)
+            set_pipe(&cmd, data);
+        if (!do_open(&cmd, data))
             return ;
-        // // if (is_builtin(cmd_d.args[0]))
-        // //     exec_builtin(&cmd_d, data);
-        // cmd_d.path = get_path(cmd_d.args[0], data);
+        if (cmd.in_fd != 0)
+            dup2(cmd.in_fd, STDIN_FILENO);
+        if (cmd.ou_fd != 0)
+            dup2(cmd.ou_fd, STDOUT_FILENO);
+        cmd.path = get_path(cmd.args[0], data);
         // do_execve()
+        exit (0);
     }
     /*controllo se built_in e mando a eseguire (sempre fare fork salvo in caso di exit e nessun pipe)
     se non e' built in otteniamo il path al comando(se non gia assoluto) e eventuale errore
@@ -152,8 +190,27 @@ void    execution(t_data *data)
     while (i < data->cmd_count)
     {
         execute(data->cmd_arr[i], data);
-        data->n_hd++;
+        data->cmd_name++;
         i++;
+    }
+    while (!wait(NULL))
+        ;
+}
+
+void    create_pipe_arr(t_data *data)
+{
+    int i;
+
+    i = 0;
+    if (data->cmd_count > 1)
+    {
+        data->pipe = malloc((data->cmd_count - 1) * sizeof(int *));
+        while (i < (data->cmd_count - 1))
+        {
+            data->pipe[i] = malloc(2 * sizeof(int));
+            pipe(data->pipe[i]);
+            i++;   
+        }
     }
 }
 
@@ -174,8 +231,9 @@ int main(int ac, char **av, char **e)
         if (parsing(&data))
         {
             ft_printf("READY FOR EXECUTE\n");
-            if (pipe(data.pipe) != -1)
-                execution(&data);
+            create_pipe_arr(&data);
+            // if (pipe(data.pipe) != -1)
+            execution(&data);
         }
         add_history(data.input);
         free(data.input);
