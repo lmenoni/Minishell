@@ -6,11 +6,11 @@
 -Modificare funzione aggiornamento env per renderla globale (info in funzione) --> OK
 -Completare cd dopo aver implementato il salvataggio di env non come array ma in una struct --> OK
 -Controllare export e capire come funziona, anche lui deve avere una sua struct --> OK
+-Fare ft_printfd --> OK
 
 -TODO-
 
 -Fare exit. Non deve accettare nulla, deve solo controllare che non ci siano argomenti e nel caso si trova in una fork deve chiudere la fork e poi se rifatto la shell. Per il momento fare exit basilare. Exit potra' essere complatato solo una volta fatto i segnali e l'esecuzione.
--Fare ft_printfd
 -Unire il codice di Leo con il mio
 -Fare CTRL-C CTRL-D CTRL-/ per poi poter completare una parte di exit
 
