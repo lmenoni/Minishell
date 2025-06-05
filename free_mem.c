@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+void    free_pipe(int **pipe, int n)
+{
+    int i;
+
+    i = 0;
+    while (i < n)
+    {
+        close(pipe[i][0]);
+        close(pipe[i][1]);
+        free(pipe[i]);
+        i++;
+    }
+    free(pipe);
+}
+
 void    free_token(t_token *token)
 {
     t_token *temp;

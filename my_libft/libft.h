@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:14:17 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 14:24:38 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/04 19:32:29 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,14 @@ void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 void	ft_putchar_fd(char c, int fd);
-int		ft_printunsnbr(unsigned int n);
-int		ft_printhexa(unsigned int n);
-int		ft_printpointer(unsigned long p);
-int		ft_printupphexa(unsigned int n);
-int		ft_printstr(char *s);
-int		ft_printnbr(int n);
+int		ft_printunsnbr(unsigned int n, int fd);
+int		ft_printhexa(unsigned int n, int fd);
+int		ft_printpointer(unsigned long p, int fd);
+int		ft_printupphexa(unsigned int n, int fd);
+int		ft_printstr(char *s, int fd);
+int		ft_printnbr(int n, int fd);
 int		ft_printf(const char *in, ...);
+int		ft_printf_fd(int fd, const char *in, ...);
 char	*get_next_line(int fd);
 char	*ft_buffjoin(char *s1, char *s2);
 size_t	ft_bufflen(const char *str);
@@ -93,5 +94,6 @@ void	ft_freemat(void **mat, size_t j);
 int		ft_matlen(char **mat);
 char	*ft_merge(char *s1, char *s2);
 char	*ft_strndup(const char *s, size_t n);
+int		ft_strcmp(const char *s1, const char *s2);
 
 #endif

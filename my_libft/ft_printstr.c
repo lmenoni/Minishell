@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   ft_printstr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 16:43:23 by lmenoni           #+#    #+#             */
-/*   Updated: 2024/11/23 16:43:25 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/04 19:21:22 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_printstr(char *s)
+int	ft_printstr(char *s, int fd)
 {
 	int	i;
 
 	if (!s)
 	{
-		write (1, "(null)", 6);
+		write (fd, "(null)", 6);
 		return (6);
 	}
 	i = 0;
 	while (s[i])
 	{
-		write(1, &s[i], 1);
+		write(fd, &s[i], 1);
 		i++;
 	}
 	return (i);

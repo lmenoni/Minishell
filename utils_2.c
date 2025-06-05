@@ -82,6 +82,6 @@ int parse_quotes(char *input)
     while (input[i] != '\0')
         i++;
     if (is_quoted(input, &input[i]) != 0)
-        return (ft_printf("minishell: syntax error quotes left open\n"));
+        return (ft_printf_fd(2, "minishell: syntax error quotes left open\n"));
     return (0);
 }

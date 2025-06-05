@@ -35,6 +35,8 @@
 #define CYAN "\033[36m"
 #define RESET "\033[0m"
 
+extern volatile sig_atomic_t last_signal;
+
 typedef enum
 {
     ARGUMENT,
@@ -94,6 +96,7 @@ typedef struct  s_data
     int         cmd_count;
     int         cmd_name;
     int         status;
+    int         st_in;
 }               t_data;
 
 //cmd_array.c

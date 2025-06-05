@@ -30,13 +30,13 @@ int parse_syntax_errors(t_token *token)
     while (token)
     {
         if (token->type == PIPE && !(token->next))
-            return (ft_printf("minishell: syntax error near unexpected token `newline'\n"));
+            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `newline'\n"));
         if (token->type == PIPE && (!(token->prev) || token->next->type == PIPE))
-            return (ft_printf("minishell: syntax error near unexpected token `|'\n"));
+            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `|'\n"));
         if (token->type >= 3 && !(token->next))
-            return (ft_printf("minishell: syntax error near unexpected token `newline'\n"));
+            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `newline'\n"));
         if (token->type >= 3 && (token->next->type >= 3 ||  token->next->type == PIPE))
-            return (ft_printf("minishell: syntax error near unexpected token `>'\n"));
+            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `>'\n"));
         token = token->next;
     }
     return (0);

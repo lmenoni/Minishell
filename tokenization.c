@@ -12,32 +12,6 @@
 
 #include "minishell.h"
 
-// void	add_dollar(t_data *data, char *s, int *idx, bool attach)
-// {
-// 	int	i;
-// 	int	len;
-// 	char *r;
-
-// 	i = 1;
-// 	len = 0;
-// 	//ft_printf("adding dollar\n");
-// 	while (s[i] != '\0' && !is_space(s[i]) && s[i] != '"'
-// 		&& s[i] != '\'' && s[i] != '$' && s[i] != '|'
-// 		&& s[i] != '<' && s[i] != '>')
-// 		i++;
-// 	len = i;
-// 	r = malloc((len + 1) * sizeof(char));
-// 	i = 0;
-// 	while (i < len)
-// 	{
-// 		r[i] = s[i];
-// 		i++;
-// 		*idx = *idx + 1;
-// 	}
-// 	r[i] = '\0';
-// 	add_token(r, DOLLAR, data, attach);
-// }
-
 int argument_len(char *s)
 {
 	int i;
