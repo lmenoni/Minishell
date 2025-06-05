@@ -54,8 +54,14 @@ char	*get_expanded_var(char *s, int *idx, t_data *data)
 	if (s[0] == '\0')
 		return (NULL);
 	i = 1;
-	while (s[i] != '\0' && s[i] != '$' && s[i] != '"' && s[i] != '\'' && !is_space(s[i]))
+	while (s[i] != '\0' && s[i] != '$' && s[i] != '"' && s[i] != '\'' && !is_space(s[i]) && s[i] != '?')
 		i++;
+	if (s[i] == '?' && s[i - 1] == '$')
+	{
+		i++;
+		*idx = *idx + i;
+		return (ft_itoa(data->status));
+	}
 	name  = ft_buffjoin(ft_strndup(&s[1], (i - 1)), "=");
 	r = ft_strdup(check_env(data, name));
 	free(name);

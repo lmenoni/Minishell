@@ -15,11 +15,17 @@
 bool    parsing(t_data *data)
 {
     if (parse_quotes(data->input))
+    {
+        data->status = 2;
         return (false);
+    }
     tokenize_input(data);
     //print_tokens(data->token);
     if (parse_syntax_errors(data->token))
+    {
+        data->status = 2;
         return (false);
+    }
     do_here_doc(data->token, data);
     expand(data->token, data);
     //print_tokens(data->token);
@@ -134,9 +140,11 @@ void    free_data(t_data *data)
 
 void    free_all(t_data *data, t_cmd *cmd)
 {
-    if (cmd->in_fd != -1  && cmd->in_fd != 0 && !is_in_pipe(cmd->in_fd, data->pipe, data))
+    if (cmd->in_fd != -1  && cmd->in_fd != 0
+        && !is_in_pipe(cmd->in_fd, data->pipe, data))
         close(cmd->in_fd);
-    if (cmd->ou_fd != -1  && cmd->ou_fd != 0 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
+    if (cmd->ou_fd != -1  && cmd->ou_fd != 0
+        && !is_in_pipe(cmd->ou_fd, data->pipe, data))
         close(cmd->ou_fd);
     if (cmd->path)
         free(cmd->path);
@@ -193,7 +201,7 @@ bool    do_open(t_cmd *cmd, t_data *data)
         if (t->io_bool == 1 && cmd->ou_fd > 2 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
             close(cmd->ou_fd);
         if (t->amb_redi)
-            return (ft_printf("minishell: %s: ambigous redirect\n", t->s), false);
+            return (ft_printf("minishell: %s: ambiguous redirect\n", t->s), false);
         if (t->io_bool)
         {
             if (!open_out(t, cmd))
@@ -275,11 +283,18 @@ pid_t    execute(t_cmd cmd, t_data *data)
     if (pid == 0)
     {
         handle_fds(&cmd, data);
+        if (!cmd.args[0])
+        {
+            free_all(data, &cmd);
+            exit(0);
+        }
         // if (!define_input(data, &cmd))
         // {
         cmd.path = get_path(cmd.args[0], data);
         if (!cmd.path)
         {
+            write(2, cmd.args[0], ft_strlen(cmd.args[0]));
+            write(2, ": command not found\n", 20);
             free_all(data, &cmd);
             exit(127);
         }

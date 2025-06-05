@@ -192,7 +192,7 @@ bool    do_open(t_cmd *cmd, t_data *data);
 bool    open_in(t_flist *t, t_cmd *cmd, t_data *data);
 bool    open_out(t_flist *t, t_cmd *cmd);
 void    set_pipe(t_cmd *cmd, t_data *data);
-int     create_temp_file(char *content, t_data *data)
+int     create_temp_file(char *content, t_data *data);
 
 //utils_4.c
 char    **ft_matdup(char **mat);
