@@ -3,16 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/21 18:02:57 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:59:17 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t last_signal = 0;
+
+char    **copy_env(t_env *env)
+{
+    int len;
+    char **r;
+    t_env *t;
+    int     i;
+
+    len = 0;
+    i = 0;
+    t = env;
+    while (t)
+    {
+        len++;
+        t = t->next;
+    }
+    r = malloc((len + 1) * sizeof(char *));
+    t = env;
+    while (i < len)
+    {
+        r[i] = ft_strdup(t->e);
+        i++;
+        t = t->next;
+    }
+    r[i] = NULL;
+    return (r);
+}
 
 void	handle_sigint(int sig)
 {

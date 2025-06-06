@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:07:32 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/05 15:07:37 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:57:08 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,18 +84,21 @@ void    do_execve(t_cmd *cmd, t_data *data)
 {
     char *path;
     char **args;
+    char    **env;
 
     path = ft_strdup(cmd->path);
     args = ft_matdup(cmd->args);
+    env = copy_env(data->env_data);
     if (cmd->in_fd != -1  && cmd->in_fd != 0 && !is_in_pipe(cmd->in_fd, data->pipe, data))
         close(cmd->in_fd);
     if (cmd->ou_fd != -1  && cmd->ou_fd != 0 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
         close(cmd->ou_fd);
     free(cmd->path);
     free_data(data);
-    execve(path, args, NULL);
+    execve(path, args, env);
     free(path);
     ft_freemat((void **)args, ft_matlen(args));
+    free(env);
     exit(126);
 }
 
@@ -118,8 +121,7 @@ pid_t    execute(t_cmd cmd, t_data *data)
             free_all(data, &cmd);
             exit(0);
         }
-        // if (!define_input(data, &cmd))
-        // {
+        //define_input(data, &cmd));
         cmd.path = get_path(cmd.args[0], data);
         if (!cmd.path)
         {
@@ -129,7 +131,6 @@ pid_t    execute(t_cmd cmd, t_data *data)
             exit(127);
         }
         do_execve(&cmd, data);
-        // }
     }
     return (pid);
 }
