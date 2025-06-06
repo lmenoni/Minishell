@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/04 17:06:12 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:03:42 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,8 @@ void cd(t_data *data, char **args)
 	new_path = args[1];
 	if (new_path == NULL)
 		cd_home(data);
+	else if (new_path[0] == '\0')
+		exit(0);
 	else if (new_path[0] == '~')// if (new_path[1] != '\0') strjoin(data->home_path, new_path + 1)
 		cd_tilde(data, new_path);
 	else if (new_path[0] == '-')

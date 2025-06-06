@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/03 23:21:39 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:50:48 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,15 @@ else
 	printf("declare -x %s\n", env->e);
 */
 
-int parse_export(char *var)
+int parse_export(char *var, int *status)
 {
 	int i;
 
 	i = 1;
 	if (var[0] == '=' || (!ft_isalpha(var[0]) && var[0] != '_'))
 	{
-		print_error("bash: export: not a valid identifier\n"); //sistemare con printf per stamapre anche var
+		print_error("bash: export: not a valid identifier\n");//sistemare con printf per stamapre anche var
+		*status = 1; 
 		return (1);
 	}
 	while (var[i] && var[i] != '=')
@@ -44,6 +45,7 @@ int parse_export(char *var)
 		else if (!ft_isalnum(var[i]) && var[i] != '_')
 		{
 			print_error("bash: export: not a valid identifier\n");
+			*status = 1;
 			return (1);
 		}
 		i++;
@@ -88,7 +90,7 @@ void export_add(t_data *data, char *args, char *var_name)
 		return ;
 }
 
-void export_case(t_data *data, char **args)
+void export_case(t_data *data, char **args, int *status)
 {
 	int i;
 	int parse_result;
@@ -97,7 +99,7 @@ void export_case(t_data *data, char **args)
 	i = 1;
 	while (args[i])
 	{
-		parse_result = parse_export(args[i]);
+		parse_result = parse_export(args[i], status);
 		var_name = ft_buffjoin(get_var_name(args[i]), "=");
 		if (parse_result == 0 && ft_strncmp(var_name, "_=", 2) != 0)
 			export_add(data, args[i], var_name);
@@ -124,8 +126,10 @@ void export(t_data *data, char **args)
 {
 	t_env *env;
 	int i;
+	int	status;
 
 	i = 0;
+	status = 0;
 	env = data->env_data;
 	if (!args[1])
 	{
@@ -139,5 +143,6 @@ void export(t_data *data, char **args)
 		}
 	}
 	else
-		export_case(data, args);
+		export_case(data, args, &status);
+	ft_printf("\nexport result %d\n", status);
 }

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:34:47 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/05 18:56:36 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:37:51 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,42 +91,62 @@
 // 	return ((unsigned char)atoll(args[0]));
 // }
 
-void exit_execution(t_data *data, t_cmd *cmd)
+void exit_execution(int result, t_cmd *cmd)
 {
 	if (!cmd->pipe_in && !cmd->pipe_out)
 		ft_printf("exit\n");
-	exit(data->exit_status);
+	exit(result);
 }
 
-int validate_exit_arg(char *arg)
+bool    check_numeric(char *arg, int *digitc)
 {
-    int i = 0;
+    int i;
+
+    i = 0;
 
     skip_spaces(arg, &i);
-    while (arg[i] != '\0' && arg[i] != ' ')
+    if (arg[i] == '-' || arg[i] == '+')
         i++;
+    while (arg[i] != '\0' && arg[i] != ' ')
+    {
+        if (!ft_isdigit(arg[i]))
+            return (false);
+        (*digitc)++;
+        i++;
+    }
     skip_spaces(arg, &i);
     if (arg[i] != '\0')
-        return (2);
-    if (atoll(arg) <= LONG_MIN || atoll(arg) >= LONG_MAX || i > 20)
-        return (2);
-    if (isdigit(arg[0]) == 0 && arg[0] != '-' && arg[0] != '+')
-        return (2);
-    return ((unsigned char)atoll(arg));
+        return (false);
+    return (true);
 }
 
-int parse_exit(char **args)
+bool validate_exit_arg(char *arg, int *result)
+{
+    int digitc;
+
+    digitc = 0;
+    if (!check_numeric(arg, &digitc) || digitc > 20|| ft_atoll(arg) <= LONG_MIN || ft_atoll(arg) >= LONG_MAX)
+    {
+        *result = 2;
+        return (false);
+    }
+    *result = (unsigned char)ft_atoll(arg);
+    return (true);
+}
+
+int parse_exit(char **args, bool *exec)
 {
     int result;
 
 	if (!args || !*args)
 		return (0);
-	result = validate_exit_arg(args[0]);
-	if (result == 2)
+	result = 0;
+	if (!validate_exit_arg(args[0], &result))
 		ft_printf_fd(2, "minishell: exit: %s: numeric argument required\n", args[0]);
 	else if (ft_matlen(args) > 1)
     {
         ft_printf("minishell: exit: too many arguments\n");
+        *exec = false;
         return (1);
     }
     return (result);
@@ -134,11 +154,17 @@ int parse_exit(char **args)
 
 void exit_shell(t_data *data, t_cmd *cmd)
 {
-	(void)data;
     char **args;
-    int parsing_result;
+    int result;
+    bool    exec;
 
+    exec = true;
 	args = cmd->args;
-	parsing_result = parse_exit(args + 1);
-	ft_printf("%d\n", parsing_result);
+	result = parse_exit(args + 1, &exec);
+	ft_printf("%d\n", result);
+    if (exec)
+        exit_execution(result, cmd);
+    if (cmd->pipe_in || cmd->pipe_out)
+        exit (result);
+    data->exit_status = result;
 }
