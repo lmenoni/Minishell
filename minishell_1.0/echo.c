@@ -6,13 +6,13 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:43:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/04 17:01:07 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 19:32:06 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int check_echo_flag(char **input_array)
+static int check_echo_flag(char **input_array)
 {
 	int i;
 	int j;
@@ -52,7 +52,8 @@ void echo(char **args)
 	if (args[i] == NULL)
 	{
 		ft_printf("\n");
-		return ;
+		//free_all(data);
+		exit(0);
 	}
 	while (args[i])
 	{
@@ -63,4 +64,5 @@ void echo(char **args)
 	}
 	if (!flag)
 		ft_printf("\n");
+	exit(0);
 }

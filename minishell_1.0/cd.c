@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/06 17:03:42 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 19:30:15 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void cd_oldpwd(t_data *data)
 		else
 			path = check_env(data, "OLDPWD=");
 		chdir(path);
-		ft_printf("%s\n", path); // Controllare perché la prima volta che viene usato // cd - non stampa nulla (valgrind segnala un invalid read)
+		ft_printf("%s\n", path);
 		if (check_env(data, "OLDPWD="))
 			update_env(data, "OLDPWD=", data->current_path);
 		free(data->old_path);

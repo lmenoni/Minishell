@@ -12,7 +12,7 @@
 
 -Fare exit. Non deve accettare nulla, deve solo controllare che non ci siano argomenti e nel caso si trova in una fork deve chiudere la fork e poi se rifatto la shell. Per il momento fare exit basilare. Exit potra' essere complatato solo una volta fatto i segnali e l'esecuzione.
 -Unire il codice di Leo con il mio
--Fare CTRL-C CTRL-D CTRL-/ per poi poter completare una parte di exit
+-Controllare se dopo che il negro ha lavorato nei campi dei parsing, il fattoriale del $HOME con cd che e' unsettato come puzza
 
 --Secondarie--
 -Studiare e prepare un suppression file
