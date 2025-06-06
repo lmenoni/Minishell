@@ -146,8 +146,8 @@ void    print_cmd_array(t_data *data);
 void    print_env(t_env *node);
 
 //here_doc.c
-void    do_here_doc(t_token *tok, t_data *data);
-char    *get_lines(char *s);
+bool    do_here_doc(t_token *tok, t_data *data);
+char    *get_lines(char *s, t_data *data);
 bool    is_limiter_quoted(char *s);
 
 //expansion.c
@@ -204,5 +204,8 @@ void    free_data(t_data *data);
 bool    is_in_pipe(int fd, int **pipe, t_data *data);
 bool    no_more_input(t_flist *t);
 void    create_pipe_arr(t_data *data);
+
+void	handle_sigint(int sig);
+
 
 #endif

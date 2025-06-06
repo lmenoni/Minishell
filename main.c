@@ -19,9 +19,11 @@ void	handle_sigint(int sig)
 	(void)sig;
     close(0);
     last_signal = 1;
+    // rl_done = 1;
 	write(1, "\n", 1);
 	rl_on_new_line();
-	rl_replace_line("", 0); //nell here doc stessa funzione tranne le funzioni rl, se last_signal e' settato a 1 ci si ferma dall'aprire i successivi e chiudi tutto, poi reset di last_signal e reset della funzione signal()
+	rl_replace_line("", 0);
+    // rl_redisplay();
 }
 
 void	init_signals(void)
@@ -44,7 +46,8 @@ bool    parsing(t_data *data)
         data->status = 2;
         return (false);
     }
-    do_here_doc(data->token, data);
+    if (!do_here_doc(data->token, data))
+        return (false);
     expand(data->token, data);
     //print_tokens(data->token);
     make_cmd_array(data);
@@ -85,6 +88,16 @@ bool    check_last_signal(t_data *data)
     return (false);
 }
 
+// void flush_stdin(void)
+// {
+//     int bytes;
+//     char c;
+
+//     ioctl(STDIN_FILENO, FIONREAD, &bytes);
+//     while (bytes-- > 0)
+//         read(STDIN_FILENO, &c, 1);
+// }
+
 int main(int ac, char **av, char **e)
 {
     t_data  data;
@@ -98,6 +111,7 @@ int main(int ac, char **av, char **e)
     while (1)
     {
         reset_data(&data);
+        // flush_stdin();
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
         if (!data.input && last_signal == 0)
             break ;
