@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 17:59:17 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 19:09:34 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ bool    parsing(t_data *data)
     expand(data->token, data);
     //print_tokens(data->token);
     make_cmd_array(data);
-    //print_cmd_array(data);
+    print_cmd_array(data);
     return (true);
 }
 

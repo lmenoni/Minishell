@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fds.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:07:46 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/05 15:07:49 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:39:48 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ bool    open_in(t_flist *t, t_cmd *cmd, t_data *data)
     fd = 0;
     if (t->x_factor && no_more_input(t))
         fd = create_temp_file(t->s, data);
-    else
+    else if (!t->x_factor)
         fd = open(t->s, O_RDONLY);
     if (fd < 0)
         return (ft_printf_fd(2, "minishell: %s: ", t->s), perror(""), false);

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 17:55:04 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/06 19:08:27 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ void    create_pipe_arr(t_data *data);
 
 void	handle_sigint(int sig);
 char    **copy_env(t_env *env);
+char *ft_crazystring(char *s);
 
 
 #endif

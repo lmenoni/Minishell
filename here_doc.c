@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:03:18 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/19 17:40:44 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/06 19:11:15 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,28 +54,26 @@ char *get_lines(char *s, t_data *data)
 	char *r;
 	char *line;
 	char *limiter;
+	char *prompt;
 
 	limiter = get_unquoted(s);
+	prompt = ft_crazystring(limiter);
 	r = NULL;
 	while (1)
 	{
-		// in caso di eof (cntrl d) deve ritornare r valido, se r NULL deve essere una stringa vuota (inoltre dare messaggio di errore)
 		line = NULL;
-		line = readline("> ");
+		line = readline(prompt);
 		if (check_lstsig_here(line, limiter, r, data))
 			break ;
-		// se il limiter è stringa vuota ("") non deve fare il controllo di line[0]
-		if (!line || (line[0] != '\0' && ft_strncmp(line, limiter, ft_strlen(line)) == 0))
-		{
-			free(line);
-			free(limiter);
-			return (r);
-		}
 		if (r)
 			r = ft_buffjoin(r, "\n");
+		if (!line || (limiter[0] == '\0' && line[0] == '\0')
+			|| (line[0] != '\0' && ft_strncmp(line, limiter, ft_strlen(line)) == 0))
+			return (free(line),free(limiter), free(prompt), r);
 		r = ft_buffjoin(r, line);
 		free(line);
 	}
+	free(prompt);
 	return (NULL);
 }
 

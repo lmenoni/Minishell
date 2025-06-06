@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+         #
+#    By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/08 19:12:30 by igilani           #+#    #+#              #
-#    Updated: 2025/05/19 16:24:41 by lmenoni          ###   ########.fr        #
+#    Updated: 2025/06/06 19:08:03 by igilani          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 CC	  	= cc
 CFLAGS  = -Wall -Wextra -Werror -g
 NAME	= minishell
-SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c env.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c execution.c fds.c utils_4.c
+SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c env.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c execution.c fds.c utils_4.c crazystring.c
 HEADERS = minishell.h
 OBJ_DIR = obj
 OBJ	 	= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
