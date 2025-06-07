@@ -71,6 +71,9 @@ int	is_quoted(char *s, char *to_check)
 
 void    reset_data(t_data *data)
 {
+    free(data->input);
+    free_token(data->token);
+    free_cmd_array(data);
     data->cmd_count = 0;
     data->cmd_name = 0;
     data->cmd_arr = NULL;

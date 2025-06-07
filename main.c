@@ -44,13 +44,13 @@ char    **copy_env(t_env *env)
 void	handle_sigint(int sig)
 {
 	(void)sig;
-    close(0);
+    // close(0);
     last_signal = 1;
     // rl_done = 1;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-    // rl_redisplay();
+    rl_redisplay();
 }
 
 void	init_signals(void)
@@ -106,9 +106,9 @@ bool    check_last_signal(t_data *data)
     if (last_signal)
     {
         last_signal = 0;
-        dup2(data->st_in, STDIN_FILENO);
-        free(data->input);
-        data->input = NULL;
+        // dup2(data->st_in, STDIN_FILENO);
+        // free(data->input);
+        // data->input = NULL;
         data->status = 130;
         return (true);
     }
@@ -140,10 +140,9 @@ int main(int ac, char **av, char **e)
         reset_data(&data);
         // flush_stdin();
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
-        if (!data.input && last_signal == 0)
+        if (!data.input)
             break ;
-        if (check_last_signal(&data))
-            continue ;
+        check_last_signal(&data);
         if (parsing(&data))
         {
             //ft_printf("READY FOR EXECUTE\n");
@@ -151,9 +150,6 @@ int main(int ac, char **av, char **e)
             execution(&data);
         }
         add_history(data.input);
-        free(data.input);
-        free_token(data.token);
-        free_cmd_array(&data);
     }
     free_env(data.env_data);
     free(data.curr_path);
@@ -162,5 +158,6 @@ int main(int ac, char **av, char **e)
     return (0);
 }
 
-//gestione signal in here_doc
+//gestione segnali here doc, da errore nel rl principale -_-
+//gestione variabili espane a niente, fare in modo che vengano cancellate, tranne in caso di redirect che devono dare amb_redi
 //gestione fallimento pipe array, controllare open funzionino correttamente

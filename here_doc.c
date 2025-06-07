@@ -15,6 +15,7 @@
 void    here_sigint(int sig)
 {
     (void)sig;
+
     close(0);
     last_signal = 1;
 	write(1, "\n", 1);
