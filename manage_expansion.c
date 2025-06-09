@@ -12,15 +12,38 @@
 
 #include "minishell.h"
 
-void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
+bool    check_tok(t_token **tok, t_token *new, t_data *data)
 {
-    if ((*tok)->prev && (*tok)->prev->type >= 3 && (tok_len(new) > 1 || (new->type == AMB_REDI && new->s[0] == 0)))
+    t_token *temp;
+
+    if ((*tok)->prev && (*tok)->prev->type >= 3 && (!new || tok_len(new) != 1))
     {
         (*tok)->type = AMB_REDI;
-        free_token(new);
-        return ;
+        return (free_token(new), false);
     }
-    else if ((*tok)->prev)
+    if (!new)
+    {
+        temp = *tok;
+        *tok = (*tok)->next;
+        if (*tok)
+            (*tok)->prev = NULL;
+        if (temp->prev)
+        {
+            (*tok)->prev = temp->prev;
+            temp->prev->next = *tok;
+        }
+        else
+            data->token = *tok;
+        return (free(temp->s), free(temp), false);
+    }
+    return (true);
+}
+
+void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
+{
+    if (!check_tok(tok, new, data))
+        return ;
+    if ((*tok)->prev)
     {
         new->prev = (*tok)->prev;
         (*tok)->prev->next = new;
@@ -28,36 +51,56 @@ void    add_to_token_struct(t_token **tok, t_data *data, t_token *new)
     else
         data->token = new;
     new->type = ARGUMENT;
+    while (new->next)
+        new = new->next;
     if ((*tok)->next)
     {
-        while (new->next)
-            new = new->next;
         (*tok)->next->prev = new;
         new->next = (*tok)->next;
     }
     free((*tok)->s);
     free(*tok);
-    *tok = new;
+    *tok = new->next;
 }
 
-void    tokenize_dollar(t_token **new, char **arr, int i, t_data *data)
+void    delete_node(t_token **c, t_token **t)
+{
+    t_token *temp;
+
+    temp = *c;
+    (*c) = (*c)->next;
+    if (temp == *t)
+        (*t) = (*t)->next;
+    if (*c)
+        (*c)->prev = temp->prev;
+    if (temp->prev)
+        temp->prev->next = *c;
+    free(temp->s);
+    free(temp);
+}
+
+void    tokenize_dollar(t_token **new, t_token **c, t_token **t, t_data *data)
 {
     t_token *temp;
 
     temp = NULL;
-    arr[i] = expand_dollar(arr[i], data, false);
-    temp = create_temp(arr[i]);
+    (*c)->s = expand_dollar((*c)->s, data, false);
+    if ((*c)->s[0] == '\0')
+        return (delete_node(c, t));
+    temp = create_temp((*c)->s);
     if (temp == NULL)
         return ;
     if (!(*new))
     {
         *new = temp;
+        (*c) = (*c)->next;
         return ;
     }
-    add_to_new(new, arr, i, &temp);
+    add_to_new(new, c, &temp);
+    (*c) = (*c)->next;
 }
 
-void    tokenize_string(t_token **new, char **arr, int i, t_data *data)
+void    tokenize_string(t_token **new, t_token **c, t_data *data)
 {
     t_token *curr;
     t_token *temp;
@@ -65,44 +108,43 @@ void    tokenize_string(t_token **new, char **arr, int i, t_data *data)
     curr = *new;
     while (curr && curr->next)
         curr = curr->next;
-    arr[i] = expand_dollar(arr[i], data, false);
-    arr[i] = get_unquoted(arr[i]);
-    if (*new)
+    (*c)->s = expand_dollar((*c)->s, data, false);
+    (*c)->s = get_unquoted((*c)->s);
+    if (*new && (*c)->prev && !is_space(last_char((*c)->prev->s)))
     {
-        if (!is_space(last_char(arr[i - 1])))
-        {
-            curr->s = ft_buffjoin(curr->s, arr[i]);
+            curr->s = ft_buffjoin(curr->s, (*c)->s);
+            *c = (*c)->next;
             return ;
-        }
     }
-    temp = token_new(ft_strdup(arr[i]), ARGUMENT);
+    temp = token_new(ft_strdup((*c)->s), ARGUMENT);
     if (!(*new))
     {
         *new = temp;
+        *c = (*c)->next;
         return ;
     }
     curr->next = temp;
     temp->prev = curr;
+    *c = (*c)->next;
 }
 
 void    handle_unquoted_expansion(t_token **tok, t_data *data)
 {
-    char    **arr;
-    int     i;
+    t_token *t;
+    t_token *curr;
     t_token *new;
 
-    i = 0;
     new = NULL;
-    arr = split_token((*tok)->s);
-    while (arr[i] != NULL)
+    t = split_token((*tok)->s);
+    curr = t;
+    while (curr)
     {
-        if (arr[i][0] == '$')
-            tokenize_dollar(&new, arr, i, data);
+        if (curr->s[0] == '$')
+            tokenize_dollar(&new, &curr, &t, data);
         else
-            tokenize_string(&new, arr, i, data);
-        i++;
+            tokenize_string(&new, &curr, data);//
     }
-    ft_freemat((void **)arr, ft_matlen(arr));
+    free_token(t);
     add_to_token_struct(tok, data, new);
 }
 
@@ -110,13 +152,19 @@ void    expand(t_token *tok, t_data *data)
 {
     while (tok)
     {
-        if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)) && is_dollar_quoted(tok->s))
+        if (tok->type == ARGUMENT && (!tok->prev
+            || (tok->prev && tok->prev->type != HERE_DOC))
+            && is_dollar_quoted(tok->s))
         {
             tok->s = expand_dollar(tok->s, data, false);
             tok->s = get_unquoted(tok->s);
+            tok = tok->next;
         }
-        else if (tok->type == ARGUMENT && (!tok->prev || (tok->prev && tok->prev->type != HERE_DOC)) && !is_dollar_quoted(tok->s))
+        else if (tok->type == ARGUMENT && (!tok->prev
+            || (tok->prev && tok->prev->type != HERE_DOC))
+            && !is_dollar_quoted(tok->s))
             handle_unquoted_expansion(&tok, data);
-        tok = tok->next;
+        else
+            tok = tok->next;
     }
 }

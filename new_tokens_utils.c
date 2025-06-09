@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void    add_to_new(t_token **new, char **arr, int i, t_token **temp)
+void    add_to_new(t_token **new, t_token **c, t_token **temp)
 {
     t_token *last;
     t_token *curr;
@@ -20,9 +20,9 @@ void    add_to_new(t_token **new, char **arr, int i, t_token **temp)
     last = *new;
     while (last->next)
         last = last->next;
-    if ((last->type != AMB_REDI && !is_space(arr[i][0]))
-        || (last->type == AMB_REDI && !is_space(arr[i][0])
-        && !is_space(last_char(arr[i - 1]))))
+    if ((*c)->prev && ((last->type != AMB_REDI && !is_space((*c)->s[0]))
+        || (last->type == AMB_REDI && !is_space((*c)->s[0])
+        && !is_space(last_char((*c)->prev->s)))))
     {
         curr = *temp;
         *temp = (*temp)->next;
@@ -47,8 +47,6 @@ t_token *create_temp(char *s)
     j = 0;
     len = 0;
     r = NULL;
-    if (s[0] == '\0')
-        return (add_temp(ft_strdup(s), &r), r);
     while (s[j] != '\0')
     {
         len = 0;
@@ -58,19 +56,19 @@ t_token *create_temp(char *s)
             while (s[j + len] != '\0' && !is_space(s[j + len]))
                 len++;
             str = ft_strndup(&s[j], len);
-            add_temp(str, &r);
+            add_temp(str, &r, AMB_REDI);
             j += len;
         }
     }
     return (r);
 }
 
-void    add_temp(char *content, t_token **first)
+void    add_temp(char *content, t_token **first, tok_type type)
 {
     t_token *new;
     t_token *curr;
 
-    new = token_new(content, AMB_REDI);
+    new = token_new(content, type);
     if (!(*first))
         *first = new;
     else
@@ -83,13 +81,12 @@ void    add_temp(char *content, t_token **first)
     }
 }
 
-void    fill_array(char *t, int *i, int *j, char **r)
+void    fill_array(char *t, int *i, t_token  **r)
 {
     if (t[*i] != '$')
     {
         while_string(t, i);
-        r[*j] = ft_strndup(t, *i);
-        *j = *j + 1;
+        add_temp(ft_strndup(t, *i), r, ARGUMENT);
     }
     else
     {
@@ -98,29 +95,26 @@ void    fill_array(char *t, int *i, int *j, char **r)
         else
         {
             while_var(t, i);
-            r[*j] = ft_strndup(t, *i);
-            *j = *j + 1;
+            add_temp(ft_strndup(t, *i), r, AMB_REDI);
         }
     }
 }
 
-char    **split_token(char *s)
+t_token *split_token(char *s)
 {
-    int j;
-    int i;
-    char    **r;
+    t_token *r;
+    int     i;
     char    *t;
 
-    i = 0;
-    j = 0;
     t = s;
-    r = malloc((count_pieces(s) + 1) * sizeof(char *));
+    r = NULL;
+    i = 0;
     while (t[i] != '\0')
     {
-        fill_array(t, &i, &j, r);
+        ft_printf("ciclo\n");
+        fill_array(t, &i, &r);
         t += i;
         i = 0;
     }
-    r[j] = NULL;
     return (r);
 }

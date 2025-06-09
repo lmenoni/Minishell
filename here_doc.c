@@ -16,9 +16,8 @@ void    here_sigint(int sig)
 {
     (void)sig;
 
-    close(0);
     last_signal = 1;
-	write(1, "\n", 1);
+    ioctl(0, TIOCSTI, "\n");
 }
 
 bool is_limiter_quoted(char *s)
@@ -43,7 +42,7 @@ bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
 			free(r);
 		free(line);
 		free(limiter);
-		dup2(data->st_in, STDIN_FILENO);
+		// dup2(data->st_in, STDIN_FILENO);
 		data->status = 130;
 		return (true);
 	}
@@ -70,7 +69,7 @@ char *get_lines(char *s, t_data *data)
 			r = ft_buffjoin(r, "\n");
 		if (!line || (limiter[0] == '\0' && line[0] == '\0')
 			|| (line[0] != '\0' && ft_strncmp(line, limiter, ft_strlen(line)) == 0))
-			return (free(line),free(limiter), free(prompt), r);
+			return (free(line), free(limiter), free(prompt), r);
 		r = ft_buffjoin(r, line);
 		free(line);
 	}
@@ -83,8 +82,10 @@ bool	reset_signal()
 	if (last_signal)
 	{
 		last_signal = 0;
+		signal(SIGINT, handle_sigint);
 		return (false);
 	}
+	signal(SIGINT, handle_sigint);
 	return (true);
 }
 
@@ -109,6 +110,5 @@ bool	do_here_doc(t_token *tok, t_data *data)
 		}
 		tok = tok->next;
 	}
-	signal(SIGINT, handle_sigint);
 	return (reset_signal());
 }

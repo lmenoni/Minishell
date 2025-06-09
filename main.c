@@ -48,8 +48,8 @@ void	handle_sigint(int sig)
     last_signal = 1;
     // rl_done = 1;
 	write(1, "\n", 1);
-	rl_on_new_line();
 	rl_replace_line("", 0);
+	rl_on_new_line();
     rl_redisplay();
 }
 
@@ -76,7 +76,7 @@ bool    parsing(t_data *data)
     if (!do_here_doc(data->token, data))
         return (false);
     expand(data->token, data);
-    //print_tokens(data->token);
+    print_tokens(data->token);
     make_cmd_array(data);
     print_cmd_array(data);
     return (true);
@@ -145,7 +145,7 @@ int main(int ac, char **av, char **e)
         check_last_signal(&data);
         if (parsing(&data))
         {
-            //ft_printf("READY FOR EXECUTE\n");
+            ft_printf("READY FOR EXECUTE\n");
             create_pipe_arr(&data);
             execution(&data);
         }
@@ -159,5 +159,4 @@ int main(int ac, char **av, char **e)
 }
 
 //gestione segnali here doc, da errore nel rl principale -_-
-//gestione variabili espane a niente, fare in modo che vengano cancellate, tranne in caso di redirect che devono dare amb_redi
 //gestione fallimento pipe array, controllare open funzionino correttamente

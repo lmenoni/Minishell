@@ -164,17 +164,17 @@ int tok_len(t_token *tok);
 
 //manage_expansion.c
 void    expand(t_token *tok, t_data *data);
-void    tokenize_string(t_token **new, char **arr, int i, t_data *data);
-void    tokenize_dollar(t_token **new, char **arr, int i, t_data *data);
+void    tokenize_string(t_token **new, t_token **c, t_data *data);
+void    tokenize_dollar(t_token **new, t_token **c, t_token **t, t_data *data);
 void    handle_unquoted_expansion(t_token **tok, t_data *data);
 void    add_to_token_struct(t_token **tok, t_data *data, t_token *new);
 
 //new_tokens_utils.c
-void    add_to_new(t_token **new, char **arr, int i, t_token **temp);
+void    add_to_new(t_token **new, t_token **c, t_token **temp);
 t_token *create_temp(char *s);
-void    add_temp(char *content, t_token **first);
-char    **split_token(char *s);
-void    fill_array(char *t, int *i, int *j, char **r);
+void    add_temp(char *content, t_token **first, tok_type type);
+t_token *split_token(char *s);
+void    fill_array(char *t, int *i, t_token  **r);
 
 //utils_3.c
 bool    is_dollar_quoted(char *s);
