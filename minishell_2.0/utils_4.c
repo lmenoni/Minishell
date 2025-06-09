@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_4.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:08:00 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/05 15:08:03 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:58:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void    free_data(t_data *data)
         free_cmd_array(data);
     if (data->env_data)
         free_env(data->env_data);
-    if (data->curr_path)
-        free(data->curr_path);
+    if (data->current_path)
+        free(data->current_path);
     if (data->pipe)
         free_pipe(data->pipe, (data->cmd_count - 1));
     close(data->st_in);

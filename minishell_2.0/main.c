@@ -6,13 +6,31 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 19:09:34 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 19:17:37 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t last_signal = 0;
+
+void define_input(t_data *data, t_cmd *cmd)
+{
+	if (!ft_strncmp(cmd->args[0], "echo", 4))
+		echo(data, cmd, cmd->args);
+    else if (!ft_strncmp(cmd->args[0], "cd", 2))
+		cd(data, cmd, cmd->args);
+	else if (!ft_strncmp(cmd->args[0], "pwd", 3))
+		pwd(data, cmd);
+	else if (!ft_strncmp(cmd->args[0], "env", 3))
+		env(data, cmd->args);
+	else if (!ft_strncmp(cmd->args[0], "unset", 5))
+		unset(data, cmd, cmd->args);
+	else if (!ft_strncmp(cmd->args[0], "export", 6))
+		export(data, cmd, cmd->args);
+    else if (!ft_strncmp(cmd->args[0], "exit", 4))
+        exit_shell(data, cmd);
+}
 
 char    **copy_env(t_env *env)
 {
@@ -78,7 +96,7 @@ bool    parsing(t_data *data)
     expand(data->token, data);
     //print_tokens(data->token);
     make_cmd_array(data);
-    print_cmd_array(data);
+    // print_cmd_array(data);
     return (true);
 }
 
@@ -156,7 +174,7 @@ int main(int ac, char **av, char **e)
         free_cmd_array(&data);
     }
     free_env(data.env_data);
-    free(data.curr_path);
+    free(data.current_path);
     close(data.st_in);
     rl_clear_history();
     return (0);

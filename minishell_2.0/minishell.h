@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 19:08:27 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 19:16:39 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ typedef struct  s_data
     t_cmd       *cmd_arr;
     t_token     *token;
     t_token     *last_token;
-    char        *curr_path;
+    char        *current_path;
     char        *old_path;
     char        *home_path;
     char        *input;
@@ -135,15 +135,10 @@ int parse_syntax_errors(t_token *token);
 void    reset_data(t_data *data);
 int	is_quoted(char *s, char *to_check);
 
-//env.c
-t_env   *init_env(char **e, t_data *data);
-t_env   *new_env_node(char *s);
-
 //print.c
 void    print_tokens(t_token *token);
 void    print_files(t_flist *list);
 void    print_cmd_array(t_data *data);
-void    print_env(t_env *node);
 
 //here_doc.c
 bool    do_here_doc(t_token *tok, t_data *data);
@@ -153,7 +148,6 @@ bool    is_limiter_quoted(char *s);
 //expansion.c
 char	*get_expanded_var(char *s, int *idx, t_data *data);
 void	while_not_var(char *s, char *t, int *i, bool expand);
-char *check_env(t_data *data, char *var);
 char *expand_dollar(char *s, t_data *data, bool expand);
 
 //utils_2.c
@@ -209,5 +203,23 @@ void	handle_sigint(int sig);
 char    **copy_env(t_env *env);
 char *ft_crazystring(char *s);
 
+// env
+t_env   *init_env(char **e, t_data *data);
+t_env   *new_env_node(char *s);
+char *check_env(t_data *data, char *var);
+void update_env(t_data *data, char *var, char *str);
+void delete_env(t_data *data, char *var);
+void add_env(t_data *data, char *var);
+char *get_var_name(char *var);
 
+// builtin
+void echo(t_data *data, t_cmd *cmd, char **args);
+void cd(t_data *data, t_cmd * cmd, char **args);
+void unset(t_data *data, t_cmd *cmd, char **var);
+void env(t_data *data, char **input_array);
+void pwd(t_data *data, t_cmd *cmd);
+void export(t_data *data, t_cmd *cmd, char **args);
+void exit_shell(t_data *data, t_cmd *cmd);
+
+void define_input(t_data *data, t_cmd *cmd);
 #endif

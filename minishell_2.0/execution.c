@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:07:32 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 17:57:08 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 19:10:26 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ pid_t    execute(t_cmd cmd, t_data *data)
             free_all(data, &cmd);
             exit(0);
         }
-        //define_input(data, &cmd));
+        define_input(data, &cmd);
         cmd.path = get_path(cmd.args[0], data);
         if (!cmd.path)
         {

@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:53:43 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/20 12:47:48 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/09 19:04:58 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void    print_env(t_env *node)
-{
-    while (node)
-    {
-        ft_printf("%s\n", node->e);
-        node = node->next;
-    }
-}
 
 void    print_tokens(t_token *token)
 {

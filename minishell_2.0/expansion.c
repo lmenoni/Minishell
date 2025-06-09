@@ -3,33 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:22:14 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/20 12:56:03 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/09 19:02:45 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char *check_env(t_data *data, char *var)
-{
-	t_env *temp;
-	int	i;
-	
-	i = 0;
-	temp = data->env_data;
-	while (temp)
-	{
-		i = 0;
-		while (temp->e[i] != '\0' && temp->e[i] != '=')
-			i++;
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
-			return (&temp->e[i + 1]);
-		temp = temp->next;
-	}
-	return (NULL);
-}
 
 void	while_not_var(char *s, char *t, int *i, bool expand)
 {
