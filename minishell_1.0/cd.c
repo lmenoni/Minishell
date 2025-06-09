@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/06 19:30:15 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:23:12 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,23 @@ appena viene aperto minishell, OLDPWD non e' settato e cd - non funziona
 bisogna controllare se OLDPWD esiste per poterlo aggiornare, quindi aggiungere check_env(data, "OLDPWD=") ma tenere sempre conto del =
 */
 
-static void safe_chdir(char *path)
+static bool safe_chdir(char *path, int *status, char *s1, char *s2)
 {
 	if (chdir(path) != 0)
 	{
-		print_error("bash: cd: no such file or directory\n");
-		return ;
+		
+		ft_printf_fd(2, "minishell: cd: %s: no such file or directory\n", path);
+		*status = 1;
+		if (s1)
+			free(s1);
+		if (s2)
+			free(s2);
+		return (false);
 	}
+	return (true);
 }
 
-static int cd_parse(char **args)
-{
-	int i;
-
-	i = 0;
-	while (args[++i])
-	{
-		if (i >= 2)
-			return (0);
-	}
-	return (1);
-}
-
-static void cd_oldpwd(t_data *data)
+static void cd_oldpwd(t_data *data, int *status)
 {
 	char *path;
 	
@@ -58,7 +52,8 @@ static void cd_oldpwd(t_data *data)
 			path = data->old_path;
 		else
 			path = check_env(data, "OLDPWD=");
-		chdir(path);
+		if (safe_chdir(path, status, NULL, NULL) == false)
+			return ;
 		ft_printf("%s\n", path);
 		if (check_env(data, "OLDPWD="))
 			update_env(data, "OLDPWD=", data->current_path);
@@ -68,31 +63,35 @@ static void cd_oldpwd(t_data *data)
 		update_env(data, "PWD=", data->current_path);
 	}
 	else
-		print_error("bash: cd: OLDPWD not set\n");
+	{
+		ft_printf_fd(2, "minishell: cd: OLDPWD not set\n");
+		*status = 1;
+	}
 }
 
-void cd_home(t_data *data)
+void cd_home(t_data *data, int *status)
 {
 	char *added_equal;
 
-	added_equal = ft_strjoin("=", data->current_path);
 	if (check_env(data, "HOME=") != NULL)
 	{
+		added_equal = ft_strjoin("=", data->current_path);
+		if (safe_chdir(data->home_path, status, added_equal, NULL) == false)
+			return ;
 		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
-		safe_chdir(data->home_path);
 		data->current_path = getcwd(NULL, 0);
 		update_env(data, "PWD=", data->current_path);
 	}
 	else
 	{
-		print_error("bash: cd: HOME not set\n");
-		return ;
+		ft_printf_fd(2, "minishell: cd: HOME not set\n");
+		*status = 1;
 	}
 }
 
-void cd_tilde(t_data *data, char *new_path)
+void cd_tilde(t_data *data, char *new_path, int *status)
 {
 	char *joined_path;
 	char *added_equal;
@@ -101,58 +100,67 @@ void cd_tilde(t_data *data, char *new_path)
 	added_equal = ft_strjoin("=", data->current_path);
 	if (new_path[0] == '~' && new_path[1] == '\0')
 	{
+		if (safe_chdir(data->home_path, status, added_equal, joined_path) == false)
+			return ;
 		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
-		safe_chdir(data->home_path);
 		data->current_path = getcwd(NULL, 0);
 		update_env(data, "PWD=", data->current_path);
 	}
 	else if (new_path[0] == '~' && new_path[1] != '\0')
 	{
+		if (safe_chdir(joined_path, status, added_equal, joined_path) == false)
+			return ;
 		update_env(data, "OLDPWD", added_equal);
 		free(data->old_path);
 		data->old_path = data->current_path;
-		safe_chdir(joined_path);
 		data->current_path = getcwd(NULL, 0);
 		update_env(data, "PWD=", data->current_path);
 	}
-	free(joined_path);
-	free(added_equal);
 }
 
-void cd_execution(t_data *data, char *new_path)
+void cd_execution(t_data *data, char *new_path, int *status)
 {
 	char *added_equal;
 
+	if (safe_chdir(new_path, status, NULL, NULL) == false)
+			return ;
 	free(data->old_path);
 	data->old_path = data->current_path;
 	added_equal = ft_strjoin("=", data->old_path);
 	update_env(data, "OLDPWD", added_equal);
 	free(added_equal);
-	safe_chdir(new_path);
 	data->current_path = getcwd(NULL, 0);
 	update_env(data, "PWD=", data->current_path);
 }
 
-void cd(t_data *data, char **args)
+void cd(t_data *data, t_cmd * cmd, char **args)
 {
 	char *new_path;
+	int	status;
+	(void)cmd;
 	
-	if (cd_parse(args) == 0)
+	status = 0;
+	if (ft_matlen(args) <= 2)
 	{
-		print_error("bash: cd: too many arguments\n");
-		return ;
+		new_path = args[1];
+		if (new_path == NULL)
+			cd_home(data, &status);
+		else if (new_path[0] == '\0')
+			;
+		else if (new_path[0] == '~')
+			cd_tilde(data, new_path, &status);
+		else if (new_path[0] == '-')
+			cd_oldpwd(data, &status);
+		else if (new_path != NULL)
+			cd_execution(data, new_path, &status);
 	}
-	new_path = args[1];
-	if (new_path == NULL)
-		cd_home(data);
-	else if (new_path[0] == '\0')
-		exit(0);
-	else if (new_path[0] == '~')// if (new_path[1] != '\0') strjoin(data->home_path, new_path + 1)
-		cd_tilde(data, new_path);
-	else if (new_path[0] == '-')
-		cd_oldpwd(data);
-	else if (new_path != NULL)
-		cd_execution(data, new_path);
+	else
+	{
+		ft_printf_fd(2, "minishell: cd: too many arguments\n");
+		status = 1;
+	}
+	// free_all(data, cmd);
+	exit (status);
 }

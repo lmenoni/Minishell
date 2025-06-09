@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/06 16:50:48 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:25:12 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int parse_export(char *var, int *status)
 	i = 1;
 	if (var[0] == '=' || (!ft_isalpha(var[0]) && var[0] != '_'))
 	{
-		print_error("bash: export: not a valid identifier\n");//sistemare con printf per stamapre anche var
+		ft_printf_fd(2, "minishell: export: %s: not a valid identifier\n", var);
 		*status = 1; 
 		return (1);
 	}
@@ -44,7 +44,7 @@ int parse_export(char *var, int *status)
 			return (2);
 		else if (!ft_isalnum(var[i]) && var[i] != '_')
 		{
-			print_error("bash: export: not a valid identifier\n");
+			ft_printf_fd(2, "minishell: export: %s: not a valid identifier\n", var);
 			*status = 1;
 			return (1);
 		}
@@ -144,5 +144,6 @@ void export(t_data *data, char **args)
 	}
 	else
 		export_case(data, args, &status);
-	ft_printf("\nexport result %d\n", status);
+	//free_all(data, cmd);
+	exit(status);
 }
