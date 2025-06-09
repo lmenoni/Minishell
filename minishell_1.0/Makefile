@@ -6,7 +6,7 @@
 #    By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/08 19:12:30 by igilani           #+#    #+#              #
-#    Updated: 2025/06/03 23:00:05 by igilani          ###   ########.fr        #
+#    Updated: 2025/06/09 18:30:19 by igilani          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 CC	  	= cc
 CFLAGS  = -Wall -Wextra -Werror -g
 NAME	= minishell
-SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c error_handle.c echo.c cd.c env.c unset.c pwd.c export.c exit.c debug.c
+SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c echo.c cd.c env.c unset.c pwd.c export.c exit.c
 HEADERS = minishell.h
 OBJ_DIR = obj
 OBJ	 	= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))

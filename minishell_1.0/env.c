@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/03 15:33:07 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:30:52 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void env(t_data *data, char **input_array)
 
 	if (input_array[1] != NULL)
 	{
-		print_error("bash: env: too many arguments\n");
+		ft_printf_fd(2, "minishell: env: too many arguments\n");
 		return ;
 	}
 	curr = data->env_data;

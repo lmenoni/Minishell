@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/09 18:12:40 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/09 18:28:56 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,30 +102,22 @@ bool    parsing(t_data *data)
 //     mandiamo alla esecuzione di execve*/
 // }
 
-int define_input(t_data *data, t_cmd *cmd)
+void define_input(t_data *data, t_cmd *cmd)
 {
 	if (!ft_strncmp(cmd->args[0], "echo", 4))
-		return (echo(cmd->args), 1); //modificare con cmd->args
+		echo(cmd->args);
     else if (!ft_strncmp(cmd->args[0], "cd", 2))
-		return (cd(data, cmd, cmd->args), 1);
+		cd(data, cmd, cmd->args);
 	else if (!ft_strncmp(cmd->args[0], "pwd", 3))
-		return (pwd(data), 1);
-	else if (!ft_strncmp(cmd->args[0], "debugcd", 7))
-		return (print_cd(data), 1);
+		pwd(data);
 	else if (!ft_strncmp(cmd->args[0], "env", 3))
-		return (env(data, cmd->args), 1);
+		env(data, cmd->args);
 	else if (!ft_strncmp(cmd->args[0], "unset", 5))
-		return (unset(data, cmd->args), 1);
+		unset(data, cmd->args);
 	else if (!ft_strncmp(cmd->args[0], "export", 6))
-		return (export(data, cmd->args), 1);
-	else if (!ft_strncmp(cmd->args[0], "clear", 4))
-		return(system("clear"), 1);
+		export(data, cmd->args);
     else if (!ft_strncmp(cmd->args[0], "exit", 4))
-        return (exit_shell(data, cmd), 1);
-    else if (!ft_strncmp(cmd->args[0], "./minishell", 11))
-        return (system("./minishell"), 1);
-    else
-	    return (1);
+        exit_shell(data, cmd);
 }
 
 // void    execution(t_data *data, t_cmd cmd)
