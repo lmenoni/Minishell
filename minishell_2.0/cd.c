@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 18:23:12 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 18:02:23 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static bool safe_chdir(char *path, int *status, char *s1, char *s2)
 	return (true);
 }
 
-static void cd_oldpwd(t_data *data, int *status)
+static void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 {
 	char *path;
 	
@@ -54,7 +54,7 @@ static void cd_oldpwd(t_data *data, int *status)
 			path = check_env(data, "OLDPWD=");
 		if (safe_chdir(path, status, NULL, NULL) == false)
 			return ;
-		ft_printf("%s\n", path);
+		ft_printf_fd(cmd->ou_fd, "%s\n", path);
 		if (check_env(data, "OLDPWD="))
 			update_env(data, "OLDPWD=", data->current_path);
 		free(data->old_path);
@@ -152,7 +152,7 @@ void cd(t_data *data, t_cmd * cmd, char **args)
 		else if (new_path[0] == '~')
 			cd_tilde(data, new_path, &status);
 		else if (new_path[0] == '-')
-			cd_oldpwd(data, &status);
+			cd_oldpwd(data, cmd, &status);
 		else if (new_path != NULL)
 			cd_execution(data, new_path, &status);
 	}
@@ -161,6 +161,5 @@ void cd(t_data *data, t_cmd * cmd, char **args)
 		ft_printf_fd(2, "minishell: cd: too many arguments\n");
 		status = 1;
 	}
-	// free_all(data, cmd);
-	exit (status);
+	data->status = status;
 }

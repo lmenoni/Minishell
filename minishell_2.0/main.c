@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/09 19:17:37 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 19:10:01 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,23 @@
 
 volatile sig_atomic_t last_signal = 0;
 
-void define_input(t_data *data, t_cmd *cmd)
+int define_input(t_data *data, t_cmd *cmd)
 {
 	if (!ft_strncmp(cmd->args[0], "echo", 4))
-		echo(data, cmd, cmd->args);
+		return(echo(data, cmd, cmd->args), 1);
     else if (!ft_strncmp(cmd->args[0], "cd", 2))
-		cd(data, cmd, cmd->args);
+		return(cd(data, cmd, cmd->args), 1);
 	else if (!ft_strncmp(cmd->args[0], "pwd", 3))
-		pwd(data, cmd);
+		return(pwd(data, cmd), 1);
 	else if (!ft_strncmp(cmd->args[0], "env", 3))
-		env(data, cmd->args);
+		return(env(data, cmd, cmd->args), 1);
 	else if (!ft_strncmp(cmd->args[0], "unset", 5))
-		unset(data, cmd, cmd->args);
+		return(unset(data, cmd, cmd->args), 1);
 	else if (!ft_strncmp(cmd->args[0], "export", 6))
-		export(data, cmd, cmd->args);
+		return(export(data, cmd->args), 1);
     else if (!ft_strncmp(cmd->args[0], "exit", 4))
-        exit_shell(data, cmd);
+        return(exit_shell(data, cmd), 1);
+    return (0);
 }
 
 char    **copy_env(t_env *env)
@@ -62,13 +63,11 @@ char    **copy_env(t_env *env)
 void	handle_sigint(int sig)
 {
 	(void)sig;
-    close(0);
     last_signal = 1;
-    // rl_done = 1;
-	write(1, "\n", 1);
-	rl_on_new_line();
 	rl_replace_line("", 0);
-    // rl_redisplay();
+	rl_on_new_line();
+    ft_printf("\n");
+    rl_redisplay();
 }
 
 void	init_signals(void)
@@ -109,6 +108,7 @@ void    execution(t_data *data)
     signal(SIGINT, SIG_IGN);
     while (i < data->cmd_count)
     {
+        printf("CAZZI\n");
         last_pid = execute(data->cmd_arr[i], data);
         data->cmd_name++;
         i++;
@@ -124,7 +124,6 @@ bool    check_last_signal(t_data *data)
     if (last_signal)
     {
         last_signal = 0;
-        dup2(data->st_in, STDIN_FILENO);
         free(data->input);
         data->input = NULL;
         data->status = 130;
@@ -133,16 +132,6 @@ bool    check_last_signal(t_data *data)
     return (false);
 }
 
-// void flush_stdin(void)
-// {
-//     int bytes;
-//     char c;
-
-//     ioctl(STDIN_FILENO, FIONREAD, &bytes);
-//     while (bytes-- > 0)
-//         read(STDIN_FILENO, &c, 1);
-// }
-
 int main(int ac, char **av, char **e)
 {
     t_data  data;
@@ -150,35 +139,27 @@ int main(int ac, char **av, char **e)
     (void)av;
     data = (t_data){0};
     data.env_data = init_env(e, &data);
-    data.st_in = dup(STDIN_FILENO);
     init_signals();
-    //print_env(data.env_data);
+    data.st_in = dup(STDIN_FILENO);
+    data.st_out = dup(STDOUT_FILENO);
     while (1)
     {
         reset_data(&data);
-        // flush_stdin();
         data.input = readline(CYAN"minishell"RESET YELLOW">"RESET);
-        if (!data.input && last_signal == 0)
+        if (!data.input)
             break ;
-        if (check_last_signal(&data))
-            continue ;
+        check_last_signal(&data);
         if (parsing(&data))
         {
-            //ft_printf("READY FOR EXECUTE\n");
             create_pipe_arr(&data);
             execution(&data);
         }
         add_history(data.input);
-        free(data.input);
-        free_token(data.token);
-        free_cmd_array(&data);
     }
     free_env(data.env_data);
     free(data.current_path);
-    close(data.st_in);
     rl_clear_history();
     return (0);
 }
 
-//gestione signal in here_doc
 //gestione fallimento pipe array, controllare open funzionino correttamente

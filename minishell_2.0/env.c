@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 19:02:51 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:56:03 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,13 +132,14 @@ void delete_env(t_data *data, char *var)
 	free(var_name);
 }
 
-void env(t_data *data, char **input_array)
+void env(t_data *data, t_cmd *cmd, char **input_array)
 {
 	t_env *curr;
 
 	if (input_array[1] != NULL)
 	{
 		ft_printf_fd(2, "minishell: env: too many arguments\n");
+		data->status = 127;
 		return ;
 	}
 	curr = data->env_data;
@@ -149,7 +150,8 @@ void env(t_data *data, char **input_array)
 			curr = curr->next;
 			continue;
 		}
-		ft_printf("%s\n", curr->e);
+		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
 		curr = curr->next;
 	}
+	data->status = 0;
 }

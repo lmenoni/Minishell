@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 19:13:25 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 19:06:35 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void export_plus(t_data *data, char *args, char *var_name)
 
 void export_add(t_data *data, char *args, char *var_name)
 {
-	if (check_env(data, var_name) != NULL && ft_strchr(args, '=') != NULL)
+	if (check_env(data, var_name) != NULL && ft_strchr(args, '=') != NULL) // NON FUNZIONA STA MERDA CREA PIU' VARIABILI CON LO STESSO NOME
 		update_env(data, var_name, args + ft_strlen(var_name));
 	else if (check_env(data, var_name) == NULL)
 		add_env(data, args);
@@ -122,7 +122,7 @@ void print_export(t_env *env, int i)
         ft_printf("declare -x %s\n", env->e);
 }
 
-void export(t_data *data, t_cmd *cmd, char **args)
+void export(t_data *data, char **args)
 {
 	t_env *env;
 	int i;
@@ -144,6 +144,5 @@ void export(t_data *data, t_cmd *cmd, char **args)
 	}
 	else
 		export_case(data, args, &status);
-	free_all(data, cmd);
-	exit(status);
+	data->status = status;
 }

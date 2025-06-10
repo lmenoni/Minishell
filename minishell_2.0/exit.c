@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:34:47 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 19:11:43 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:50:03 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void exit_execution(int result, t_cmd *cmd)
 {
 	if (!cmd->pipe_in && !cmd->pipe_out)
-		ft_printf("exit\n");
+		ft_printf_fd(2, "exit\n");
 	exit(result);
 }
 
@@ -66,7 +66,7 @@ int parse_exit(char **args, bool *exec)
 		ft_printf_fd(2, "minishell: exit: %s: numeric argument required\n", args[0]);
 	else if (ft_matlen(args) > 1)
     {
-        ft_printf("minishell: exit: too many arguments\n");
+        ft_printf_fd(2, "minishell: exit: too many arguments\n");
         *exec = false;
         return (1);
     }
@@ -82,7 +82,6 @@ void exit_shell(t_data *data, t_cmd *cmd)
     exec = true;
 	args = cmd->args;
 	result = parse_exit(args + 1, &exec);
-	ft_printf("%d\n", result);
     if (exec)
         exit_execution(result, cmd);
     if (cmd->pipe_in || cmd->pipe_out)

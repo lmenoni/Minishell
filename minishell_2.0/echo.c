@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:43:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 19:12:36 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:54:44 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,18 +51,17 @@ void echo(t_data *data, t_cmd *cmd, char **args)
 		i = 1;
 	if (args[i] == NULL)
 	{
-		ft_printf("\n");
-		free_all(data, cmd);
-		exit(0);
+		ft_printf_fd(cmd->ou_fd, "\n");
+		data->status = 0;
 	}
 	while (args[i])
 	{
-		ft_printf("%s", args[i]);
+		ft_printf_fd(cmd->ou_fd, "%s", args[i]);
 		i++;
 		if (args[i])
-			ft_printf(" ");
+			ft_printf_fd(cmd->ou_fd, " ");
 	}
 	if (!flag)
-		ft_printf("\n");
-	exit(0);
+		ft_printf_fd(cmd->ou_fd, "\n");
+	data->status = 0;
 }

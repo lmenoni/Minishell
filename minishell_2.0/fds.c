@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:07:46 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 18:39:48 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 18:08:17 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ bool    open_out(t_flist *t, t_cmd *cmd)
 {
     int fd;
 
-    fd = 0;
+    fd = 1;
     if (t->x_factor)
         fd = open(t->s, O_WRONLY | O_CREAT | O_APPEND, 0644);
     else

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:03:18 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 19:11:15 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:43:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 void    here_sigint(int sig)
 {
+	char	c;
+	
+	c = '\n';
     (void)sig;
-    close(0);
     last_signal = 1;
-	write(1, "\n", 1);
+	ioctl(0, TIOCSTI, &c);
+	rl_on_new_line();
 }
 
 bool is_limiter_quoted(char *s)
@@ -42,7 +45,6 @@ bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
 			free(r);
 		free(line);
 		free(limiter);
-		dup2(data->st_in, STDIN_FILENO);
 		data->status = 130;
 		return (true);
 	}
@@ -82,8 +84,10 @@ bool	reset_signal()
 	if (last_signal)
 	{
 		last_signal = 0;
+		signal(SIGINT, handle_sigint);
 		return (false);
 	}
+	signal(SIGINT, handle_sigint);
 	return (true);
 }
 
@@ -108,6 +112,5 @@ bool	do_here_doc(t_token *tok, t_data *data)
 		}
 		tok = tok->next;
 	}
-	signal(SIGINT, handle_sigint);
 	return (reset_signal());
 }

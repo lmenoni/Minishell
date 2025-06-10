@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <lmenoni@student.42.fr>            +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:46:48 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/05/16 17:56:23 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:45:18 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ int	is_quoted(char *s, char *to_check)
 
 void    reset_data(t_data *data)
 {
+    free(data->input);
+    free_token(data->token);
+    free_cmd_array(data);
     data->cmd_count = 0;
     data->cmd_name = 0;
     data->cmd_arr = NULL;
