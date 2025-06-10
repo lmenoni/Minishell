@@ -17,7 +17,7 @@ void    here_sigint(int sig)
     (void)sig;
 
     last_signal = 1;
-    ioctl(0, TIOCSTI, "\n");
+    ioctl(0, TIOCSTI, "a");
 }
 
 bool is_limiter_quoted(char *s)
