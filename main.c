@@ -47,9 +47,9 @@ void	handle_sigint(int sig)
     // close(0);
     last_signal = 1;
     // rl_done = 1;
-	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
+    ft_printf("\n");
     rl_redisplay();
 }
 
@@ -132,8 +132,9 @@ int main(int ac, char **av, char **e)
     (void)av;
     data = (t_data){0};
     data.env_data = init_env(e, &data);
-    data.st_in = dup(STDIN_FILENO);
     init_signals();
+    // data.st_in = dup(STDIN_FILENO);
+    // data.st_out = dup(STDOUT_FILENO);
     //print_env(data.env_data);
     while (1)
     {
@@ -153,7 +154,6 @@ int main(int ac, char **av, char **e)
     }
     free_env(data.env_data);
     free(data.curr_path);
-    close(data.st_in);
     rl_clear_history();
     return (0);
 }

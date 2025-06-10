@@ -14,10 +14,13 @@
 
 void    here_sigint(int sig)
 {
+	char	c;
+	
+	c = '\n';
     (void)sig;
-
     last_signal = 1;
-    ioctl(0, TIOCSTI, "a");
+	ioctl(0, TIOCSTI, &c);
+	rl_on_new_line();
 }
 
 bool is_limiter_quoted(char *s)
@@ -43,6 +46,7 @@ bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
 		free(line);
 		free(limiter);
 		// dup2(data->st_in, STDIN_FILENO);
+		// dup2(data->st_out, STDOUT_FILENO);
 		data->status = 130;
 		return (true);
 	}

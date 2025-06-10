@@ -97,6 +97,7 @@ typedef struct  s_data
     int         cmd_name;
     int         status;
     int         st_in;
+    int         st_out;
 }               t_data;
 
 //cmd_array.c
