@@ -108,7 +108,6 @@ void    execution(t_data *data)
     signal(SIGINT, SIG_IGN);
     while (i < data->cmd_count)
     {
-        printf("CAZZI\n");
         last_pid = execute(data->cmd_arr[i], data);
         data->cmd_name++;
         i++;
@@ -142,6 +141,7 @@ int main(int ac, char **av, char **e)
     init_signals();
     data.st_in = dup(STDIN_FILENO);
     data.st_out = dup(STDOUT_FILENO);
+    printf("in: %d, out: %d\n", data.st_in, data.st_out);
     while (1)
     {
         reset_data(&data);
@@ -153,6 +153,8 @@ int main(int ac, char **av, char **e)
         {
             create_pipe_arr(&data);
             execution(&data);
+            dup2(data.st_in, STDIN_FILENO);
+	        dup2(data.st_out, STDOUT_FILENO);
         }
         add_history(data.input);
     }

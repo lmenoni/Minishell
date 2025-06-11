@@ -12,7 +12,23 @@
 
 #include "minishell.h"
 
-char    *get_path(char *cmd, t_data *data)
+char	*check_path(char *cmd)
+{
+	struct stat statbuf;
+
+	if (cmd[0] == '.' && cmd[1] == '\0')
+		return (ft_printf_fd(2, "minishell: %s: filename argument required\n", cmd), NULL);
+	if (access(cmd, F_OK) != 0)
+		return (ft_printf_fd(2, "minishell: %s: No such file or directory\n", cmd), NULL);
+	stat(cmd, &statbuf);
+	if (S_ISDIR(statbuf.st_mode))
+		return (ft_printf_fd(2, "minishell: %s: Is a directory\n", cmd), NULL);
+	if (access(cmd, X_OK) != 0)
+		return (ft_printf_fd(2, "minishell: %s: Permission denied\n", cmd), NULL);
+	return (ft_strdup(cmd));
+}
+
+char	*get_absolute(char *cmd, t_data *data)
 {
 	char    **fpath;
 	char    *t;
@@ -20,13 +36,10 @@ char    *get_path(char *cmd, t_data *data)
 	int     i;
 
 	i = 0;
-    if (cmd[0] == '\0')
-		return (NULL);
-	if (cmd[0] == '/')
-		return (ft_strdup(cmd));
+	if (cmd[0] == '.' && cmd[1] == '.')
+		return (ft_printf_fd(2, "%s: command not found\n", cmd)
+			, NULL);
 	fpath = ft_split(check_env(data, "PATH="), ':');
-	if (!fpath)
-		return (NULL);
 	t = ft_strjoin("/", cmd);
 	while(fpath[i])
 	{
@@ -37,7 +50,18 @@ char    *get_path(char *cmd, t_data *data)
 		free(r);
 		i++;
 	}
-	return (ft_freemat((void **)fpath, (ft_matlen(fpath) - 1)), free(t), NULL);
+	ft_printf_fd(2, "%s: command not found\n", cmd);
+	return (ft_freemat((void **)fpath
+		, (ft_matlen(fpath) - 1)), free(t), NULL);
+}
+
+char    *get_path(char *cmd, t_data *data)
+{
+    if (cmd[0] == '\0')
+		return (NULL);
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] != '.') || !check_env(data, "PATH="))
+		return (check_path(cmd));
+	return (get_absolute(cmd, data));
 }
 
 void    wait_status(t_data *data, pid_t last_pid)
@@ -93,10 +117,6 @@ void    children(t_cmd  *cmd, t_data *data)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	if (cmd->in_fd != 0)
-		dup2(cmd->in_fd, STDIN_FILENO);
-	if (cmd->ou_fd != 1)
-		dup2(cmd->ou_fd, STDOUT_FILENO);
 	if (!cmd->args[0])
 	{
 		free_all(data, cmd);
@@ -105,7 +125,6 @@ void    children(t_cmd  *cmd, t_data *data)
 	cmd->path = get_path(cmd->args[0], data);
 	if (!cmd->path)
 	{
-		ft_printf_fd(2, "%s: command not found\n", cmd->args[0]);
 		free_all(data, cmd);
 		exit(127);
 	}
@@ -116,8 +135,8 @@ pid_t    execute(t_cmd cmd, t_data *data)
 {
 	pid_t pid;
 
-	cmd.in_fd = 0;
-	cmd.ou_fd = 1;
+	cmd.in_fd = data->st_in;
+	cmd.ou_fd = data->st_out;
 	if (data->pipe)
 		set_pipe(&cmd, data);
 	if (!do_open(&cmd, data))
@@ -134,7 +153,11 @@ pid_t    execute(t_cmd cmd, t_data *data)
 		ft_printf_fd(2, "fork error\n");
 	if (pid == 0)
 		children(&cmd, data);
-	dup2(data->st_in, STDIN_FILENO);
-	dup2(data->st_out, STDOUT_FILENO);
 	return (pid);
 }
+
+// con . o ./ va dato messaggio di errore 
+// . = bash: .: filename argument required
+// ./ = bash: ./: Is a directory
+// ./(file che non esiste) = bash: ./a: No such file or directory
+// ./(file non eseguibile) = bash: ./main.c: Permission denied
