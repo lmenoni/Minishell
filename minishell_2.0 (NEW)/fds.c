@@ -76,9 +76,9 @@ bool    do_open(t_cmd *cmd, t_data *data)
     t = cmd->files;
     while(t)
     {
-        if (t->io_bool == 0 && cmd->in_fd > 2 && !is_in_pipe(cmd->in_fd, data->pipe, data))
+        if (t->io_bool == 0 && cmd->in_fd != data->st_in && !is_in_pipe(cmd->in_fd, data->pipe, data))
             close(cmd->in_fd);
-        if (t->io_bool == 1 && cmd->ou_fd > 2 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
+        if (t->io_bool == 1 && cmd->ou_fd != data->st_out && !is_in_pipe(cmd->ou_fd, data->pipe, data))
             close(cmd->ou_fd);
         if (t->amb_redi)
             return (ft_printf_fd(2, "minishell: %s: ambiguous redirect\n", t->s), false);

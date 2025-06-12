@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:35 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:48:10 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,20 @@ if (i > 0 && env->e[i] == '=')
 else
 	printf("declare -x %s\n", env->e);
 */
+
+int	ft_strnncmp(char *s1, char *s2, int n1, int n2)
+{
+	int i;
+	
+	i = 0;
+	if (n1 != n2)
+		return (-1);
+	while (s1[i] && s2[i] && i < n1 && s1[i] == s2[i])
+		i++;
+	if (i == n1)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
 
 int parse_export(char *var, int *status)
 {
@@ -82,7 +96,7 @@ void export_plus(t_data *data, char *args, char *var_name)
 
 void export_add(t_data *data, char *args, char *var_name)
 {
-	if (check_env(data, var_name) != NULL && ft_strchr(args, '=') != NULL) // NON FUNZIONA STA MERDA CREA PIU' VARIABILI CON LO STESSO NOME
+	if (check_env(data, var_name) != NULL && ft_strchr(args, '=') != NULL)
 		update_env(data, var_name, args + ft_strlen(var_name));
 	else if (check_env(data, var_name) == NULL)
 		add_env(data, args);

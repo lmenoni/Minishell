@@ -58,8 +58,11 @@ char	*get_absolute(char *cmd, t_data *data)
 char    *get_path(char *cmd, t_data *data)
 {
     if (cmd[0] == '\0')
-		return (NULL);
-	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] != '.') || !check_env(data, "PATH="))
+		return (ft_printf_fd(2, "%s: command not found\n", cmd), NULL);
+	if (cmd[0] == '~')
+		return (check_path(data->home_path));
+	if (cmd[0] == '/' || (cmd[0] == '.'
+		&& cmd[1] != '.') || !check_env(data, "PATH="))
 		return (check_path(cmd));
 	return (get_absolute(cmd, data));
 }
@@ -100,9 +103,11 @@ void    do_execve(t_cmd *cmd, t_data *data)
 	path = ft_strdup(cmd->path);
 	args = ft_matdup(cmd->args);
 	env = copy_env(data->env_data);
-	if (cmd->in_fd != -1  && cmd->in_fd != 0 && !is_in_pipe(cmd->in_fd, data->pipe, data))
+	if (cmd->in_fd != -1  && cmd->in_fd != 0
+		&& !is_in_pipe(cmd->in_fd, data->pipe, data))
 		close(cmd->in_fd);
-	if (cmd->ou_fd != -1  && cmd->ou_fd != 1 && !is_in_pipe(cmd->ou_fd, data->pipe, data))
+	if (cmd->ou_fd != -1  && cmd->ou_fd != 1
+		&& !is_in_pipe(cmd->ou_fd, data->pipe, data))
 		close(cmd->ou_fd);
 	free(cmd->path);
 	free_data(data);
@@ -113,22 +118,38 @@ void    do_execve(t_cmd *cmd, t_data *data)
 	exit(126);
 }
 
+void	free_exit(t_data *data, t_cmd *cmd, int status)
+{
+	free_all(data, cmd);
+	exit(status);
+}
+
 void    children(t_cmd  *cmd, t_data *data)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+	if (define_input(data, cmd))
+		free_exit(data, cmd, data->status);
 	if (!cmd->args[0])
-	{
-		free_all(data, cmd);
-		exit(0);
-	}
+		free_exit(data, cmd, 0);
 	cmd->path = get_path(cmd->args[0], data);
 	if (!cmd->path)
-	{
-		free_all(data, cmd);
-		exit(127);
-	}
+		free_exit(data, cmd, 127);
 	do_execve(cmd, data);
+}
+
+bool	handle_fds(t_cmd *cmd, t_data *data)
+{
+	if (data->pipe)
+		set_pipe(cmd, data);
+	if (!do_open(cmd, data))
+    {
+        data->status = 1;
+		return (false);
+    }
+	dup2(cmd->in_fd, STDIN_FILENO);
+	dup2(cmd->ou_fd, STDOUT_FILENO);
+	return (true);
 }
 
 pid_t    execute(t_cmd cmd, t_data *data)
@@ -137,16 +158,9 @@ pid_t    execute(t_cmd cmd, t_data *data)
 
 	cmd.in_fd = data->st_in;
 	cmd.ou_fd = data->st_out;
-	if (data->pipe)
-		set_pipe(&cmd, data);
-	if (!do_open(&cmd, data))
-    {
-        data->status = 1;
+	if (!handle_fds(&cmd, data))
 		return (0);
-    }
-	dup2(cmd.in_fd, STDIN_FILENO);
-	dup2(cmd.ou_fd, STDOUT_FILENO);
-	if (define_input(data, &cmd))
+	if (!data->pipe && define_input(data, &cmd))
 		return (0);
 	pid = fork();
 	if (pid == -1)
@@ -155,9 +169,3 @@ pid_t    execute(t_cmd cmd, t_data *data)
 		children(&cmd, data);
 	return (pid);
 }
-
-// con . o ./ va dato messaggio di errore 
-// . = bash: .: filename argument required
-// ./ = bash: ./: Is a directory
-// ./(file che non esiste) = bash: ./a: No such file or directory
-// ./(file non eseguibile) = bash: ./main.c: Permission denied
