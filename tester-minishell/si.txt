@@ -1,0 +1,5 @@
+         sed -i -e 's/^bash: line [0-9]\+: //' \
+                -e 's/^bash: -c: line [0-9]\+: //' \
+               -e 's/^minishell: //' \
+               -e 's/syntax error near unexpected token/syntax error/g' \
+               "${file}.clean"

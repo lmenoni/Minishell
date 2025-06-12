@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/12 17:41:24 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:31:59 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int define_input(t_data *data, t_cmd *cmd)
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
 		return(env(data, cmd, cmd->args), 1);
 	else if (ft_strcmp(cmd->args[0], "unset") == 0)
-		return(unset(data, cmd, cmd->args), 1);
+		return(unset(data, cmd->args), 1);
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
 		return(export(data, cmd->args), 1);
     else if (ft_strcmp(cmd->args[0], "exit") == 0)
@@ -138,6 +138,8 @@ int main(int ac, char **av, char **e)
     (void)av;
     data = (t_data){0};
     data.env_data = init_env(e, &data);
+    if (!check_env(&data, "OLDPWD"))
+        add_env(&data, "OLDPWD");
     init_signals();
     data.st_in = dup(STDIN_FILENO);
     data.st_out = dup(STDOUT_FILENO);
@@ -165,4 +167,5 @@ int main(int ac, char **av, char **e)
     return (0);
 }
 //segfault espansione variabili che non esistono echo $cazzo
+//grep da no such file or directory
 //gestione fallimento pipe array, controllare open funzionino correttamente

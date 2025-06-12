@@ -6,26 +6,11 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/12 17:48:10 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/13 00:09:08 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-controlla se già esiste e nel caso aggiornarlo solo se non è vuoto, ma se c'è l'uguale va gestito come stringa nulla (es. a="")
-ritorna erroe se il nome della variabile non inizia con una lettera o underscore
-b==="a="a -> b="==a=a" arriva senza virgolette quindi bisogna controllare che dopo l'uguale tutto il resto va virgolettato come stringa
-controllare come mi arriva l'argomento, se con o senza apici singoli, in caso con bisogna rimuoverli
-se la variabile esiste già, bisogna aggiornarla con il nuovo valore, ma se si passa il nome della varibile senza valore bisogna non aggiornarla, ma se viene inserito un uguale bisogna aggiornarla con una stringa vuota
-controllare fino all'uguale per evitare che variabili con nomi uguali e differenti da un solo carattere non vengano sovrascritte
-se c'e _= non modificare la variabile ne stamparla
-
-if (i > 0 && env->e[i] == '=')
-	printf("declare -x %.*s=\"%s\"\n", i, env->e, &env->e[i + 1]);//da cambiare con write
-else
-	printf("declare -x %s\n", env->e);
-*/
 
 int	ft_strnncmp(char *s1, char *s2, int n1, int n2)
 {
@@ -80,10 +65,11 @@ char *get_var_name(char *var)
 void export_plus(t_data *data, char *args, char *var_name)
 {
 	char *replace;
+	replace = NULL;
 	
 	if (check_env(data, var_name) != NULL)
 	{
-		replace = ft_strjoin(check_env(data, var_name), args + ft_strlen(var_name) + 1);
+		replace = ft_strjoin(replace, args + ft_strlen(var_name) + 2);
 		update_env(data, var_name, replace);
 	}
 	else
@@ -96,7 +82,7 @@ void export_plus(t_data *data, char *args, char *var_name)
 
 void export_add(t_data *data, char *args, char *var_name)
 {
-	if (check_env(data, var_name) != NULL && ft_strchr(args, '=') != NULL)
+	if (check_env(data, var_name) != NULL)
 		update_env(data, var_name, args + ft_strlen(var_name));
 	else if (check_env(data, var_name) == NULL)
 		add_env(data, args);
@@ -114,7 +100,7 @@ void export_case(t_data *data, char **args, int *status)
 	while (args[i])
 	{
 		parse_result = parse_export(args[i], status);
-		var_name = ft_buffjoin(get_var_name(args[i]), "=");
+		var_name = get_var_name(args[i]);
 		if (parse_result == 0 && ft_strncmp(var_name, "_=", 2) != 0)
 			export_add(data, args[i], var_name);
 		else if (parse_result == 2 && ft_strncmp(var_name, "_=", 2) != 0)

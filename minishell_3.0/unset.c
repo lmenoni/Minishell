@@ -6,13 +6,13 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 18:17:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/09 19:16:25 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:31:31 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void unset(t_data *data, t_cmd *cmd, char **var)
+void unset(t_data *data, char **var)
 {
 	int i;
 
@@ -26,5 +26,4 @@ void unset(t_data *data, t_cmd *cmd, char **var)
 		}
 		delete_env(data, var[i]);
 	}
-	free_all(data, cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:07:32 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/10 18:59:00 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:34:51 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*get_absolute(char *cmd, t_data *data)
 	if (cmd[0] == '.' && cmd[1] == '.')
 		return (ft_printf_fd(2, "%s: command not found\n", cmd)
 			, NULL);
-	fpath = ft_split(check_env(data, "PATH="), ':');
+	fpath = ft_split(check_env(data, "PATH"), ':');
 	t = ft_strjoin("/", cmd);
 	while(fpath[i])
 	{
@@ -62,7 +62,7 @@ char    *get_path(char *cmd, t_data *data)
 	if (cmd[0] == '~')
 		return (check_path(data->home_path));
 	if (cmd[0] == '/' || (cmd[0] == '.'
-		&& cmd[1] != '.') || !check_env(data, "PATH="))
+		&& cmd[1] != '.') || !check_env(data, "PATH"))
 		return (check_path(cmd));
 	return (get_absolute(cmd, data));
 }

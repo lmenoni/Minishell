@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/10 18:59:49 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:31:36 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,7 @@ char *get_var_name(char *var);
 // builtin
 void echo(t_data *data, t_cmd *cmd, char **args);
 void cd(t_data *data, t_cmd * cmd, char **args);
-void unset(t_data *data, t_cmd *cmd, char **var);
+void unset(t_data *data, char **var);
 void env(t_data *data, t_cmd *cmd, char **input_array);
 void pwd(t_data *data, t_cmd *cmd);
 void export(t_data *data, char **args);
