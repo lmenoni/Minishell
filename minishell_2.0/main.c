@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/10 19:10:01 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:41:24 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@ volatile sig_atomic_t last_signal = 0;
 
 int define_input(t_data *data, t_cmd *cmd)
 {
-	if (!ft_strncmp(cmd->args[0], "echo", 4))
+	if (ft_strcmp(cmd->args[0], "echo") == 0)
 		return(echo(data, cmd, cmd->args), 1);
-    else if (!ft_strncmp(cmd->args[0], "cd", 2))
+    else if (ft_strcmp(cmd->args[0], "cd") == 0)
 		return(cd(data, cmd, cmd->args), 1);
-	else if (!ft_strncmp(cmd->args[0], "pwd", 3))
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		return(pwd(data, cmd), 1);
-	else if (!ft_strncmp(cmd->args[0], "env", 3))
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
 		return(env(data, cmd, cmd->args), 1);
-	else if (!ft_strncmp(cmd->args[0], "unset", 5))
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
 		return(unset(data, cmd, cmd->args), 1);
-	else if (!ft_strncmp(cmd->args[0], "export", 6))
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
 		return(export(data, cmd->args), 1);
-    else if (!ft_strncmp(cmd->args[0], "exit", 4))
+    else if (ft_strcmp(cmd->args[0], "exit") == 0)
         return(exit_shell(data, cmd), 1);
     return (0);
 }
@@ -108,7 +108,6 @@ void    execution(t_data *data)
     signal(SIGINT, SIG_IGN);
     while (i < data->cmd_count)
     {
-        printf("CAZZI\n");
         last_pid = execute(data->cmd_arr[i], data);
         data->cmd_name++;
         i++;
@@ -153,13 +152,17 @@ int main(int ac, char **av, char **e)
         {
             create_pipe_arr(&data);
             execution(&data);
+            dup2(data.st_in, STDIN_FILENO);
+	        dup2(data.st_out, STDOUT_FILENO);
         }
         add_history(data.input);
     }
     free_env(data.env_data);
     free(data.current_path);
+    close(data.st_in);
+    close(data.st_out);
     rl_clear_history();
     return (0);
 }
-
+//segfault espansione variabili che non esistono echo $cazzo
 //gestione fallimento pipe array, controllare open funzionino correttamente

@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/10 17:56:03 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:44:50 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,31 @@ t_env   *init_env(char **env, t_data *data)
     data->old_path = NULL;
     return (first);
 }
+
+// char *check_env(t_data *data, char *var)
+// {
+// 	t_env *temp;
+// 	int i;
+	
+// 	i = 0;
+// 	temp = data->env_data;
+// 	while (temp)
+// 	{
+// 		i = 0;
+// 		while (temp->e[i] != '\0')
+// 		{
+// 			if (i != 0 && temp->e[i - 1] == '=')
+// 				break ;
+// 			i++;
+// 		}
+// 		// ft_printf("env is: %s\n env name is: %d\n char is: %c\n len var is: %d\n", temp->e, i, temp->e[i], ft_strlen(var));
+// 		// ft_printf("%d\n", ft_strnncmp(temp->e, var, i, ft_strlen(var)));
+// 		if (ft_strnncmp(temp->e, var, i, ft_strlen(var)) == 0)
+// 			return(&temp->e[i]);
+// 		temp = temp->next;
+// 	}
+// 	return (NULL);
+// }
 
 char *check_env(t_data *data, char *var)
 {

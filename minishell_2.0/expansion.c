@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:22:14 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/09 19:02:45 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:30:34 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ char	*get_expanded_var(char *s, int *idx, t_data *data)
 		return (ft_itoa(data->status));
 	}
 	name  = ft_buffjoin(ft_strndup(&s[1], (i - 1)), "=");
+	// name  = ft_strndup(&s[1], (i - 1));
 	r = ft_strdup(check_env(data, name));
+	ft_printf("name is : %s\n r is : %s\n", name, r);
 	free(name);
 	*idx = *idx + i;
 	return (r);

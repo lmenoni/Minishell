@@ -181,7 +181,7 @@ void    while_var(char *s, int *i);
 //execution.c
 pid_t    execute(t_cmd cmd, t_data *data);
 void    do_execve(t_cmd *cmd, t_data *data);
-void    handle_fds(t_cmd *cmd, t_data *data);
+bool    handle_fds(t_cmd *cmd, t_data *data);
 char    *get_path(char *cmd, t_data *data);
 void    wait_status(t_data *data, pid_t last_pid);
 
@@ -221,6 +221,8 @@ void env(t_data *data, t_cmd *cmd, char **input_array);
 void pwd(t_data *data, t_cmd *cmd);
 void export(t_data *data, char **args);
 void exit_shell(t_data *data, t_cmd *cmd);
+
+int	ft_strnncmp(char *s1, char *s2, int n1, int n2);
 
 int define_input(t_data *data, t_cmd *cmd);
 #endif

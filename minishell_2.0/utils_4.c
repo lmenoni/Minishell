@@ -44,6 +44,7 @@ void    free_data(t_data *data)
     if (data->pipe)
         free_pipe(data->pipe, (data->cmd_count - 1));
     close(data->st_in);
+    close(data->st_out);
 }
 
 void    free_all(t_data *data, t_cmd *cmd)
