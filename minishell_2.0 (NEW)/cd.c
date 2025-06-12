@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/10 18:02:23 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:21:03 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ static bool safe_chdir(char *path, int *status, char *s1, char *s2)
 {
 	if (chdir(path) != 0)
 	{
-		
 		ft_printf_fd(2, "minishell: cd: %s: no such file or directory\n", path);
 		*status = 1;
 		if (s1)
@@ -46,21 +45,21 @@ static void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 	char *path;
 	
 	path = NULL;
-	if (data->old_path || check_env(data, "OLDPWD=") != NULL)
+	if (data->old_path || check_env(data, "OLDPWD") != NULL)
 	{
 		if (data->old_path)
 			path = data->old_path;
 		else
-			path = check_env(data, "OLDPWD=");
+			path = check_env(data, "OLDPWD");
 		if (safe_chdir(path, status, NULL, NULL) == false)
 			return ;
 		ft_printf_fd(cmd->ou_fd, "%s\n", path);
-		if (check_env(data, "OLDPWD="))
-			update_env(data, "OLDPWD=", data->current_path);
+		if (check_env(data, "OLDPWD"))
+			update_env(data, "OLDPWD", data->current_path);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		data->current_path = getcwd(NULL, 0);
-		update_env(data, "PWD=", data->current_path);
+		update_env(data, "PWD", data->current_path);
 	}
 	else
 	{
@@ -71,18 +70,15 @@ static void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 
 void cd_home(t_data *data, int *status)
 {
-	char *added_equal;
-
-	if (check_env(data, "HOME=") != NULL)
+	if (check_env(data, "HOME") != NULL)
 	{
-		added_equal = ft_strjoin("=", data->current_path);
-		if (safe_chdir(data->home_path, status, added_equal, NULL) == false)
+		if (safe_chdir(data->home_path, status, NULL, NULL) == false)
 			return ;
-		update_env(data, "OLDPWD", added_equal);
+		update_env(data, "OLDPWD", data->current_path);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		data->current_path = getcwd(NULL, 0);
-		update_env(data, "PWD=", data->current_path);
+		update_env(data, "PWD", data->current_path);
 	}
 	else
 	{
@@ -94,45 +90,39 @@ void cd_home(t_data *data, int *status)
 void cd_tilde(t_data *data, char *new_path, int *status)
 {
 	char *joined_path;
-	char *added_equal;
 	
 	joined_path = ft_strjoin(data->home_path, new_path + 1);
-	added_equal = ft_strjoin("=", data->current_path);
 	if (new_path[0] == '~' && new_path[1] == '\0')
 	{
-		if (safe_chdir(data->home_path, status, added_equal, joined_path) == false)
+		if (safe_chdir(data->home_path, status, NULL, joined_path) == false)
 			return ;
-		update_env(data, "OLDPWD", added_equal);
+		update_env(data, "OLDPWD", data->current_path);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		data->current_path = getcwd(NULL, 0);
-		update_env(data, "PWD=", data->current_path);
+		update_env(data, "PWD", data->current_path);
 	}
 	else if (new_path[0] == '~' && new_path[1] != '\0')
 	{
-		if (safe_chdir(joined_path, status, added_equal, joined_path) == false)
+		if (safe_chdir(joined_path, status, NULL, joined_path) == false)
 			return ;
-		update_env(data, "OLDPWD", added_equal);
+		update_env(data, "OLDPWD", data->current_path);
 		free(data->old_path);
 		data->old_path = data->current_path;
 		data->current_path = getcwd(NULL, 0);
-		update_env(data, "PWD=", data->current_path);
+		update_env(data, "PWD", data->current_path);
 	}
 }
 
 void cd_execution(t_data *data, char *new_path, int *status)
 {
-	char *added_equal;
-
 	if (safe_chdir(new_path, status, NULL, NULL) == false)
 			return ;
 	free(data->old_path);
 	data->old_path = data->current_path;
-	added_equal = ft_strjoin("=", data->old_path);
-	update_env(data, "OLDPWD", added_equal);
-	free(added_equal);
+	update_env(data, "OLDPWD", data->old_path);
 	data->current_path = getcwd(NULL, 0);
-	update_env(data, "PWD=", data->current_path);
+	update_env(data, "PWD", data->current_path);
 }
 
 void cd(t_data *data, t_cmd * cmd, char **args)

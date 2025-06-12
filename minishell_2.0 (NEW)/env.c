@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/12 17:44:50 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:43:04 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,34 +51,10 @@ t_env   *init_env(char **env, t_data *data)
     return (first);
 }
 
-// char *check_env(t_data *data, char *var)
-// {
-// 	t_env *temp;
-// 	int i;
-	
-// 	i = 0;
-// 	temp = data->env_data;
-// 	while (temp)
-// 	{
-// 		i = 0;
-// 		while (temp->e[i] != '\0')
-// 		{
-// 			if (i != 0 && temp->e[i - 1] == '=')
-// 				break ;
-// 			i++;
-// 		}
-// 		// ft_printf("env is: %s\n env name is: %d\n char is: %c\n len var is: %d\n", temp->e, i, temp->e[i], ft_strlen(var));
-// 		// ft_printf("%d\n", ft_strnncmp(temp->e, var, i, ft_strlen(var)));
-// 		if (ft_strnncmp(temp->e, var, i, ft_strlen(var)) == 0)
-// 			return(&temp->e[i]);
-// 		temp = temp->next;
-// 	}
-// 	return (NULL);
-// }
-
 char *check_env(t_data *data, char *var)
 {
 	t_env *temp;
+	char *name;
 	int i;
 	
 	i = 0;
@@ -88,9 +64,16 @@ char *check_env(t_data *data, char *var)
 		i = 0;
 		while (temp->e[i] != '\0' && temp->e[i] != '=')
 			i++;
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
-			return(&temp->e[i + 1]);
+		name = ft_strndup(temp->e, i);
+		if (ft_strcmp(name, var) == 0)
+		{
+			if (temp->e[i] == '\0')
+				return (free(name), &temp->e[i]);
+			else
+				return (free(name), &temp->e[i + 1]);
+		}
 		temp = temp->next;
+		free(name);
 	}
 	return (NULL);
 }
@@ -98,17 +81,25 @@ char *check_env(t_data *data, char *var)
 void update_env(t_data *data, char *var, char *str)
 {
 	t_env *temp;
+	char *name;
+	int i;
 	
+	i = 0;
 	temp = data->env_data;
 	while (temp)
 	{
-		if (ft_strncmp(temp->e, var, ft_strlen(var)) == 0)
+		i = 0;
+		while (temp->e[i] != '\0' && temp->e[i] != '=')
+			i++;
+		name = ft_strndup(temp->e, i);
+		if (ft_strcmp(name, var) == 0)
 		{
 			free(temp->e);
-			temp->e = ft_strjoin(var, str);
-			break ;
+			temp->e = ft_buffjoin(ft_strjoin(var, "="), str);
+			return (free(name));
 		}
 		temp = temp->next;
+		free(name);
 	}
 }
 
@@ -146,10 +137,7 @@ void delete_env(t_data *data, char *var)
 				prev->next = temp->next;
 			else
 				data->env_data = temp->next;
-			free(temp->e);
-			free(temp);
-			free(var_name);
-			return ;
+			return (free(temp->e), free(temp), free(var_name));
 		}
 		prev = temp;
 		temp = temp->next;
