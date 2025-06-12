@@ -46,7 +46,6 @@ char	*get_expanded_var(char *s, int *idx, t_data *data)
 	// name  = ft_buffjoin(ft_strndup(&s[1], (i - 1)), "=");
 	name  = ft_strndup(&s[1], (i - 1));
 	r = ft_strdup(check_env(data, name));
-	ft_printf("name is : %s\n r is : %s\n", name, r);
 	free(name);
 	*idx = *idx + i;
 	return (r);

@@ -103,12 +103,7 @@ void    do_execve(t_cmd *cmd, t_data *data)
 	path = ft_strdup(cmd->path);
 	args = ft_matdup(cmd->args);
 	env = copy_env(data->env_data);
-	if (cmd->in_fd != -1  && cmd->in_fd != 0
-		&& !is_in_pipe(cmd->in_fd, data->pipe, data))
-		close(cmd->in_fd);
-	if (cmd->ou_fd != -1  && cmd->ou_fd != 1
-		&& !is_in_pipe(cmd->ou_fd, data->pipe, data))
-		close(cmd->ou_fd);
+	close_if(cmd, data);
 	free(cmd->path);
 	free_data(data);
 	execve(path, args, env);
@@ -145,6 +140,7 @@ bool	handle_fds(t_cmd *cmd, t_data *data)
 	if (!do_open(cmd, data))
     {
         data->status = 1;
+		close_if(cmd, data);
 		return (false);
     }
 	dup2(cmd->in_fd, STDIN_FILENO);
@@ -167,5 +163,6 @@ pid_t    execute(t_cmd cmd, t_data *data)
 		ft_printf_fd(2, "fork error\n");
 	if (pid == 0)
 		children(&cmd, data);
+	close_if(&cmd, data);
 	return (pid);
 }

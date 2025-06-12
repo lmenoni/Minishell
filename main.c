@@ -158,5 +158,4 @@ int main(int ac, char **av, char **e)
     return (0);
 }
 
-//gestione segnali here doc, da errore nel rl principale -_-
 //gestione fallimento pipe array, controllare open funzionino correttamente

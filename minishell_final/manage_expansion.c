@@ -23,13 +23,16 @@ bool    check_tok(t_token **tok, t_token *new, t_data *data)
     }
     if (!new)
     {
+        // ft_printf("before is: %s\n", (*tok)->s);
         temp = *tok;
         *tok = (*tok)->next;
+        // ft_printf("before is: %s\n", (*tok)->s);
         if (*tok)
             (*tok)->prev = NULL;
         if (temp->prev)
         {
-            (*tok)->prev = temp->prev;
+            if (*tok)
+                (*tok)->prev = temp->prev;
             temp->prev->next = *tok;
         }
         else

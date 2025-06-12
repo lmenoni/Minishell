@@ -43,41 +43,18 @@ void    free_data(t_data *data)
         free(data->current_path);
     if (data->pipe)
         free_pipe(data->pipe, (data->cmd_count - 1));
+    if (data->old_path)
+        free(data->old_path);
     close(data->st_in);
     close(data->st_out);
 }
 
 void    free_all(t_data *data, t_cmd *cmd)
 {
-    if (cmd->in_fd != -1  && cmd->in_fd != 0
-        && !is_in_pipe(cmd->in_fd, data->pipe, data))
-        close(cmd->in_fd);
-    if (cmd->ou_fd != -1  && cmd->ou_fd != 0
-        && !is_in_pipe(cmd->ou_fd, data->pipe, data))
-        close(cmd->ou_fd);
+    close_if(cmd, data);
     if (cmd->path)
         free(cmd->path);
     free_data(data);
-}
-
-char    **ft_matdup(char **mat)
-{
-    int len;
-    int i;
-    char    **r;
-
-    len = ft_matlen(mat);
-    i = 0;
-    r = malloc((len + 1) * sizeof(char *));
-    if (!r)
-        return (NULL);
-    while (i < len)
-    {
-        r[i] = ft_strdup(mat[i]);
-        i++;
-    }
-    r[i] = NULL;
-    return (r);
 }
 
 bool    no_more_input(t_flist *t)

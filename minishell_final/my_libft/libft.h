@@ -97,5 +97,10 @@ char		*ft_strndup(const char *s, size_t n);
 int			ft_strcmp(const char *s1, const char *s2);
 long long	ft_atoll(const char *nptr);
 int			ft_strcmp(const char *s1, const char *s2);
+char		**ft_matdup(char **mat);
+void		skip_spaces(char *s, int *i);
+int			is_space(char c);
+int			is_quoted(char *s, char *to_check);
+int			ft_strnncmp(char *s1, char *s2, int n1, int n2);
 
 #endif

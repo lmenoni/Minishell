@@ -12,20 +12,6 @@
 
 #include "minishell.h"
 
-int	ft_strnncmp(char *s1, char *s2, int n1, int n2)
-{
-	int i;
-	
-	i = 0;
-	if (n1 != n2)
-		return (-1);
-	while (s1[i] && s2[i] && i < n1 && s1[i] == s2[i])
-		i++;
-	if (i == n1)
-		return (0);
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
 int parse_export(char *var, int *status)
 {
 	int i;
@@ -66,9 +52,10 @@ void export_plus(t_data *data, char *args, char *var_name)
 {
 	char *replace;
 	
+	replace = NULL;
 	if (check_env(data, var_name) != NULL)
 	{
-		replace = ft_strjoin(replace, args + ft_strlen(var_name) + 2);
+		replace = ft_strdup(args + ft_strlen(var_name) + 2);
 		update_env(data, var_name, replace);
 	}
 	else
@@ -81,8 +68,9 @@ void export_plus(t_data *data, char *args, char *var_name)
 
 void export_add(t_data *data, char *args, char *var_name)
 {
+	ft_printf("var name is: %s\n", args + ft_strlen(var_name));
 	if (check_env(data, var_name) != NULL)
-		update_env(data, var_name, args + ft_strlen(var_name));
+		update_env(data, var_name, (args + (ft_strlen(var_name) + 1)));
 	else if (check_env(data, var_name) == NULL)
 		add_env(data, args);
 	else

@@ -130,11 +130,11 @@ void    free_env(t_env *node);
 void    free_pipe(int **pipe, int n);
 
 //utils.c
-void    skip_spaces(char *s, int *i);
-int is_space(char c);
+// void    skip_spaces(char *s, int *i); //
+// int is_space(char c);                   //
 int parse_syntax_errors(t_token *token);
 void    reset_data(t_data *data);
-int	is_quoted(char *s, char *to_check);
+// int	is_quoted(char *s, char *to_check); //
 
 //print.c
 void    print_tokens(t_token *token);
@@ -193,7 +193,7 @@ void    set_pipe(t_cmd *cmd, t_data *data);
 int     create_temp_file(char *content, t_data *data);
 
 //utils_4.c
-char    **ft_matdup(char **mat);
+// char    **ft_matdup(char **mat);            //
 void    free_all(t_data *data, t_cmd *cmd);
 void    free_data(t_data *data);
 bool    is_in_pipe(int fd, int **pipe, t_data *data);
@@ -221,8 +221,11 @@ void env(t_data *data, t_cmd *cmd, char **input_array);
 void pwd(t_data *data, t_cmd *cmd);
 void export(t_data *data, char **args);
 void exit_shell(t_data *data, t_cmd *cmd);
+void	free_exit(t_data *data, t_cmd *cmd, int status);
 
-int	ft_strnncmp(char *s1, char *s2, int n1, int n2);
+
+// int	ft_strnncmp(char *s1, char *s2, int n1, int n2); //
+void    close_if(t_cmd *cmd, t_data *data);
 
 int define_input(t_data *data, t_cmd *cmd);
 #endif

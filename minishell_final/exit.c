@@ -12,11 +12,11 @@
 
 #include "minishell.h"
 
-void exit_execution(int result, t_cmd *cmd)
+void exit_execution(int result, t_cmd *cmd, t_data *data)
 {
 	if (!cmd->pipe_in && !cmd->pipe_out)
 		ft_printf_fd(2, "exit\n");
-	exit(result);
+    free_exit(data, cmd, result);
 }
 
 bool    check_numeric(char *arg, int *digitc)
@@ -83,7 +83,7 @@ void exit_shell(t_data *data, t_cmd *cmd)
 	args = cmd->args;
 	result = parse_exit(args + 1, &exec);
     if (exec)
-        exit_execution(result, cmd);
+        exit_execution(result, cmd, data);
     if (cmd->pipe_in || cmd->pipe_out)
         exit (result);
     data->status = result;
