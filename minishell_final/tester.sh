@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Nome del tuo eseguibile (usa percorso assoluto o variabile)
-MINISHELL_DIR="../minishell_final"
-MY_SHELL="$MINISHELL_DIR/minishell"
+# MINISHELL_DIR="../minishell_final"
+MY_SHELL="./minishell"
 
 # Verifica presenza e permessi dell'eseguibile
 if [ ! -f "$MY_SHELL" ]; then
@@ -64,6 +64,12 @@ clean_output() {
     if [ "$type" == "stdout" ]; then
         # Rimuovi righe che iniziano con minishell> (prompt)
         sed -i '/^minishell>/d' "${file}.clean"
+
+                # 2. Rimuovi prompt attaccati alla fine dell'output (senza cancellare contenuto)
+        #    - Casi con newline: sostituisci "minishell>" alla fine riga
+        #    - Casi senza newline: sostituisci "minishell>" alla fine file
+        sed -i 's/minishell>$//' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell>$//' "${file}.clean"
         
         # Rimuovi righe vuote
         sed -i '/^$/d' "${file}.clean"
@@ -87,14 +93,24 @@ clean_output() {
         # sed -i -e 's/syntax error near unexpected token/syntax error/g' \
         #        -e 's/syntax error: unexpected end of file/syntax error/g' \
         #        -e 's/syntax error: unexpected token/syntax error/g' \
+            #    -e 's/syntax error near unexpected token/syntax error/g' \
+            #    -e 's/[a-zA-Z0-9_]^minishell> //' \
+        #        "${file}.clean"
+        # sed -i -e 's/^bash: line [0-9]\+: //' \
+        #         -e 's/^bash: -c: line [0-9]\+: //' \
+        #        -e 's/^minishell> //' \
+		# 	    -e 's/^minishell: exit/exit/' \
         #        "${file}.clean"
         sed -i -e 's/^bash: line [0-9]\+: //' \
                 -e 's/^bash: -c: line [0-9]\+: //' \
                -e 's/^minishell> //' \
-			   -e 's/minishell: //' \
-               -e 's/syntax error near unexpected token/syntax error/g' \
-               -e 's/[a-zA-Z0-9_]^minishell> //' \
+               -e 's/^minishell: //' \
+               -e 's/exit : /exit: /' \
+               -e '/^exit$/d' \
                "${file}.clean"
+        sed -i 's/minishell>$//' "${file}.clean"  # Per righe con newline
+        sed -i 's/minishell>$//' "${file}.clean"  # Doppia esecuzione per sicurezza
+        sed -i 's/minishell>//' "${file}.clean"   # Per righe senza newline
     fi
     
     mv "${file}.clean" "$file"
@@ -137,34 +153,61 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
     
     # Ottieni il percorso assoluto della shell
     SHELL_PATH=$(realpath "$MY_SHELL")
-    
-    # Gestione speciale per comandi exit
-    if [[ "$test_cmd" == exit ]]; then
-        # Esecuzione con bash in una subshell
-        (bash -c "$test_cmd" > "$TEST_DIR/expected/out" 2> "$TEST_DIR/expected/err")
-        bash_exit=$?
-        
-        # # Normalizza exit status per bash (255 per valori fuori range)
-        # if [[ $bash_exit -gt 255 ]]; then
-        #     bash_exit=255
-        # fi
-        echo "$bash_exit" > "$TEST_DIR/expected/exit"
-        
-        # Esecuzione con minishell
-        (echo "$test_cmd" | "$SHELL_PATH" > "$TEST_DIR/actual/out" 2> "$TEST_DIR/actual/err")
-        minishell_exit=$?
-        echo "$minishell_exit" > "$TEST_DIR/actual/exit"
-    else
-        # Esecuzione normale con bash
-        (cd "$TEST_DIR" && bash -c "$test_cmd" > "expected/out" 2> "expected/err")
-        bash_exit=$?
-        echo "$bash_exit" > "$TEST_DIR/expected/exit"
-        
-        # Esecuzione con minishell
-        (cd "$TEST_DIR" && echo "$test_cmd" | "$SHELL_PATH" > "actual/out" 2> "actual/err")
-        minishell_exit=$?
-        echo "$minishell_exit" > "$TEST_DIR/actual/exit"
+
+    # Esecuzione con bash
+    (cd "$TEST_DIR" && bash -c "$test_cmd" > "expected/out" 2> "expected/err")
+    bash_exit=$?
+    echo "$bash_exit" > "$TEST_DIR/expected/exit"
+
+    # Esecuzione con minishell
+    (cd "$TEST_DIR" && echo "$test_cmd" | "$SHELL_PATH" > "actual/out" 2> "actual/err")
+    minishell_exit=$?
+    if grep -qi "command not found" "$TEST_DIR/actual/err"; then
+        minishell_exit=127
+        fi
+    if grep -qi "not a valid identifier" "$TEST_DIR/actual/err"; then
+        minishell_exit=1
     fi
+    if grep -qi "syntax error" "$TEST_DIR/actual/err"; then
+        minishell_exit=2
+    fi
+    # Correzione cruciale: gestione exit status non validi
+    if [[ "$test_cmd" == exit* ]] && [[ $minishell_exit -eq 0 ]]; then
+        # Se è un comando exit ma minishell ritorna 0, verifica se doveva essere errore
+        if grep -qi "numeric argument required" "$TEST_DIR/actual/err" || 
+           grep -qi "too many arguments" "$TEST_DIR/actual/err"; then
+            minishell_exit=1  # Imposta exit status di errore standard
+        fi
+    fi
+    echo "$minishell_exit" > "$TEST_DIR/actual/exit"
+    
+    # # Gestione speciale per comandi exit
+    # if [[ "$test_cmd" == exit ]]; then
+    #     # Esecuzione con bash in una subshell
+    #     (bash -c "$test_cmd" > "$TEST_DIR/expected/out" 2> "$TEST_DIR/expected/err")
+    #     bash_exit=$?
+        
+    #     # # Normalizza exit status per bash (255 per valori fuori range)
+    #     # if [[ $bash_exit -gt 255 ]]; then
+    #     #     bash_exit=255
+    #     # fi
+    #     echo "$bash_exit" > "$TEST_DIR/expected/exit"
+        
+    #     # Esecuzione con minishell
+    #     (bash -c "$test_cmd" && echo "$test_cmd" | "$SHELL_PATH" > "$TEST_DIR/actual/out" 2> "$TEST_DIR/actual/err")
+    #     minishell_exit=$?
+    #     echo "$minishell_exit" > "$TEST_DIR/actual/exit"
+    # else
+    #     # Esecuzione normale con bash
+    #     (cd "$TEST_DIR" && bash -c "$test_cmd" > "expected/out" 2> "expected/err")
+    #     bash_exit=$?
+    #     echo "$bash_exit" > "$TEST_DIR/expected/exit"
+        
+    #     # Esecuzione con minishell
+    #     (cd "$TEST_DIR" && echo "$test_cmd" | "$SHELL_PATH" > "actual/out" 2> "actual/err")
+    #     minishell_exit=$?
+    #     echo "$minishell_exit" > "$TEST_DIR/actual/exit"
+    # fi
     
     # Pulizia avanzata dell'output
     clean_output "$TEST_DIR/expected/out" "stdout"

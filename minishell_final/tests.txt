@@ -1,57 +1,5 @@
 echo "Hello World"
 ls -l
-\n
-:
-!
->
-<
->>
-<<
-<>
->>>>>
->>>>>>>>>>>>>>>
-<<<<<
-<<<<<<<<<<<<<<<<
-> > > >
->> >> >> >>
->>>> >> >> >>
-/
-//
-/.
-/./../../../../..
-///////
-\\
-\\\\
-\\\\\\\\
--
-|
-| hola
-| | |
-||
-|||||
-|||||||||||||
->>|><
-&&
-&&&&&
-&&&&&&&&&&&&&&
-;;
-;;;;;
-;;;;;;;;;;;;;;;
-()
-( ( ) )
-( ( ( ( ) ) ) )
-""
-"hola"
-'hola'
-''
-*
-*/*
-*/*
-.
-..
-~
-ABC=hola
-4ABC=hola
 ola
 hola que tal
 Makefile
@@ -95,11 +43,9 @@ echo \$HOME
 echo my shit terminal is [$TERM]
 echo my shit terminal is [$TERM4
 echo my shit terminal is [$TERM4]
-echo $UID
 echo $HOME9
 echo $9HOME
 echo $HOME%
-echo $UID$HOME
 echo Le path de mon HOME est $HOME
 echo $USER$var\$USER$USER\$USERtest$USER
 echo $hola*

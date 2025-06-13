@@ -1,0 +1,226 @@
+#BUILTINS
+touch w_block r_block
+chmod -w w_block
+chmod -r r_block
+#env
+env
+env > w_block
+echo Exit Code: $?
+env < r_block
+echo Exit Code: $?
+#export
+export var1 var2= var3="" var4="ciao"
+export 123asd="ciao" ?=123 var5?="gotcha" var____2!=7
+echo Exit Code: $?
+export
+export > w_block
+echo Exit Code: $?
+export < r_block
+echo Exit Code: $?
+#echo
+export c='ho -n' n='nnnnn'
+echo $var1 $var2 $var3 $var4 $?var4 $var5?
+echo concatenated: $var1$var2
+echo just            one              space here!      !   -n      !       !
+echo -n -nnnnnnnnnnnnnnnnnnnnnnn -nnmn ciao
+echo -n -nnnnnn"nnn"nnnnnnnnnnnnnn -nnmn ciao
+echo -n -nnnnn n - nnn ciao
+ec$c ciao
+echo -n$n ciao
+echo 'hello there' > w_block
+echo Exit Code: $?
+echo 'hello there' < r_block
+echo Exit Code: $?
+#unset
+unset
+echo Exit Code: $?
+unset var1 var2 var3 var4 var5
+echo Exit Code: $?
+unset 123asd="ciao"
+echo Exit Code: $?
+#cd
+touch not_a_dir
+mkdir aaa
+mkdir aaa/no_perms_dir
+mkdir aaa/no_perms_dir/ccc
+chmod 000 aaa/no_perms_dir
+export home=$HOME
+unset HOME
+cd
+echo Exit Code: $?
+cd do_not_exist
+echo Exit Code: $?
+cd not_a_dir
+echo Exit Code: $?
+cd aaa/no_perms_dir/ccc
+echo Exit Code: $?
+chmod 777 aaa/no_perms_dir
+rm -rf not_a_dir aaa
+export HOME=$home
+#cd and 
+pwd
+pwd
+env | grep PWD
+cd ..
+env | grep PWD
+unset PWD
+pwd
+cd $OLDPWD
+env | grep PWD
+cd ..
+export PWD
+#exit
+exit a | exit a a | exit 1 a | exit a 1
+echo Exit Code: $?
+exit 1 | exit 2 | exit 3
+echo Exit Code: $?
+exit 10 | exit -10
+echo Exit Code: $?
+exit
+exit exit
+exit | exit hola
+exit | exit hola que tal
+exit | exit 42
+exit | exit 000042
+exit | exit 666
+exit | exit 666 666
+exit | exit -666 666
+exit | exit hola 666
+exit | exit 666 666 666 666
+exit | exit 666 hola 666
+exit | exit hola 666 666
+exit | exit 259
+exit | exit -4
+exit | exit -42
+exit | exit -0000042
+exit | exit -259
+exit | exit -666
+exit | exit +666
+exit | exit 0
+exit | exit +0
+exit | exit -0
+exit | exit +42
+exit | exit -69 -96
+exit | exit --666
+exit | exit ++++666
+exit | exit ++++++0
+exit | exit ------0
+exit | exit "666"
+exit | exit '666'
+exit | exit '-666'
+exit | exit '+666'
+exit | exit '----666'
+exit | exit '++++666'
+exit | exit '6'66
+exit | exit '2'66'32'
+exit | exit "'666'"
+exit | exit '"666"'
+exit | exit '666'"666"666
+exit | exit +'666'"666"666
+exit | exit -'666'"666"666
+exit | exit 9223372036854775807
+exit | exit 9223372036854775808
+exit | exit -9223372036854775808
+exit | exit -9223372036854775809
+#SINGLE COMMANDS
+echo Exit Code: $?
+echo ciao > $novar
+echo Exit Code: $?
+rm -f out
+echo "BIG BOY TEXT" | > out
+echo Exit Code: $?
+cat out 
+rm out
+#redirs are tricky
+rm -f out
+ls > out | <out cat
+echo sometext > out
+ls > out | <out cat
+cat out 
+rm out
+#REDIRS
+touch w_block r_block
+chmod -w w_block
+chmod -r r_block
+< r_block cat
+echo Exit Code: $? 
+> w_block echo ciao 
+echo Exit Code: $?
+< r_block greppp
+echo Exit Code: $?
+> w_block greppp
+echo Exit Code: $?
+echo some_text >file1>file2>fil3>w_block>file4
+echo Exit Code: $?
+ls | grep file
+rm -f file1 file2 file3 file4
+ls > w_block | grep a | grep b | cat > w_block
+echo Exit Code: $?
+echo ciao > $novar
+echo Exit Code: $?
+rm -f w_block r_block
+#QUOTES
+export ciao=XXXX
+echo ciao$"$ciao"$$'$ciao'
+echo ci$ao$"$ciao"$'$ciao'
+unset ciao
+export a='Paperon"de"Paperoni'
+echo '"ciao doveri ieri sera $a?" - "non sono fatti tuoi"'
+echo Exit Code: $? 
+echo "ciao dov'eri ieri sera $a?" - "non sono fatti tuoi"
+echo Exit Code: $?
+unset a
+e'ch'"o " ciao
+echo Exit Code: $?
+#PIPES
+# basics
+# sleep 1 | sleep 2 | sleep 3
+exit 1 | exit 2 | exit 3
+echo Exit Code: $?
+# cat | cat | cat | ls
+ls -l | grep .c
+echo Exit Code: $?
+ls | grepp a | cat
+echo Exit Code: $?
+echo pippo | grep
+echo Exit Code: $?
+echo "ciao | ls" | grep '$ciao' | w"c" -l >out
+echo Exit code: $?
+cat out 
+rm out
+ls | << prut cat | grep la > pippo
+lalalalalaalla
+lolololololol
+prut
+cat pippo
+rm pippo
+#HEREDOC
+<< X cat | grep a
+ppapapa
+popoop
+X
+<< X | cat
+ppapapa
+popoop
+X
+#SYNTAX ERRORS
+| | |
+echo Exit Code: $?
+>><
+echo Exit Code: $?
+<<>
+echo Exit Code: $?
+>><<
+echo Exit Code: $?
+<<>>
+echo Exit Code: $?
+<|>
+echo Exit Code: $?
+| echo
+echo Exit Code: $?
+<< a << b | | << c cat >out
+a
+b
+echo Exit Code: $?
+echo DONE
+

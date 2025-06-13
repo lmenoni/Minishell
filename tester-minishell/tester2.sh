@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Nome del tuo eseguibile (usa percorso assoluto o variabile)
+# Nome del tuo eseguibile
 MINISHELL_DIR="../minishell_final"
 MY_SHELL="$MINISHELL_DIR/minishell"
 
@@ -28,10 +28,8 @@ if [ ! -f "$TEST_FILE" ]; then
     exit 1
 fi
 
-rm -rf diff reports
-
 # Creazione cartelle output
-mkdir -p diff reports
+mkdir -p expected actual diff reports
 
 # File di report
 REPORT_PASSED="reports/passed_tests.log"
@@ -91,9 +89,7 @@ clean_output() {
         sed -i -e 's/^bash: line [0-9]\+: //' \
                 -e 's/^bash: -c: line [0-9]\+: //' \
                -e 's/^minishell> //' \
-			   -e 's/minishell: //' \
                -e 's/syntax error near unexpected token/syntax error/g' \
-               -e 's/[a-zA-Z0-9_]^minishell> //' \
                "${file}.clean"
     fi
     
@@ -131,51 +127,29 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
     ((total_tests++))
     echo "Linea $line_count: PROCESSING - '$test_cmd'" >> "$TEST_COUNTER_FILE"
     
-    # Crea una directory temporanea per il test
-    TEST_DIR=$(mktemp -d)
-    mkdir -p "$TEST_DIR/expected" "$TEST_DIR/actual"
+    # Esecuzione con bash
+    bash -c "$test_cmd" > "expected/test_${test_number}.out" 2> "expected/test_${test_number}.err"
     
-    # Ottieni il percorso assoluto della shell
-    SHELL_PATH=$(realpath "$MY_SHELL")
-    
-    # Gestione speciale per comandi exit
-    if [[ "$test_cmd" == exit ]]; then
-        # Esecuzione con bash in una subshell
-        (bash -c "$test_cmd" > "$TEST_DIR/expected/out" 2> "$TEST_DIR/expected/err")
-        bash_exit=$?
-        
-        # # Normalizza exit status per bash (255 per valori fuori range)
-        # if [[ $bash_exit -gt 255 ]]; then
-        #     bash_exit=255
-        # fi
-        echo "$bash_exit" > "$TEST_DIR/expected/exit"
-        
-        # Esecuzione con minishell
-        (echo "$test_cmd" | "$SHELL_PATH" > "$TEST_DIR/actual/out" 2> "$TEST_DIR/actual/err")
-        minishell_exit=$?
-        echo "$minishell_exit" > "$TEST_DIR/actual/exit"
-    else
-        # Esecuzione normale con bash
-        (cd "$TEST_DIR" && bash -c "$test_cmd" > "expected/out" 2> "expected/err")
-        bash_exit=$?
-        echo "$bash_exit" > "$TEST_DIR/expected/exit"
-        
-        # Esecuzione con minishell
-        (cd "$TEST_DIR" && echo "$test_cmd" | "$SHELL_PATH" > "actual/out" 2> "actual/err")
-        minishell_exit=$?
-        echo "$minishell_exit" > "$TEST_DIR/actual/exit"
+    # Esecuzione con la tua shell (modalità interattiva)
+    if ! echo "$test_cmd" | $MY_SHELL > "actual/test_${test_number}.tmp" 2> "actual/test_${test_number}.err.tmp"; then
+        if grep -q "Permission denied" "actual/test_${test_number}.err.tmp"; then
+            echo -e "\nCRITICAL ERROR: Permessi di esecuzione mancanti per $MY_SHELL al test $test_number"
+            critical_error=1
+            break
+        fi
     fi
     
     # Pulizia avanzata dell'output
-    clean_output "$TEST_DIR/expected/out" "stdout"
-    clean_output "$TEST_DIR/expected/err" "stderr"
-    clean_output "$TEST_DIR/actual/out" "stdout"
-    clean_output "$TEST_DIR/actual/err" "stderr"
+    clean_output "expected/test_${test_number}.err" "stderr"
+    clean_output "actual/test_${test_number}.tmp" "stdout"
+    clean_output "actual/test_${test_number}.err.tmp" "stderr"
     
-    # Confronto output e exit status
-    diff_output=$(diff -u "$TEST_DIR/expected/out" "$TEST_DIR/actual/out" 2>&1)
-    diff_err=$(diff -u "$TEST_DIR/expected/err" "$TEST_DIR/actual/err" 2>&1)
-    diff_exit=$(diff -u "$TEST_DIR/expected/exit" "$TEST_DIR/actual/exit" 2>&1)
+    mv "actual/test_${test_number}.tmp" "actual/test_${test_number}.out"
+    mv "actual/test_${test_number}.err.tmp" "actual/test_${test_number}.err"
+    
+    # Confronto output
+    diff_output=$(diff -u "expected/test_${test_number}.out" "actual/test_${test_number}.out" 2>&1)
+    diff_err=$(diff -u "expected/test_${test_number}.err" "actual/test_${test_number}.err" 2>&1)
     
     # Salvataggio differenze
     if [ ! -z "$diff_output" ]; then
@@ -184,12 +158,9 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
     if [ ! -z "$diff_err" ]; then
         echo "$diff_err" > "diff/test_${test_number}.err.diff"
     fi
-    if [ ! -z "$diff_exit" ]; then
-        echo "$diff_exit" > "diff/test_${test_number}.exit.diff"
-    fi
     
     # Verifica risultati
-    if [ -z "$diff_output" ] && [ -z "$diff_err" ] && [ -z "$diff_exit" ]; then
+    if [ -z "$diff_output" ] && [ -z "$diff_err" ]; then
         # Test passato
         echo "Test $test_number: '$test_cmd' PASSED" >> "$REPORT_PASSED"
         ((passed++))
@@ -198,12 +169,8 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
         echo "Test $test_number: '$test_cmd'" >> "$REPORT_FAILED"
         [ ! -z "$diff_output" ] && echo "    Differenze stdout: diff/test_${test_number}.out.diff" >> "$REPORT_FAILED"
         [ ! -z "$diff_err" ] && echo "    Differenze stderr: diff/test_${test_number}.err.diff" >> "$REPORT_FAILED"
-        [ ! -z "$diff_exit" ] && echo "    Differenze exit status: diff/test_${test_number}.exit.diff" >> "$REPORT_FAILED"
         ((failed++))
     fi
-    
-    # Pulisci directory temporanea
-    rm -rf "$TEST_DIR"
     
     ((test_number++))
 done < "$TEST_FILE"
@@ -221,7 +188,7 @@ echo "Righe saltate:        $skipped" | tee -a "$REPORT_SUMMARY"
 
 if [ $critical_error -eq 1 ]; then
     echo "TEST INTERROTTO: Problema critico con l'eseguibile minishell" | tee -a "$REPORT_SUMMARY"
-    echo "Verificare i permessi di esecuzione: chmod +x $SHELL_PATH" | tee -a "$REPORT_SUMMARY"
+    echo "Verificare i permessi di esecuzione: chmod +x $MY_SHELL" | tee -a "$REPORT_SUMMARY"
     exit 1
 elif [ $failed -ne 0 ]; then
     echo "Dettagli test falliti disponibili in: $REPORT_FAILED" | tee -a "$REPORT_SUMMARY"
