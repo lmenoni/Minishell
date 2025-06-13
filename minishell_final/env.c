@@ -12,45 +12,6 @@
 
 #include "minishell.h"
 
-t_env   *new_env_node(char *s)
-{
-    t_env   *new;
-    
-    new = malloc(sizeof(t_env));
-    new->e = s;
-    new->next = NULL;
-    return (new);
-}
-
-t_env   *init_env(char **env, t_data *data)
-{
-    t_env   *first;
-    t_env   *curr;
-    t_env   *new;
-    int     i;
-
-    first = NULL;
-    i = 0;
-    while (env[i])
-    {
-        curr = first;
-        new = new_env_node(ft_strdup(env[i]));
-        if (!first)
-            first = new;
-        else
-        {
-            while (curr->next)
-                curr = curr->next;
-            curr->next = new;
-        }
-        i++;
-    }
-    data->current_path = getcwd(NULL, 0);
-    data->home_path = getenv("HOME");
-    data->old_path = NULL;
-    return (first);
-}
-
 char *check_env(t_data *data, char *var)
 {
 	t_env *temp;
@@ -143,28 +104,4 @@ void delete_env(t_data *data, char *var)
 		temp = temp->next;
 	}
 	free(var_name);
-}
-
-void env(t_data *data, t_cmd *cmd, char **input_array)
-{
-	t_env *curr;
-
-	if (input_array[1] != NULL)
-	{
-		ft_printf_fd(2, "minishell: env: too many arguments\n");
-		data->status = 127;
-		return ;
-	}
-	curr = data->env_data;
-	while (curr && curr->e)
-	{
-		if (!ft_strchr(curr->e, '='))
-		{
-			curr = curr->next;
-			continue;
-		}
-		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
-		curr = curr->next;
-	}
-	data->status = 0;
 }

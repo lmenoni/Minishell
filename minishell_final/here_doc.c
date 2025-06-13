@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-void    here_sigint(int sig)
-{
-	char	c;
-	
-	c = '\n';
-    (void)sig;
-    last_signal = 1;
-	ioctl(0, TIOCSTI, &c);
-	rl_on_new_line();
-}
-
 bool is_limiter_quoted(char *s)
 {
 	int i;
@@ -33,20 +22,6 @@ bool is_limiter_quoted(char *s)
 		if (s[i] == '"' || s[i] == '\'')
 			return (true);
 		i++;
-	}
-	return (false);
-}
-
-bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
-{
-	if (last_signal == 1)
-	{
-		if (r)
-			free(r);
-		free(line);
-		free(limiter);
-		data->status = 130;
-		return (true);
 	}
 	return (false);
 }
@@ -77,18 +52,6 @@ char *get_lines(char *s, t_data *data)
 	}
 	free(prompt);
 	return (NULL);
-}
-
-bool	reset_signal()
-{
-	if (last_signal)
-	{
-		last_signal = 0;
-		signal(SIGINT, handle_sigint);
-		return (false);
-	}
-	signal(SIGINT, handle_sigint);
-	return (true);
 }
 
 bool	do_here_doc(t_token *tok, t_data *data)

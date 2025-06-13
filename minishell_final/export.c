@@ -38,16 +38,6 @@ int parse_export(char *var, int *status)
 	return (0);
 }
 
-char *get_var_name(char *var)
-{
-	int i;
-
-	i = 0;
-	while (var[i] && (var[i] != '=' && var[i] != '+'))
-		i++;
-	return (ft_substr(var, 0, i));
-}
-
 void export_plus(t_data *data, char *args, char *var_name)
 {
 	char *replace;
@@ -95,18 +85,6 @@ void export_case(t_data *data, char **args, int *status)
 		free(var_name);
 		i++;
 	}
-}
-
-void print_export(t_env *env, int i)
-{
-    if (i > 0 && env->e[i] == '=' && ft_strncmp(env->e, "_=", 2) != 0)
-    {
-        char *var_name = get_var_name(env->e);
-        ft_printf("declare -x %s=\"%s\"\n", var_name, &env->e[i + 1]);
-        free(var_name);
-    }
-    else if (ft_strncmp(env->e, "_=", 2) != 0)
-        ft_printf("declare -x %s\n", env->e);
 }
 
 void export(t_data *data, char **args)

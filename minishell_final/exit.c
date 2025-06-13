@@ -46,7 +46,7 @@ bool validate_exit_arg(char *arg, int *result)
     int digitc;
 
     digitc = 0;
-    if (!check_numeric(arg, &digitc) || digitc > 20|| ft_atoll(arg) <= LONG_MIN || ft_atoll(arg) >= LONG_MAX)
+    if (!check_numeric(arg, &digitc) || long_overflow(arg))
     {
         *result = 2;
         return (false);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int check_echo_flag(char **input_array)
+int check_echo_flag(char **input_array)
 {
 	int i;
 	int j;

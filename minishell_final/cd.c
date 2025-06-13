@@ -12,35 +12,7 @@
 
 #include "minishell.h"
 
-/*
-i comandi chdir e getcwd fanno delle chiamate di sistema e non sono condizionate dall'env
-UNSET HOME funziona sempre ma non viene risettato se unsettato
-una volta fatto UNSET di una variabile, non viene piu' risettata
-OLDPWD funziona solo se e' settato
-il comando pwd funziona sempre
-se la HOME non e' settata e arriva una stringa vuota, ritorna errore con HOME non settata (casi unset $HOME, $PWD, cd (vuoto)), mentre con ~ funziona sempre
-fare funzione safe_chdir per ridurre righe e che gestisce gli erorri anche
-
-appena viene aperto minishell, OLDPWD non e' settato e cd - non funziona
-bisogna controllare se OLDPWD esiste per poterlo aggiornare, quindi aggiungere check_env(data, "OLDPWD=") ma tenere sempre conto del =
-*/
-
-static bool safe_chdir(char *path, int *status, char *s1, char *s2)
-{
-	if (chdir(path) != 0)
-	{
-		ft_printf_fd(2, "minishell: cd: %s: no such file or directory\n", path);
-		*status = 1;
-		if (s1)
-			free(s1);
-		if (s2)
-			free(s2);
-		return (false);
-	}
-	return (true);
-}
-
-static void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
+void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 {
 	char *path;
 	

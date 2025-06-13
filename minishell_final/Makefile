@@ -17,7 +17,7 @@
 CC	  	= cc
 CFLAGS  = -Wall -Wextra -Werror -g
 NAME	= minishell
-SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c execution.c fds.c utils_4.c crazystring.c echo.c cd.c env.c unset.c pwd.c export.c exit.c
+SRC	 	= main.c token_utils.c free_mem.c utils.c tokenization.c cmd_array.c cmd_array_utils.c print.c here_doc.c expansion.c utils_2.c manage_expansion.c new_tokens_utils.c utils_3.c execution.c fds.c utils_4.c echo.c cd.c env.c unset.c pwd.c export.c exit.c hd_utils.c signals.c builtins_utils.c export_utils.c utils_5.c execution_utils.c
 HEADERS = minishell.h
 OBJ_DIR = obj
 OBJ	 	= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
