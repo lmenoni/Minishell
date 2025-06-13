@@ -12,33 +12,56 @@
 
 #include "minishell.h"
 
-int parse_syntax_errors(t_token *token)
+void	init_data(t_data *data, char **e)
 {
-    while (token)
-    {
-        if (token->type == PIPE && !(token->next))
-            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `newline'\n"));
-        if (token->type == PIPE && (!(token->prev) || token->next->type == PIPE))
-            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `|'\n"));
-        if (token->type >= 3 && !(token->next))
-            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `newline'\n"));
-        if (token->type >= 3 && (token->next->type >= 3 ||  token->next->type == PIPE))
-            return (ft_printf_fd(2, "minishell: syntax error near unexpected token `>'\n"));
-        token = token->next;
-    }
-    return (0);
+	(*data) = (t_data){0};
+	data->env_data = init_env(e, data);
+	if (!check_env(data, "OLDPWD"))
+		add_env(data, "OLDPWD");
+	init_signals();
+	data->st_in = dup(STDIN_FILENO);
+	data->st_out = dup(STDOUT_FILENO);
 }
 
-void    reset_data(t_data *data)
+void	close_data(t_data *data)
 {
-    free(data->input);
-    free_token(data->token);
-    free_cmd_array(data);
-    data->cmd_count = 0;
-    data->cmd_name = 0;
-    data->cmd_arr = NULL;
-    data->input = NULL;
-    data->last_token = NULL;
-    data->token = NULL;
-    data->pipe = NULL;
+	free_env(data->env_data);
+	free(data->current_path);
+	free(data->old_path);
+	close(data->st_in);
+	close(data->st_out);
+	rl_clear_history();
+}
+
+int	parse_syntax_errors(t_token *token)
+{
+	while (token)
+	{
+		if (token->type == PIPE && !(token->next))
+			return (ft_printf_fd(2, SYN_NEWLINE));
+		if (token->type == PIPE && (!(token->prev)
+				|| token->next->type == PIPE))
+			return (ft_printf_fd(2, SYN_PIPE));
+		if (token->type >= 3 && !(token->next))
+			return (ft_printf_fd(2, SYN_NEWLINE));
+		if (token->type >= 3 && (token->next->type >= 3
+				|| token->next->type == PIPE))
+			return (ft_printf_fd(2, SYN_REDI));
+		token = token->next;
+	}
+	return (0);
+}
+
+void	reset_data(t_data *data)
+{
+	free(data->input);
+	free_token(data->token);
+	free_cmd_array(data);
+	data->cmd_count = 0;
+	data->cmd_name = 0;
+	data->cmd_arr = NULL;
+	data->input = NULL;
+	data->last_token = NULL;
+	data->token = NULL;
+	data->pipe = NULL;
 }

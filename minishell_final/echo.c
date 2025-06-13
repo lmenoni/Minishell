@@ -12,14 +12,13 @@
 
 #include "minishell.h"
 
-int check_echo_flag(char **input_array)
+int	check_echo_flag(char **input_array)
 {
-	int i;
-	int j;
-	
+	int	i;
+	int	j;
+
 	i = 0;
 	j = 1;
-
 	while (input_array[j])
 	{
 		i = 0;
@@ -39,12 +38,12 @@ int check_echo_flag(char **input_array)
 	return (j - 1);
 }
 
-void echo(t_data *data, t_cmd *cmd, char **args)
+void	echo(t_data *data, t_cmd *cmd, char **args)
 {
-	int i;
-	int flag;
-	flag = check_echo_flag(args);
+	int	i;
+	int	flag;
 
+	flag = check_echo_flag(args);
 	if (flag > 0)
 		i = flag + 1;
 	else

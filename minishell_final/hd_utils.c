@@ -12,20 +12,20 @@
 
 #include "minishell.h"
 
-void    here_sigint(int sig)
+void	here_sigint(int sig)
 {
 	char	c;
-	
+
 	c = '\n';
-    (void)sig;
-    last_signal = 1;
+	(void)sig;
+	g_last_signal = 1;
 	ioctl(0, TIOCSTI, &c);
 	rl_on_new_line();
 }
 
 bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
 {
-	if (last_signal == 1)
+	if (g_last_signal == 1)
 	{
 		if (r)
 			free(r);
@@ -37,11 +37,11 @@ bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
 	return (false);
 }
 
-bool	reset_signal()
+bool	reset_signal(void)
 {
-	if (last_signal)
+	if (g_last_signal)
 	{
-		last_signal = 0;
+		g_last_signal = 0;
 		signal(SIGINT, handle_sigint);
 		return (false);
 	}
@@ -49,11 +49,14 @@ bool	reset_signal()
 	return (true);
 }
 
-char *ft_crazystring(char *s)
+char	*ft_crazystring(char *s)
 {
-	char *prompt;
-	char *temp = ft_strjoin(RED, s);
-	char *temp2 = ft_strjoin(temp, RESET);
+	char	*prompt;
+	char	*temp;
+	char	*temp2;
+
+	temp = ft_strjoin(MAGENTA, s);
+	temp2 = ft_strjoin(temp, RESET);
 	prompt = ft_strjoin(temp2, YELLOW"> "RESET);
 	free(temp);
 	free(temp2);

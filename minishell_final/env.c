@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-char *check_env(t_data *data, char *var)
+char	*check_env(t_data *data, char *var)
 {
-	t_env *temp;
-	char *name;
-	int i;
-	
+	t_env	*temp;
+	char	*name;
+	int		i;
+
 	i = 0;
 	temp = data->env_data;
 	while (temp)
@@ -39,12 +39,12 @@ char *check_env(t_data *data, char *var)
 	return (NULL);
 }
 
-void update_env(t_data *data, char *var, char *str)
+void	update_env(t_data *data, char *var, char *str)
 {
-	t_env *temp;
-	char *name;
-	int i;
-	
+	t_env	*temp;
+	char	*name;
+	int		i;
+
 	i = 0;
 	temp = data->env_data;
 	while (temp)
@@ -64,10 +64,10 @@ void update_env(t_data *data, char *var, char *str)
 	}
 }
 
-void add_env(t_data *data, char *var)
+void	add_env(t_data *data, char *var)
 {
-	t_env *new;
-	t_env *temp;
+	t_env	*new;
+	t_env	*temp;
 
 	new = new_env_node(ft_strdup(var));
 	if (!data->env_data)
@@ -81,10 +81,10 @@ void add_env(t_data *data, char *var)
 	}
 }
 
-void delete_env(t_data *data, char *var)
+void	delete_env(t_data *data, char *var)
 {
-	t_env *temp;
-	t_env *prev;
+	t_env	*temp;
+	t_env	*prev;
 	char	*var_name;
 
 	temp = data->env_data;

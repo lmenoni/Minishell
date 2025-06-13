@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-void    wait_status(t_data *data, pid_t last_pid)
+void	wait_status(t_data *data, pid_t last_pid)
 {
-	pid_t   ended;
-	int status;
+	pid_t	ended;
+	int		status;
 
 	status = 0;
 	while (1)
@@ -39,11 +39,11 @@ void    wait_status(t_data *data, pid_t last_pid)
 	}
 }
 
-void    do_execve(t_cmd *cmd, t_data *data)
+void	do_execve(t_cmd *cmd, t_data *data)
 {
-	char *path;
-	char **args;
-	char    **env;
+	char	*path;
+	char	**args;
+	char	**env;
 
 	path = ft_strdup(cmd->path);
 	args = ft_matdup(cmd->args);
@@ -58,28 +58,30 @@ void    do_execve(t_cmd *cmd, t_data *data)
 	exit(126);
 }
 
-void    children(t_cmd  *cmd, t_data *data)
+void	children(t_cmd *cmd, t_data *data)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	if (define_input(data, cmd))
-		free_exit(data, cmd, data->status);
 	if (!cmd->args[0])
 		free_exit(data, cmd, 0);
+	if (define_input(data, cmd))
+		free_exit(data, cmd, data->status);
 	cmd->path = get_path(cmd->args[0], data, cmd);
 	if (!cmd->path)
 		free_exit(data, cmd, 127);
 	do_execve(cmd, data);
 }
 
-pid_t    execute(t_cmd cmd, t_data *data)
+pid_t	execute(t_cmd cmd, t_data *data)
 {
-	pid_t pid;
+	pid_t	pid;
 
 	cmd.in_fd = data->st_in;
 	cmd.ou_fd = data->st_out;
 	if (!handle_fds(&cmd, data))
-		return (0);
+		return (close_if(&cmd, data), 0);
+	if (!cmd.args[0])
+		return (close_if(&cmd, data), 0);
 	if (!data->pipe && define_input(data, &cmd))
 		return (0);
 	pid = fork();

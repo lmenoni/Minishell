@@ -12,12 +12,11 @@
 
 #include "minishell.h"
 
-t_token *token_new(char *content, tok_type type)
+t_token	*token_new(char *content, t_type type)
 {
-	t_token *token;
+	t_token	*token;
 
 	token = malloc(1 * sizeof(t_token));
-	// protezione malloc
 	token->s = content;
 	token->next = NULL;
 	token->prev = NULL;
@@ -25,10 +24,10 @@ t_token *token_new(char *content, tok_type type)
 	return (token);
 }
 
-void add_token(char *s, tok_type type, t_data *data)
+void	add_token(char *s, t_type type, t_data *data)
 {
-	t_token *new;
-	t_token *curr;
+	t_token	*new;
+	t_token	*curr;
 
 	new = token_new(s, type);
 	if (!(data->token))
@@ -46,7 +45,7 @@ void add_token(char *s, tok_type type, t_data *data)
 	return ;
 }
 
-tok_type which_type(char c, int len)
+t_type	which_type(char c, int len)
 {
 	if (c == '<' && len == 2)
 		return (HERE_DOC);
