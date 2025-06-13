@@ -70,6 +70,16 @@ void    init_data(t_data *data, char **e)
     data->st_out = dup(STDOUT_FILENO);
 }
 
+void    close_data(t_data *data)
+{
+    free_env(data->env_data);
+    free(data->current_path);
+    free(data->old_path);
+    close(data->st_in);
+    close(data->st_out);
+    rl_clear_history();
+}
+
 int main(int ac, char **av, char **e)
 {
     t_data  data;
@@ -85,16 +95,9 @@ int main(int ac, char **av, char **e)
         check_last_signal(&data);
         if (parsing(&data))
             execution(&data);
-        // ft_printf("%s\n", getcwd(NULL, 0));
         add_history(data.input);
     }
-    free_env(data.env_data);
-    free(data.current_path);
-    free(data.old_path);
-    close(data.st_in);
-    close(data.st_out);
-    rl_clear_history();
+    close_data(&data);
     return (0);
 }
-//segfault espansione variabili che non esistono echo $cazzo
-//gestione fallimento pipe array, controllare open funzionino correttamente
+//here_doc con ctrl d
