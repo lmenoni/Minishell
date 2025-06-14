@@ -6,21 +6,21 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/13 18:46:48 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/14 23:12:24 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int parse_export(char *var, int *status)
+int	parse_export(char *var, int *status)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	if (var[0] == '=' || (!ft_isalpha(var[0]) && var[0] != '_'))
 	{
-		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", var);
-		*status = 1; 
+		ft_printf_fd(2, EXPORT_IDENT, var);
+		*status = 1;
 		return (1);
 	}
 	while (var[i] && var[i] != '=')
@@ -29,7 +29,7 @@ int parse_export(char *var, int *status)
 			return (2);
 		else if (!ft_isalnum(var[i]) && var[i] != '_')
 		{
-			ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", var);
+			ft_printf_fd(2, EXPORT_IDENT, var);
 			*status = 1;
 			return (1);
 		}
@@ -38,10 +38,10 @@ int parse_export(char *var, int *status)
 	return (0);
 }
 
-void export_plus(t_data *data, char *args, char *var_name)
+void	export_plus(t_data *data, char *args, char *var_name)
 {
-	char *replace;
-	
+	char	*replace;
+
 	replace = NULL;
 	if (check_env(data, var_name) != NULL)
 	{
@@ -56,7 +56,7 @@ void export_plus(t_data *data, char *args, char *var_name)
 	free(replace);
 }
 
-void export_add(t_data *data, char *args, char *var_name)
+void	export_add(t_data *data, char *args, char *var_name)
 {
 	if (check_env(data, var_name) != NULL)
 		update_env(data, var_name, (args + (ft_strlen(var_name) + 1)));
@@ -66,11 +66,11 @@ void export_add(t_data *data, char *args, char *var_name)
 		return ;
 }
 
-void export_case(t_data *data, char **args, int *status)
+void	export_case(t_data *data, char **args, int *status)
 {
-	int i;
-	int parse_result;
-	char *var_name;
+	int		i;
+	int		parse_result;
+	char	*var_name;
 
 	i = 1;
 	while (args[i])
@@ -86,11 +86,11 @@ void export_case(t_data *data, char **args, int *status)
 	}
 }
 
-void export(t_data *data, char **args)
+void	export(t_data *data, char **args)
 {
-	t_env *env;
-	int i;
-	int	status;
+	t_env	*env;
+	int		i;
+	int		status;
 
 	i = 0;
 	status = 0;

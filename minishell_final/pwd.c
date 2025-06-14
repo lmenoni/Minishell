@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void pwd(t_data *data, t_cmd *cmd)
+void	pwd(t_data *data, t_cmd *cmd)
 {
 	ft_printf_fd(cmd->ou_fd, "%s\n", data->current_path);
 	data->status = 0;

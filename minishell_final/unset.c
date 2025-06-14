@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-void unset(t_data *data, char **var)
+void	unset(t_data *data, char **var)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (var[++i])

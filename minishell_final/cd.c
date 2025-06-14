@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
+void	cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 {
-	char *path;
-	
+	char	*path;
+
 	path = NULL;
 	if (data->old_path || check_env(data, "OLDPWD") != NULL)
 	{
@@ -40,7 +40,7 @@ void cd_oldpwd(t_data *data, t_cmd *cmd, int *status)
 	}
 }
 
-void cd_home(t_data *data, int *status)
+void	cd_home(t_data *data, int *status)
 {
 	if (check_env(data, "HOME") != NULL)
 	{
@@ -59,10 +59,10 @@ void cd_home(t_data *data, int *status)
 	}
 }
 
-void cd_tilde(t_data *data, char *new_path, int *status)
+void	cd_tilde(t_data *data, char *new_path, int *status)
 {
-	char *joined_path;
-	
+	char	*joined_path;
+
 	joined_path = ft_strjoin(data->home_path, new_path + 1);
 	if (new_path[0] == '~' && new_path[1] == '\0')
 	{
@@ -86,10 +86,10 @@ void cd_tilde(t_data *data, char *new_path, int *status)
 	}
 }
 
-void cd_execution(t_data *data, char *new_path, int *status)
+void	cd_execution(t_data *data, char *new_path, int *status)
 {
 	if (safe_chdir(new_path, status, NULL, NULL) == false)
-			return ;
+		return ;
 	free(data->old_path);
 	data->old_path = data->current_path;
 	update_env(data, "OLDPWD", data->old_path);
@@ -97,12 +97,12 @@ void cd_execution(t_data *data, char *new_path, int *status)
 	update_env(data, "PWD", data->current_path);
 }
 
-void cd(t_data *data, t_cmd * cmd, char **args)
+void	cd(t_data *data, t_cmd *cmd, char **args)
 {
-	char *new_path;
-	int	status;
+	char	*new_path;
+	int		status;
+
 	(void)cmd;
-	
 	status = 0;
 	if (ft_matlen(args) <= 2)
 	{

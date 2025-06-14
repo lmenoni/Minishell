@@ -7,13 +7,11 @@
 -Completare cd dopo aver implementato il salvataggio di env non come array ma in una struct --> OK
 -Controllare export e capire come funziona, anche lui deve avere una sua struct --> OK
 -Fare ft_printfd --> OK
+-Fare exit. Non deve accettare nulla, deve solo controllare che non ci siano argomenti e nel caso si trova in una fork deve chiudere la fork e poi se rifatto la shell. Per il momento fare exit basilare. Exit potra' essere complatato solo una volta fatto i segnali e l'esecuzione. --> OK
+-Unire il codice di Leo con il mio --> OK
+-Controllare se dopo che il negro ha lavorato nei campi dei parsing, il fattoriale del $HOME con cd che e' unsettato come puzza --> OK
+
 
 -TODO-
-
--Fare exit. Non deve accettare nulla, deve solo controllare che non ci siano argomenti e nel caso si trova in una fork deve chiudere la fork e poi se rifatto la shell. Per il momento fare exit basilare. Exit potra' essere complatato solo una volta fatto i segnali e l'esecuzione.
--Unire il codice di Leo con il mio
--Controllare se dopo che il negro ha lavorato nei campi dei parsing, il fattoriale del $HOME con cd che e' unsettato come puzza
-
---Secondarie--
--Studiare e prepare un suppression file
--Controllare quali funzioni sono static e quali no
+ls * non funziona
+CTRL-C nel main da problemi

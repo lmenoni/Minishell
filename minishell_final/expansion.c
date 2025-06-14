@@ -17,10 +17,12 @@ void	while_not_var(char *s, char *t, int *i, bool expand)
 	while (t[*i] != '\0')
 	{
 		if (t[*i] == '$'
-			&& (!is_space(t[*i + 1]) && t[*i + 1] != '\0' && t[*i + 1] != '"' && t[*i + 1] != '\'')
+			&& (!is_space(t[*i + 1]) && t[*i + 1] != '\0'
+				&& t[*i + 1] != '"' && t[*i + 1] != '\'')
 			&& (is_quoted(s, &t[*i]) != 1 || expand))
 			break ;
-		if (t[*i] == '$' && is_quoted(s, &t[*i]) == 0 && (t[*i + 1] == '"' || t[*i + 1] == '\''))
+		if (t[*i] == '$' && is_quoted(s, &t[*i]) == 0
+			&& (t[*i + 1] == '"' || t[*i + 1] == '\''))
 			break ;
 		*i = *i + 1;
 	}
@@ -28,14 +30,15 @@ void	while_not_var(char *s, char *t, int *i, bool expand)
 
 char	*get_expanded_var(char *s, int *idx, t_data *data)
 {
-	int	i;
+	int		i;
 	char	*name;
 	char	*r;
 
 	if (s[0] == '\0')
 		return (NULL);
 	i = 1;
-	while (s[i] != '\0' && s[i] != '$' && s[i] != '"' && s[i] != '\'' && !is_space(s[i]) && s[i] != '?')
+	while (s[i] != '\0' && s[i] != '$' && s[i] != '"'
+		&& s[i] != '\'' && !is_space(s[i]) && s[i] != '?')
 		i++;
 	if (s[i] == '?' && s[i - 1] == '$')
 	{
@@ -43,8 +46,7 @@ char	*get_expanded_var(char *s, int *idx, t_data *data)
 		*idx = *idx + i;
 		return (ft_itoa(data->status));
 	}
-	// name  = ft_buffjoin(ft_strndup(&s[1], (i - 1)), "=");
-	name  = ft_strndup(&s[1], (i - 1));
+	name = ft_strndup(&s[1], (i - 1));
 	r = ft_strdup(check_env(data, name));
 	free(name);
 	*idx = *idx + i;
@@ -53,7 +55,7 @@ char	*get_expanded_var(char *s, int *idx, t_data *data)
 
 char	*expand_dollar(char *s, t_data *data, bool expand)
 {
-	int	i;
+	int		i;
 	char	*t;
 	char	*r;
 

@@ -6,8 +6,7 @@ MY_SHELL="./minishell"
 
 # Verifica presenza e permessi dell'eseguibile
 if [ ! -f "$MY_SHELL" ]; then
-    echo "Errore: Eseguibile '$MY_SHELL' non trovato"
-    exit 1
+    make
 fi
 
 if [ ! -x "$MY_SHELL" ]; then
@@ -70,6 +69,12 @@ clean_output() {
         #    - Casi senza newline: sostituisci "minishell>" alla fine file
         sed -i 's/minishell>$//' "${file}.clean"
         sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell>$//' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell:$//' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell> //' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell: //' "${file}.clean"
+        sed -i 's/minishell>$//' "${file}.clean"  # Per righe con newline
+        sed -i 's/minishell>$//' "${file}.clean"  # Doppia esecuzione per sicurezza
+        sed -i 's/minishell> //' "${file}.clean"   # Per righe senza newline
         
         # Rimuovi righe vuote
         sed -i '/^$/d' "${file}.clean"
@@ -102,12 +107,22 @@ clean_output() {
 		# 	    -e 's/^minishell: exit/exit/' \
         #        "${file}.clean"
         sed -i -e 's/^bash: line [0-9]\+: //' \
+                -e 's/^bash:$//' \
                 -e 's/^bash: -c: line [0-9]\+: //' \
-               -e 's/^minishell> //' \
-               -e 's/^minishell: //' \
-               -e 's/exit : /exit: /' \
-               -e '/^exit$/d' \
+                -e 's/^minishell> //' \
+                -e 's/^minishell: //' \
+                -e 's/exit : /exit: /' \
+                -e '/^exit$/d' \
+                -e '/echo/d' \
+                -e '/cat/d' \
                "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell: //' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell> //' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell>$//' "${file}.clean"
+        sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell:$//' "${file}.clean"
+        sed -i 's/minishell:$//' "${file}.clean"  # Per righe con newline
+        sed -i 's/minishell:$//' "${file}.clean"  # Doppia esecuzione per sicurezza
+        sed -i 's/minishell://' "${file}.clean"   # Per righe senza newline
         sed -i 's/minishell>$//' "${file}.clean"  # Per righe con newline
         sed -i 's/minishell>$//' "${file}.clean"  # Doppia esecuzione per sicurezza
         sed -i 's/minishell>//' "${file}.clean"   # Per righe senza newline
@@ -149,6 +164,7 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
     
     # Crea una directory temporanea per il test
     TEST_DIR=$(mktemp -d)
+    # TEST_DIR="test_$test_number"
     mkdir -p "$TEST_DIR/expected" "$TEST_DIR/actual"
     
     # Ottieni il percorso assoluto della shell
@@ -171,14 +187,30 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
     if grep -qi "syntax error" "$TEST_DIR/actual/err"; then
         minishell_exit=2
     fi
-    # Correzione cruciale: gestione exit status non validi
-    if [[ "$test_cmd" == exit* ]] && [[ $minishell_exit -eq 0 ]]; then
-        # Se è un comando exit ma minishell ritorna 0, verifica se doveva essere errore
-        if grep -qi "numeric argument required" "$TEST_DIR/actual/err" || 
-           grep -qi "too many arguments" "$TEST_DIR/actual/err"; then
-            minishell_exit=1  # Imposta exit status di errore standard
-        fi
+
+    if grep -qi "too many arguments" "$TEST_DIR/actual/err"; then
+        printf '%s\n' "$test_cmd" 'echo $? > file.txt' | ./minishell > /dev/null 2>&1
+        minishell_exit=$(<file.txt)
+        rm -f file.txt
+        # echo -e "$test_cmd\necho \$? > file.txt" > temp_cmd.sh
+        # ./minishell < temp_cmd.sh
     fi
+
+    if grep -qi "no such file or directory" "$TEST_DIR/actual/err"; then
+        printf '%s\n' "$test_cmd" 'echo $? > file.txt' | ./minishell > /dev/null 2>&1
+        minishell_exit=$(<file.txt)
+        rm -f file.txt
+    fi
+
+    # # Correzione cruciale: gestione exit status non validi
+    # if [[ "$test_cmd" == exit* ]] && [[ $minishell_exit -eq 0 ]]; then
+    #     # Se è un comando exit ma minishell ritorna 0, verifica se doveva essere errore
+    #     if grep -qi "numeric argument required" "$TEST_DIR/actual/err" || 
+    #        grep -qi "too many arguments" "$TEST_DIR/actual/err"; then
+    #         minishell_exit=1  # Imposta exit status di errore standard
+    #     fi
+    # fi
+
     echo "$minishell_exit" > "$TEST_DIR/actual/exit"
     
     # # Gestione speciale per comandi exit

@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-char *get_var_name(char *var)
+char	*get_var_name(char *var)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (var[i] && (var[i] != '=' && var[i] != '+'))
@@ -22,14 +22,16 @@ char *get_var_name(char *var)
 	return (ft_substr(var, 0, i));
 }
 
-void print_export(t_env *env, int i)
+void	print_export(t_env *env, int i)
 {
-    if (i > 0 && env->e[i] == '=' && ft_strncmp(env->e, "_=", 2) != 0)
-    {
-        char *var_name = get_var_name(env->e);
-        ft_printf("declare -x %s=\"%s\"\n", var_name, &env->e[i + 1]);
-        free(var_name);
-    }
-    else if (ft_strncmp(env->e, "_=", 2) != 0)
-        ft_printf("declare -x %s\n", env->e);
+	char	*var_name;
+
+	if (i > 0 && env->e[i] == '=' && ft_strncmp(env->e, "_=", 2) != 0)
+	{
+		var_name = get_var_name(env->e);
+		ft_printf("declare -x %s=\"%s\"\n", var_name, &env->e[i + 1]);
+		free(var_name);
+	}
+	else if (ft_strncmp(env->e, "_=", 2) != 0)
+		ft_printf("declare -x %s\n", env->e);
 }

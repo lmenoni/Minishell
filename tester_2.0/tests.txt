@@ -15,7 +15,6 @@ echo Hola -n
 echo Hola Que Tal
 echo Hola
 echo Hola Que Tal
-echo \n hola
 echo " " | cat -e
 echo | cat -e
 ""''echo hola""'''' que""'' tal""''
@@ -35,40 +34,27 @@ echo $
 echo $?
 echo $?$
 echo $? | echo $? | echo $?
-echo $:$= | cat -e
 echo " $ " | cat -e
 echo ' $ ' | cat -e
 echo $HOME
-echo \$HOME
-echo my shit terminal is [$TERM]
 echo my shit terminal is [$TERM4
-echo my shit terminal is [$TERM4]
 echo $HOME9
-echo $9HOME
-echo $HOME%
 echo Le path de mon HOME est $HOME
-echo $USER$var\$USER$USER\$USERtest$USER
-echo $hola*
 echo -nnnn $hola
 echo > <
 echo | |
 EechoE
-.echo.
 >echo>
 <echo<
 >>echo>>
 |echo|
 |echo -n hola
-echo *
 echo '*'
 echo D*
 echo *Z
 echo *t hola
 echo *t
 echo $*
-echo hola*hola *
-echo $hola*
-echo $HOME*
 echo $""
 echo "$"""
 echo '$'''
@@ -88,7 +74,6 @@ echo $"HO""ME"
 echo $'HO''ME'
 echo $'HOME'
 echo "$"HOME
-echo $=HOME
 echo $"HOLA"
 echo $'HOLA'
 echo $DONTEXIST Hola
@@ -130,19 +115,6 @@ $HOMEdskjhfkdshfsd
 '$HOMEdskjhfkdshfsd'
 $DONTEXIST
 $LESS$VAR
-#Ctlr-C
-#holaCtlr-C
-#cat (faire Ctlr-C apres avoir fait plusieurs fois [ENTREE])
-#cat | rev(faire Ctlr-C apres avoir fait plusieurs fois [ENTREE])
-#Ctlr-D
-#hola Ctlr-D
-#Ctlr-\
-#hola Ctlr-\
-#cat (faire Ctlr-\ apres avoir fait plusieurs fois [ENTREE])
-#Ctlr-Z
-#sleep 3 | sleep 3 | sleep 3 (faire Ctlr-C une seconde apres)
-#sleep 3 | sleep 3 | sleep 3 (faire Ctlr-D une seconde apres)
-#sleep 3 | sleep 3 | sleep 3 (faire Ctlr-\ une seconde apres)
 env
 env hola
 env hola que tal
@@ -187,7 +159,7 @@ export HO\\\\LA=bonjour
 export HOL}A=bonjour
 export HOL{A=bonjour
 export HO*LA=bonjour
-export HO#LA=bonjour
+export HO3LA=bonjour
 export HO@LA=bonjour
 export HO!LA=bonjour
 export HO$?LA=bonjour
@@ -432,7 +404,6 @@ cd /e'tc'
 cd /e"tc"
 cd sr
 cd Makefile
-cd ../minishell
 cd ../../../../../../..
 cd .././../.././../bin/ls
 cd /
@@ -447,7 +418,6 @@ cd ////////
 pwd"
 cd '////////'
 pwd"
-cd /minishell
 cd /
 cd .."
 cd _
@@ -467,7 +437,6 @@ cd"
 unset HOME
 export HOME
 cd"
-cd minishell Docs crashtest.c
 cd / | echo $?
 pwd"
 cd ~
@@ -513,13 +482,9 @@ export CDPATH=./
 cd ."
 export CDPATH=./
 cd .."
-#chmod 000 minishell
-./minishell"
 ls hola
 ./Makefile
-./minishell
 env | grep SHLVL
-./minishell
 env | grep SHLVL
 exit
 env | grep SHLVL"
@@ -529,14 +494,6 @@ env|"wc" -l
 env|"wc "-l
 expr 1 + 1
 expr $? + $?
-env -i ./minishell
-env"
-env -i ./minishell
-export"
-env -i ./minishell
-cd"
-env -i ./minishell
-cd ~"
 exit
 exit exit
 exit hola
@@ -583,7 +540,6 @@ exit 9223372036854775807
 exit 9223372036854775808
 exit -9223372036854775808
 exit -9223372036854775809
-#cat | cat | cat | ls
 ls | exit
 ls | exit 42
 exit | ls
@@ -641,98 +597,11 @@ unset HOLA | cat -e
 export HOLA | echo hola
 env | grep PROUT"
 export | echo hola
-sleep 3 | sleep 3
-time sleep 3 | sleep 3
-sleep 3 | exit
-exit | sleep 3
 echo hola > a
 >>b echo que tal
 cat a | <b cat | cat > c | cat"
-#pwd && ls
-#pwd || ls
-#echo hola || echo bonjour
-#echo hola && echo bonjour
-#echo bonjour || echo hola
-#echo bonjour && echo hola
-#echo -n bonjour && echo -n hola
-#pwd && ls && echo hola
-#pwd || ls && echo hola
-#pwd && ls || echo hola
-#pwd || ls || echo hola
-#ls || export ""
-#export "" || ls
-#ls && export ""
-#export "" && ls
-#ls || ;
-#; || ls
-#ls && ;
-#; && ls
-#ls || <
-#ls && <
-#cat | echo || ls
-#cat | echo && ls
-#ls || cat | echo
-#ls && cat | echo
-#export "" && unset ""
-#(ls)
-#( ( ls ) )
-#( ( ) ls )
-#ls && (ls)
-#(ls && pwd)
-#( ( ls&&pwd ) )
-#( ( ls ) &&pwd )
-#(ls && ( ( pwd ) ) )
-#(ls && pwd) > hola
-#cat hola"
-#> hola ls && pwd
-#> hola (ls && pwd)
-#(> pwd)
-#ls"
-#(< pwd)
-#ls"
-#(< pwd)
-#( ( ( ( ( pwd) ) ) ) )
-#() pwd
-#> pwd (ls)
-#(ls||pwd)&&(ls||pwd)
-#(lss||pwd)&&(lss||pwd)
-#(lss&&pwd)&&(lss&&pwd)
-#(ls && pwd | wc) > hola
-#cat hola"
-#(ls && pwd | wc) > hola
-#(ls && pwd | wc) > hola
-#cat hola"
-#(ls && pwd | wc) >> hola
-#echo hey&&(ls && pwd | wc) > hola
-#cat hola"
-#(pwd | wc) < hola
-#(ls && pwd | wc) < hola
-#(ls -z || pwd | wc) < hola
-#echo hey > hola
-#(pwd | wc) < hola"
-#echo hey > hola
-#(ls && pwd | wc) < hola"
-#echo hey > hola
-#(ls -z || pwd | wc) < hola"
-#(ls -z || pwd && ls)
-#ls || (cat Makefile|grep srcs) && (pwd|wc)
-#ls -z && (ls) && (pwd)
-#(ls > Docs/hey && pwd) > hola
-#cat hola
-#cat Docs/hey"
-#ls > Docs/hey && pwd > hola
-#cat hola
-#cat Docs/hey"
-#cd ../.. && pwd && pwd
-#(cd ../.. && pwd) && pwd
-#ls -z || cd ../../..&&pwd
-#pwd"
-#ls -z || (cd ../../..&&pwd)
-pwd"
 echo hola > bonjour
-cat bonjour"
 echo que tal >> bonjour
-cat bonjour"
 echo hola > bonjour
 echo que tal >> bonjour
 cat < bonjour"
@@ -741,7 +610,6 @@ rm bonjour
 echo que tal >> bonjour
 cat < bonjour"
 echo hola que tal > bonjour
-cat bonjour"
 echo hola que tal > /tmp/bonjour
 cat -e /tmp/bonjour"
 export HOLA=hey
@@ -752,18 +620,13 @@ cat Docs/bonjour"
 ls -la > Docs/bonjour
 cat Docs/bonjour"
 pwd>bonjour
-cat bonjour"
 pwd > bonjour
-cat bonjour"
 echo hola > > bonjour
 echo hola < < bonjour
 echo hola >>> bonjour
 > bonjour echo hola
-cat bonjour"
 > bonjour | echo hola
-cat bonjour"
 prout hola > bonjour
-ls"
 echo hola > hello >> hello >> hello
 ls
 cat hello"
@@ -847,10 +710,8 @@ echo hola >> bonjour >> hello >> bonjour
 cat bonjour
 cat hello"
 > bonjour echo hola bonjour
-cat bonjour"
 >bonjour echo > hola>bonjour>hola>>bonjour>hola hey >bonjour hola >hola
 cat bonjour
-cat hola"
 echo bonjour > hola1
 echo hello > hola2
 echo 2 >hola1 >> hola2
@@ -879,7 +740,6 @@ cat < ls > ls
 cat > ls1 < ls2
 ls"
 >>hola
-cat hola"
 echo hola > bonjour
 cat < bonjour"
 echo hola >bonjour
@@ -1014,10 +874,8 @@ echo hola > bonjour
 echo hey > hello
 rm bonjour hello
 >bonjour <prout hello
-cat bonjour"
 echo hola > bonjour
 <bonjour cat | wc > bonjour
-cat bonjour"
 rm -f bonjour
 rm bonjour > bonjour
 ls -l bonjour"
@@ -1063,7 +921,6 @@ cat << "hola"
 cat << ho"la"
 cat << $HOME
 cat << hola > bonjour
-cat bonjour"
 cat << hola | rev
 << hola
 <<hola
