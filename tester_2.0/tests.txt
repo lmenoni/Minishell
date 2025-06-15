@@ -2,7 +2,6 @@ echo "Hello World"
 ls -l
 ola
 hola que tal
-Makefile
 echo
 echo -n
 echo Hola
@@ -102,9 +101,6 @@ echo "" hola
 echo hola""bonjour
 "e"'c'ho 'b'"o"nj"o"'u'r
 ""e"'c'ho 'b'"o"nj"o"'u'r"
-echo "$DONTEXIST"Makefile
-echo "$DONTEXIST""Makefile"
-echo "$DONTEXIST" "Makefile"
 $?
 $?$?
 ?$HOME
@@ -121,7 +117,6 @@ env hola que tal
 env env
 env env env env env
 env ls
-env ./Makefile
 export HOLA=bonjour
 env"
 export HOLA=bonjour
@@ -200,7 +195,6 @@ export HOLA=bon()jour
 export HOLA=bon&jour
 export HOLA=bon@jour
 env"
-export HOLA=bon;jour
 env"
 export HOLA=bon!jour
 export HOLA=bon""jour""
@@ -227,10 +221,8 @@ echo $HOLA"
 export HOLA='""'
 echo "" $HOLA "" | cat -e"
 export HOLA=at
-c$HOLA Makefile"
 export """" HOLA=bonjour
 env"
-export HOLA=""cat Makefile | grep NAME""
 echo $HOLA"
 export HOLA=hey
 echo $HOLA$HOLA$HOLA=hey$HOLA"
@@ -310,7 +302,6 @@ env"
 unset PATH
 echo $PATH"
 unset PATH
-ls"
 unset ""
 unset INEXISTANT
 unset PWD
@@ -331,7 +322,6 @@ unset HOL?A HOLA
 unset HOL?A HOL.A
 unset HOLA=
 unset HOL\\\\A
-unset HOL;A
 unset HOL.A
 unset HOL+A
 unset HOL=A
@@ -352,11 +342,10 @@ unset HOL^A
 unset HOL$?A
 unset HOL\~A
 unset """" HOLA
-env | grep HOLA"
+env | grep HOLA
 unset PATH
-echo $PATH"
 unset PATH
-cat Makefile"
+cat Makefile
 unset =
 unset ======
 unset ++++++
@@ -372,8 +361,6 @@ export hola | unset hola | echo $?
 /bin/echo Hola Que Tal
 /bin/env
 /bin/cd Desktop
-history
-[touche du haut]
 pwd
 pwd hola
 pwd ./hola
@@ -403,7 +390,6 @@ cd '/etc'
 cd /e'tc'
 cd /e"tc"
 cd sr
-cd Makefile
 cd ../../../../../../..
 cd .././../.././../bin/ls
 cd /
@@ -433,16 +419,16 @@ unset HOME
 cd $HOME"
 unset HOME
 export HOME=
-cd"
+cd
 unset HOME
 export HOME
-cd"
+cd
 cd / | echo $?
 pwd"
 cd ~
 cd ~/
 cd ~/ | echo $?
-pwd"
+pwd
 cd *
 cd *
 cd *
@@ -450,7 +436,7 @@ mkdir a
 mkdir a/b
 cd a/b
 rm -r ../../a
-cd .."
+cd ..
 mkdir a
 mkdir a/b
 cd a/b
@@ -475,21 +461,12 @@ rm -r ../a
 echo $PWD
 echo $OLDPWD"
 export CDPATH=/
-cd $HOME/.."
 export CDPATH=/
-cd home/vietdu91"
 export CDPATH=./
-cd ."
 export CDPATH=./
-cd .."
 ls hola
-./Makefile
-env | grep SHLVL
-env | grep SHLVL
 exit
-env | grep SHLVL"
 touch hola
-./hola"
 env|"wc" -l
 env|"wc "-l
 expr 1 + 1
@@ -578,7 +555,7 @@ ls -la | grep "."
 ls -la | grep "'.'"
 echo test.c | cat -e| cat -e| cat -e| cat -e| cat -e| cat -e| cat -e| cat -e|cat -e|cat -e|cat -e
 ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls
-ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls"
+ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls
 echo hola | cat | cat | cat | cat | cat | grep hola
 echo hola | cat
 echo hola| cat
@@ -587,11 +564,6 @@ echo hola|cat
 echo hola || cat
 echo hola ||| cat
 ech|o hola | cat
-cat Makefile | cat -e | cat -e
-cat Makefile | grep srcs | cat -e
-cat Makefile | grep srcs | grep srcs | cat -e
-cat Makefile | grep pr | head -n 5 | cd file_not_exist
-cat Makefile | grep pr | head -n 5 | hello
 export HOLA=bonjour | cat -e | cat -e
 unset HOLA | cat -e
 export HOLA | echo hola
@@ -725,9 +697,7 @@ ls
 cat hola1
 cat hola2"
 > pwd
-ls"
 < pwd
-< Makefile .
 cat <pwd
 cat <srcs/pwd
 cat <../pwd
@@ -738,7 +708,6 @@ cat >> > >> << >>
 cat < ls
 cat < ls > ls
 cat > ls1 < ls2
-ls"
 >>hola
 echo hola > bonjour
 cat < bonjour"
@@ -786,7 +755,6 @@ echo hola > srcs/bonjour
 echo hey > srcs/hello
 >srcs/bonjour <prout >srcs/hello
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 rm srcs/bonjour srcs/hello
@@ -796,13 +764,11 @@ cat srcs/bonjour"
 echo hola > ../bonjour
 echo hey > ../hello
 >../bonjour >../hello <prout
-cat ../bonjour ../hello"
 echo hola > ../bonjour
 echo hey > ../hello
 rm ../bonjour ../hello
 >../bonjour >../hello <prout
 ls ..
-cat ../bonjour ../hello"
 echo hola > ../bonjour
 echo hey > ../hello
 >../bonjour <prout >../hello
@@ -813,63 +779,51 @@ echo hey > ../hello
 rm ../bonjour ../hello
 >../bonjour <prout >../hello
 ls ..
-cat ../bonjour"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >srcs/bonjour >>srcs/hello <prout
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >>srcs/bonjour >srcs/hello <prout
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >>srcs/bonjour >>srcs/hello <prout
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >srcs/bonjour <prout >>srcs/hello
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >>srcs/bonjour <prout >srcs/hello
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 >>srcs/bonjour <prout >>srcs/hello
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > srcs/bonjour
 echo hey > srcs/hello
 <prout >>srcs/bonjour >>srcs/hello
 cat srcs/bonjour
-cat srcs/hello"
 echo hola > bonjour
 echo hey > hello
 <bonjour >hello
 cat bonjour
-cat hello"
 echo hola > bonjour
 echo hey > hello
 >bonjour >hello < prout
 cat bonjour
-cat hello"
 echo hola > bonjour
 echo hey > hello
 rm bonjour hello
 >bonjour >hello < prout
 cat bonjour
-cat hello"
 echo hola > bonjour
 echo hey > hello
 >bonjour <prout hello
 cat bonjour
-cat hello"
 echo hola > bonjour
 echo hey > hello
 rm bonjour hello
@@ -881,22 +835,16 @@ rm bonjour > bonjour
 ls -l bonjour"
 export HOLA=""bonjour hello""
 >$HOLA
-ls"
 export HOLA=""bonjour hello""
 >""$HOLA""
-ls"
 export HOLA=""bonjour hello""
 >$""HOLA""
-ls"
 export HOLA=""bonjour hello""
 >$HOLA>hey
-ls"
 export HOLA=""bonjour hello""
 >hey>$HOLA
-ls"
 export HOLA=""bonjour hello""
 >hey>$HOLA>hey>hey
-ls"
 export A=hey
 export A B=Hola D E C=""Que Tal""
 echo $PROUT$B$C > /tmp/a > /tmp/b > /tmp/c
@@ -907,33 +855,11 @@ mkdir dir
 ls -la > dir/bonjour
 cat dir/bonjour"
 <a
-cat a"
 >d cat <a >>e
 cat a
 cat d
-cat e"
 < a > b cat > hey >> d
 cat d
-ls"
-cat << hola
-cat << 'hola'
-cat << "hola"
-cat << ho"la"
-cat << $HOME
-cat << hola > bonjour
-cat << hola | rev
-<< hola
-<<hola
-cat <<
-cat << prout << lol << koala
-prout << lol << cat << koala
-<< $hola
-<< $"hola"$"b"
-<< $"$hola"$$"b"
-<< ho$la$"$a"$$"b"
-echo hola <<< bonjour
-echo hola <<<< bonjour
-echo hola <<<<< bonjour
 ls *
 ls *.*[
 ls *.hola

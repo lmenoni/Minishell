@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/15 00:30:51 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/15 19:09:54 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,7 @@ int		check_echo_flag(char **input_array);
 //unset.c
 void	unset(t_data *data, char **var);
 //env.c
+int parse_env(char **input_array);
 char	*check_env(t_data *data, char *var);
 void	update_env(t_data *data, char *var, char *str);
 void	delete_env(t_data *data, char *var);

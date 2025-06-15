@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:15:50 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/15 00:10:55 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/15 19:11:11 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,48 +63,39 @@ t_env	*curr;
 t_env	*new;
 int		i;
 
-    first = NULL;
-    i = 0;
-    while (env[i])
-    {
-        curr = first;
-        new = new_env_node(ft_strdup(env[i]));
-        if (!first)
-            first = new;
-        else
-        {
-            while (curr->next)
-                curr = curr->next;
-            curr->next = new;
-        }
-        i++;
-    }
-    data->current_path = getcwd(NULL, 0);
-    data->home_path = getenv("HOME");
-    data->old_path = NULL;
-    return (first);
+	first = NULL;
+	i = 0;
+	while (env[i])
+	{
+		curr = first;
+		new = new_env_node(ft_strdup(env[i]));
+		if (!first)
+			first = new;
+		else
+		{
+			while (curr->next)
+				curr = curr->next;
+			curr->next = new;
+		}
+		i++;
+	}
+	data->current_path = getcwd(NULL, 0);
+	data->home_path = getenv("HOME");
+	data->old_path = NULL;
+	return (first);
 }
 
-void	env(t_data *data, t_cmd *cmd, char **input_array)
+int parse_env(char **input_array)
 {
-	t_env *curr;
+	int i;
 
-	if (input_array[1] != NULL)
+	i = 0;
+	while (input_array[i])
 	{
-		ft_printf_fd(2, "minishell: env: too many arguments\n");
-		data->status = 127;
-		return ;
+		if (ft_strcmp(input_array[i], "env") == 0)
+			i++;
+		else
+			return (1);
 	}
-	curr = data->env_data;
-	while (curr && curr->e)
-	{
-		if (!ft_strchr(curr->e, '='))
-		{
-			curr = curr->next;
-			continue;
-		}
-		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
-		curr = curr->next;
-	}
-	data->status = 0;
+	return (0);
 }

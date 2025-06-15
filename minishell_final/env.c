@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/12 19:43:04 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/15 19:08:59 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,34 @@ void	delete_env(t_data *data, char *var)
 		temp = temp->next;
 	}
 	free(var_name);
+}
+
+void	env(t_data *data, t_cmd *cmd, char **input_array)
+{
+	t_env *curr;
+
+	// if (input_array[1] != NULL)
+	// {
+	// 	ft_printf_fd(2, "minishell: env: too many arguments\n");
+	// 	data->status = 127;
+	// 	return ;
+	// }
+	if (parse_env(input_array) == 1)
+	{
+		ft_printf_fd(2, "minishell: env: command not found\n");
+		data->status = 127;
+		return ;
+	}
+	curr = data->env_data;
+	while (curr && curr->e)
+	{
+		if (!ft_strchr(curr->e, '='))
+		{
+			curr = curr->next;
+			continue;
+		}
+		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
+		curr = curr->next;
+	}
+	data->status = 0;
 }
