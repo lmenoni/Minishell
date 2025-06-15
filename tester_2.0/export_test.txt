@@ -1,0 +1,78 @@
+export
+export Hola
+export Hola9hey
+export $DONTEXIST
+export ""
+export =
+export %
+export $?
+export ?=2
+export 9HOLA=
+export HOLA9=bonjour
+export _HOLA=bonjour
+export ___HOLA=bonjour
+export _HO_LA_=bonjour
+export HOL@=bonjour
+export HOL\~A=bonjour
+export -HOLA=bonjour
+export --HOLA=bonjour
+export HOLA-=bonjour
+export HO-LA=bonjour
+export HOL.A=bonjour
+export HOL\\\$A=bonjour
+export HO\\\\LA=bonjour
+export HOL}A=bonjour
+export HOL{A=bonjour
+export HO*LA=bonjour
+export HO3LA=bonjour
+export HO@LA=bonjour
+export HO!LA=bonjour
+export HO$?LA=bonjour
+export +HOLA=bonjour
+export HOL+A=bonjour
+export HOLA+=bonjour
+exportHOLA=bonjour
+export HOLA =bonjour
+export HOLA = bonjour
+export HOLA=bon jour
+export HOLA= bonjour
+export HOLA=bonsoir
+export HOLA=bonretour
+export HOLA=bonjour
+export HOLA=$HOME
+export HOLA=bonjour$HOME
+export HOLA=$HOMEbonjour
+export HOLA=bon$jour
+export HOLA=bon\jour
+export HOLA=bon\\jour
+export HOLA=bon(jour
+export HOLA=bon()jour
+export HOLA=bon&jour
+export HOLA=bon@jour
+export HOLA=bon!jour
+export HOLA=bon""jour""
+export HOLA$USER=bonjour
+export HOLA=bonjour=casse-toi
+export ""HOLA=bonjour""=casse-toi
+export HOLA=bonjour
+export BYE=casse-toi
+export HOLA=bonjour BYE=casse-toi
+export $HOLA=bonjour
+export HOLA=""bonjour ""
+export HOLA="" -n bonjour ""
+export HOLA=""bonjour ""/
+export HOLA='""'
+export HOLA=at
+export """" HOLA=bonjour
+export HOLA=hey
+export HOLA="" bonjour hey ""
+export HOLA=""ls -l - a""
+export HOLA=""s -la""
+export HOLA=""l""
+export HOL=A=bonjour
+export ""="" 
+export ''=''
+export "="="="
+export '='='='
+export A=1 B=2 C=3 D=4 E=5 F=6 G=7 H=8
+export | grep "HOME"

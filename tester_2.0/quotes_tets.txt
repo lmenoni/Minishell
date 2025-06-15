@@ -1,0 +1,20 @@
+""''echo hola""'''' que""'' tal""''
+echo "*"
+echo "'hola'"
+echo '"hola"'
+echo '''ho"''''l"a'''
+e"cho hola"
+e'cho hola'
+"e"'c'ho 'b'"o"nj"o"'u'r
+""e"'c'ho 'b'"o"nj"o"'u'r"
+"$HOMEdskjhfkdshfsd"
+'$HOMEdskjhfkdshfsd'
+export HOLA='""'
+export HOLA=""bonjour ""
+export HOLA="" -n bonjour ""
+export HOLA=""ls -l - a""
+export HOLA=""s -la""
+export ""="" 
+export ''=''
+export "="="="
+export '='='='

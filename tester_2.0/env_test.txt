@@ -1,0 +1,5 @@
+env
+env | grep PROUT"
+env | grep PWD
+env | grep OLDPWD
+env | grep HOLA

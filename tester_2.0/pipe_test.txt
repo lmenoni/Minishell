@@ -1,0 +1,51 @@
+ls -l
+ola
+hola que tal
+echoHola
+echo-nHola
+|echo|
+|echo -n hola
+echo " " | cat -e
+echo | cat -e
+echo $? | echo $? | echo $?
+echo " $ " | cat -e
+echo ' $ ' | cat -e
+echo oui | cat -e
+echo oui | echo non | echo hola | grep oui
+echo oui | echo non | echo hola | grep non
+echo oui | echo non | echo hola | grep hola
+echo hola | cat -e | cat -e | cat -e
+cd .. | echo "hola"
+cd / | echo "hola"
+cd .. | pwd
+ifconfig | grep ":"
+ifconfig | grep hola
+whoami | grep $USER
+whoami | cat -e | cat -e > /tmp/bonjour
+whereis ls | cat -e | cat -e > /tmp/bonjour
+ls | hola
+ls | ls hola
+ls | ls | hola
+ls | hola | ls
+ls | ls | hola | rev
+ls | ls | echo hola | rev
+ls -la | grep "."
+ls -la | grep "'.'"
+echo test.c | cat -e| cat -e| cat -e| cat -e| cat -e| cat -e| cat -e| cat -e|cat -e|cat -e|cat -e
+ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls
+ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls
+echo hola | cat | cat | cat | cat | cat | grep hola
+echo hola | cat
+echo hola| cat
+echo hola |cat
+echo hola|cat
+echo hola || cat
+echo hola ||| cat
+ech|o hola | cat
+export HOLA=bonjour | cat -e | cat -e
+unset HOLA | cat -e
+export HOLA | echo hola
+export | echo hola
+cat a | <b cat | cat > c | cat"
+env|"wc" -l
+env|"wc "-l

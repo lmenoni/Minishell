@@ -1,0 +1,36 @@
+# Pipeline complesso con redirections
+echo "START" > output.log; ls -l | grep ".txt" >> output.log; wc -l < output.log | cat -e
+
+# Export complesso con espansione
+export PATH_BACKUP=$PATH; export PATH="/test"; ls; export PATH=$PATH_BACKUP
+
+# Combinazione pipe + redirection + builtins
+pwd | cat -e > pwd.txt; export PWDCONTENT=$(cat pwd.txt); echo $PWDCONTENT
+
+# Gestione errori complessa
+ls /invalid_dir 2> error.log; echo $? > status.log; cat error.log status.log
+
+# Here-doc con comandi complessi
+cat << EOF > script.sh
+echo "Generated script"
+echo "Current dir: $(pwd)"
+EOF
+bash script.sh
+
+# Combinazione variabili d'ambiente e redirections multiple
+export F1=file1 F2=file2; echo "Test" | tee $F1 > $F2; cat $F1 $F2
+
+# Pipeline annidato con comandi esterni
+ls -1 | sort | uniq | while read line; do echo "Processing: $line"; done
+
+# Test segnali in ambiente interattivo (simulato)
+echo "Testing signals"; sleep 2; echo "Done"
+
+# Combinazione exit status e redirections
+(ls /nonexistent || echo "Failed") 2> /dev/null > result.txt; echo "Exit status: $?" >> result.txt
+
+# Ambiente complesso con export multipli
+export A=1 B=2; env | grep -e '^A=' -e '^B=' > env_vars.log; cat env_vars.log
+
+# Test cd con percorsi complessi
+cd /usr/bin; ls -l | grep 'python' > py_versions.txt; cd -; cat py_versions.txt

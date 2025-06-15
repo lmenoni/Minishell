@@ -1,0 +1,19 @@
+/bin/echo
+/bin/echo Hola Que Tal
+/bin/env
+/bin/cd Desktop
+expr 1 + 1
+expr $? + $?
+mkdir a
+mkdir a/b
+rm -r ../../a
+rm -r ../a
+touch hola
+ifconfig
+grep ":"
+grep "'.'"
+whoami
+whereis ls
+sed
+tr
+cat Makefile

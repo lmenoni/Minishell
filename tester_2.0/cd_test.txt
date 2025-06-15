@@ -1,0 +1,49 @@
+cd
+cd .
+cd ./
+cd ./././.
+cd ././././
+cd ..
+cd ../
+cd ../..
+cd ../.
+cd .././././.
+cd srcs
+cd srcs objs
+cd 'srcs'
+cd "srcs"
+cd '/etc'
+cd /e'tc'
+cd /e"tc"
+cd sr
+cd ../../../../../../..
+cd .././../.././../bin/ls
+cd /
+cd '/'
+cd //
+cd '//'
+cd ///
+cd ////////
+cd '////////'
+cd /
+cd _
+cd -
+cd --
+cd ---
+cd $HOME
+cd $HOME $HOME
+cd $HOME/42_works
+cd "$PWD/srcs"
+cd '$PWD/srcs'
+unset HOME
+cd $HOME"
+unset HOME
+export HOME=
+cd
+unset HOME
+export HOME
+cd
+cd ~
+cd ~/
+cd ~/ | echo $?
+cd *
