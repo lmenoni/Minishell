@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:25:13 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/12 19:21:03 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:23:32 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,13 +107,13 @@ void	cd(t_data *data, t_cmd *cmd, char **args)
 	if (ft_matlen(args) <= 2)
 	{
 		new_path = args[1];
-		if (new_path == NULL)
+		if (new_path == NULL || ft_strcmp(new_path, "--") == 0)
 			cd_home(data, &status);
 		else if (new_path[0] == '\0')
 			;
 		else if (new_path[0] == '~')
 			cd_tilde(data, new_path, &status);
-		else if (new_path[0] == '-')
+		else if (ft_strcmp(new_path, "-") == 0)
 			cd_oldpwd(data, cmd, &status);
 		else if (new_path != NULL)
 			cd_execution(data, new_path, &status);

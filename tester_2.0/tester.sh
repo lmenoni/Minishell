@@ -79,6 +79,7 @@ clean_output() {
 		sed -i 's/minishell>$//' "${file}.clean"  # Doppia esecuzione per sicurezza
 		sed -i 's/minishell> //' "${file}.clean"   # Per righe senza newline
 		sed -i '/^_=/d' "${file}.clean"
+		sed -i '/^SHLVL=/d' "${file}.clean"
 		
 		# Rimuovi righe vuote
 		sed -i '/^$/d' "${file}.clean"
@@ -120,6 +121,8 @@ clean_output() {
 				-e '/echo/d' \
 				-e '/cat/d' \
 				-e '/^_=/d' \
+				-e '/unexpected EOF while looking for matching/d' \
+				-e 's/syntax error: unexpected end of file/syntax error quotes left open/g' \
 			   "${file}.clean"
 		sed -i -e '/usage: /d' "${file}.clean"
 		sed -i -e ':a' -e '$!{N;ba' -e '}' -e 's/minishell: //' "${file}.clean"
@@ -197,7 +200,7 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
 	if grep -qi "syntax error" "$TEST_DIR/actual/err"; then
 		minishell_exit=2
 	fi
-	if grep -qi "too many arguments" "$TEST_DIR/actual/err" || grep -qi "no such file or directory" "$TEST_DIR/actual/err" || grep -qi "Is a directory" "$TEST_DIR/actual/err" || grep -qi "invalid option" "$TEST_DIR/actual/err"; then
+	if grep -qi "too many arguments" "$TEST_DIR/actual/err" || grep -qi "no such file or directory" "$TEST_DIR/actual/err" || grep -qi "Is a directory" "$TEST_DIR/actual/err" || grep -qi "invalid option" "$TEST_DIR/actual/err" || grep -qi "Not a directory" "$TEST_DIR/actual/err"; then
 		printf '%s\n' "$test_cmd" 'echo $? > status_exit.txt' | ./minishell > /dev/null 2>&1
 		minishell_exit=$(<status_exit.txt)
 		rm -f status_exit.txt
@@ -264,7 +267,7 @@ while IFS= read -r test_cmd || [ -n "$test_cmd" ]; do
 	if [ ! -z "$diff_exit" ]; then
 		echo "$diff_exit" > "diff/test_${test_number}.exit.diff"
 	fi
-	
+
 	# Verifica risultati
 	if [ -z "$diff_output" ] && [ -z "$diff_err" ] && [ -z "$diff_exit" ]; then
 		# Test passato

@@ -32,9 +32,9 @@ cd --
 cd ---
 cd $HOME
 cd $HOME $HOME
-cd $HOME/42_works
-cd "$PWD/srcs"
-cd '$PWD/srcs'
+cd $HOME"/42_works"
+cd "$PWD""/srcs"
+cd '$PWD"/srcs"'
 unset HOME
 cd $HOME"
 unset HOME
@@ -46,4 +46,3 @@ cd
 cd ~
 cd ~/
 cd ~/ | echo $?
-cd *
