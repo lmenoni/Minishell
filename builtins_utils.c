@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:15:50 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/13 14:15:51 by lmenoni          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:11:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool	safe_chdir(char *path, int *status, char *s1, char *s2)
 {
 	if (chdir(path) != 0)
 	{
-		ft_printf_fd(2, "minishell: cd: %s: no such file or directory\n", path);
+		ft_printf_fd(2, "minishell: cd: %s: %s\n", path, strerror(errno));
 		*status = 1;
 		if (s1)
 			free(s1);
@@ -85,26 +85,17 @@ t_env	*init_env(char **env, t_data *data)
 	return (first);
 }
 
-void	env(t_data *data, t_cmd *cmd, char **input_array)
+int	parse_env(char **input_array)
 {
-	t_env	*curr;
+	int	i;
 
-	if (input_array[1] != NULL)
+	i = 0;
+	while (input_array[i])
 	{
-		ft_printf_fd(2, "minishell: env: too many arguments\n");
-		data->status = 127;
-		return ;
+		if (ft_strcmp(input_array[i], "env") == 0)
+			i++;
+		else
+			return (1);
 	}
-	curr = data->env_data;
-	while (curr && curr->e)
-	{
-		if (!ft_strchr(curr->e, '='))
-		{
-			curr = curr->next;
-			continue ;
-		}
-		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
-		curr = curr->next;
-	}
-	data->status = 0;
+	return (0);
 }

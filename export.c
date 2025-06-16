@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:35:46 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/12 19:42:25 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:51:04 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	export_plus(t_data *data, char *args, char *var_name)
 
 void	export_add(t_data *data, char *args, char *var_name)
 {
-	ft_printf("var name is: %s\n", args + ft_strlen(var_name));
 	if (check_env(data, var_name) != NULL)
 		update_env(data, var_name, (args + (ft_strlen(var_name) + 1)));
 	else if (check_env(data, var_name) == NULL)

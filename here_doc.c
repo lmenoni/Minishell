@@ -6,26 +6,15 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:03:18 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/06 19:11:15 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/10 17:43:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    here_sigint(int sig)
+bool	is_limiter_quoted(char *s)
 {
-	char	c;
-	
-	c = '\n';
-    (void)sig;
-    last_signal = 1;
-	ioctl(0, TIOCSTI, &c);
-	rl_on_new_line();
-}
-
-bool is_limiter_quoted(char *s)
-{
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i] != '\0')
@@ -37,28 +26,22 @@ bool is_limiter_quoted(char *s)
 	return (false);
 }
 
-bool	check_lstsig_here(char *line, char *limiter, char *r, t_data *data)
+void	eof_check(char *line, char *limiter, char *prompt)
 {
-	if (last_signal == 1)
-	{
-		if (r)
-			free(r);
+	if (!line)
+		ft_printf(ERR_EOF, limiter);
+	if (line)
 		free(line);
-		free(limiter);
-		// dup2(data->st_in, STDIN_FILENO);
-		// dup2(data->st_out, STDOUT_FILENO);
-		data->status = 130;
-		return (true);
-	}
-	return (false);
+	free(limiter);
+	free(prompt);
 }
 
-char *get_lines(char *s, t_data *data)
+char	*get_lines(char *s, t_data *data)
 {
-	char *r;
-	char *line;
-	char *limiter;
-	char *prompt;
+	char	*r;
+	char	*line;
+	char	*limiter;
+	char	*prompt;
 
 	limiter = get_unquoted(s);
 	prompt = ft_crazystring(limiter);
@@ -72,8 +55,9 @@ char *get_lines(char *s, t_data *data)
 		if (r)
 			r = ft_buffjoin(r, "\n");
 		if (!line || (limiter[0] == '\0' && line[0] == '\0')
-			|| (line[0] != '\0' && ft_strncmp(line, limiter, ft_strlen(line)) == 0))
-			return (free(line), free(limiter), free(prompt), r);
+			|| (line[0] != '\0'
+				&& ft_strncmp(line, limiter, ft_strlen(line)) == 0))
+			return (eof_check(line, limiter, prompt), r);
 		r = ft_buffjoin(r, line);
 		free(line);
 	}
@@ -81,28 +65,16 @@ char *get_lines(char *s, t_data *data)
 	return (NULL);
 }
 
-bool	reset_signal()
-{
-	if (last_signal)
-	{
-		last_signal = 0;
-		signal(SIGINT, handle_sigint);
-		return (false);
-	}
-	signal(SIGINT, handle_sigint);
-	return (true);
-}
-
 bool	do_here_doc(t_token *tok, t_data *data)
 {
-	char *r;
+	char	*r;
 	bool	quoted;
 
 	r = NULL;
 	signal(SIGINT, here_sigint);
-	while (tok && last_signal == 0)
+	while (tok && g_last_signal == 0)
 	{
-		if (tok->type == HERE_DOC && last_signal == 0)
+		if (tok->type == HERE_DOC && g_last_signal == 0)
 		{
 			quoted = is_limiter_quoted(tok->next->s);
 			r = get_lines(tok->next->s, data);
