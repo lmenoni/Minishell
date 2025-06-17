@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:16 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/14 22:36:23 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:08:21 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,13 @@ int	main(int ac, char **av, char **e)
 		data.input = readline(CYAN"minishell"RESET YELLOW"> "RESET);
 		if (!data.input)
 			break ;
-		check_last_signal(&data);
+		if (check_last_signal(&data))
+			continue ;
 		if (parsing(&data))
 			execution(&data);
 		add_history(data.input);
 	}
 	close_data(&data);
+	ft_printf_fd(2, "exit\n");
 	return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:15:50 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/16 15:51:23 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:11:20 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int define_input(t_data *data, t_cmd *cmd)
+int	define_input(t_data *data, t_cmd *cmd)
 {
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
 		return (echo(data, cmd, cmd->args), close_if(cmd, data), 1);
@@ -31,7 +31,7 @@ int define_input(t_data *data, t_cmd *cmd)
 	return (0);
 }
 
-bool safe_chdir(char *path, int *status, char *s1, char *s2)
+bool	safe_chdir(char *path, int *status, char *s1, char *s2)
 {
 	if (chdir(path) != 0)
 	{
@@ -46,9 +46,9 @@ bool safe_chdir(char *path, int *status, char *s1, char *s2)
 	return (true);
 }
 
-t_env *new_env_node(char *s)
+t_env	*new_env_node(char *s)
 {
-	t_env *new;
+	t_env	*new;
 
 	new = malloc(sizeof(t_env));
 	new->e = s;
@@ -56,12 +56,12 @@ t_env *new_env_node(char *s)
 	return (new);
 }
 
-t_env *init_env(char **env, t_data *data)
+t_env	*init_env(char **env, t_data *data)
 {
-	t_env *first;
-	t_env *curr;
-	t_env *new;
-	int i;
+	t_env	*first;
+	t_env	*curr;
+	t_env	*new;
+	int		i;
 
 	first = NULL;
 	i = 0;
@@ -85,9 +85,9 @@ t_env *init_env(char **env, t_data *data)
 	return (first);
 }
 
-int parse_env(char **input_array)
+int	parse_env(char **input_array)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (input_array[i])

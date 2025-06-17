@@ -6,22 +6,22 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 18:17:55 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/15 23:09:33 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:10:21 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int parse_unset(char **var)
+int	parse_unset(char **var)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (var[++i])
 	{
 		if (ft_strncmp(var[i], "-", 1) == 0)
 		{
-			ft_printf_fd(2, "minishell: unset: %c%c: invalid option\n", var[i][0], var[i][1]);
+			ft_printf_fd(2, ERR_UNSET, var[i][0], var[i][1]);
 			return (1);
 		}
 	}

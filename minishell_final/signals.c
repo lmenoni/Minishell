@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
+/*   By: lmenoni <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:11:32 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/14 22:41:35 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:12:20 by lmenoni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	g_last_signal = 1;
+	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	ft_printf("\n");
 	rl_redisplay();
 }
 
@@ -27,9 +27,13 @@ bool	check_last_signal(t_data *data)
 	if (g_last_signal)
 	{
 		g_last_signal = 0;
+		data->status = 130;
+	}
+	if (data->input && data->input[0] == '\0')
+	{
 		free(data->input);
 		data->input = NULL;
-		data->status = 130;
+		rl_on_new_line();
 		return (true);
 	}
 	return (false);

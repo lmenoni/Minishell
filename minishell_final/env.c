@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:13:41 by igilani           #+#    #+#             */
-/*   Updated: 2025/06/15 19:08:59 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:10:58 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,22 +100,19 @@ void	delete_env(t_data *data, char *var)
 				data->env_data = temp->next;
 			return (free(temp->e), free(temp), free(var_name));
 		}
+		free(var_name);
+		var_name = NULL;
 		prev = temp;
 		temp = temp->next;
 	}
-	free(var_name);
+	if (var_name)
+		free(var_name);
 }
 
 void	env(t_data *data, t_cmd *cmd, char **input_array)
 {
-	t_env *curr;
+	t_env	*curr;
 
-	// if (input_array[1] != NULL)
-	// {
-	// 	ft_printf_fd(2, "minishell: env: too many arguments\n");
-	// 	data->status = 127;
-	// 	return ;
-	// }
 	if (parse_env(input_array) == 1)
 	{
 		ft_printf_fd(2, "minishell: env: command not found\n");
@@ -128,7 +125,7 @@ void	env(t_data *data, t_cmd *cmd, char **input_array)
 		if (!ft_strchr(curr->e, '='))
 		{
 			curr = curr->next;
-			continue;
+			continue ;
 		}
 		ft_printf_fd(cmd->ou_fd, "%s\n", curr->e);
 		curr = curr->next;

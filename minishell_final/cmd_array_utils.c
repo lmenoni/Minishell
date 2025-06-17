@@ -37,7 +37,8 @@ void	remove_two(t_token **head, t_token **t, t_data *data)
 		else
 		{
 			(*t)->prev->next = (*head);
-			(*head)->prev = (*t)->prev;
+			if (*head)
+				(*head)->prev = (*t)->prev;
 		}
 		remove_token(t);
 		remove_token(t);

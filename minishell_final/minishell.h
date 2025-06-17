@@ -6,7 +6,7 @@
 /*   By: igilani <igilani@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 16:21:28 by lmenoni           #+#    #+#             */
-/*   Updated: 2025/06/15 19:09:54 by igilani          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:10:14 by igilani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 
 # define SYN_NEWLINE "minishell: syntax error near unexpected token `newline'\n"
 # define SYN_PIPE "minishell: syntax error near unexpected token `|'\n"
-# define SYN_REDI "minishell: syntax error near unexpected token `>'\n"
+# define SYN_REDI "minishell: syntax error near unexpected token `%s'\n"
 # define ERR_REQ "minishell: %s: filename argument required\n"
 # define ERR_NOSUCHFILE "minishell: %s: No such file or directory\n"
 # define ERR_PERMISSION "minishell: %s: Permission denied\n"
@@ -48,6 +48,7 @@
 # define EXIT_NUM "minishell: exit: %s: numeric argument required\n"
 # define EXIT_ARG "minishell: exit: too many arguments\n"
 # define EXPORT_IDENT "minishell: export: `%s': not a valid identifier\n"
+# define ERR_UNSET "minishell: unset: %c%c: invalid option\n"
 
 extern volatile sig_atomic_t	g_last_signal;
 
@@ -143,10 +144,6 @@ int		parse_syntax_errors(t_token *token);
 void	reset_data(t_data *data);
 void	init_data(t_data *data, char **e);
 void	close_data(t_data *data);
-//print.c
-void	print_tokens(t_token *token);
-void	print_files(t_flist *list);
-void	print_cmd_array(t_data *data);
 //here_doc.c
 bool	do_here_doc(t_token *tok, t_data *data);
 char	*get_lines(char *s, t_data *data);
@@ -214,7 +211,7 @@ int		check_echo_flag(char **input_array);
 //unset.c
 void	unset(t_data *data, char **var);
 //env.c
-int parse_env(char **input_array);
+void	env(t_data *data, t_cmd *cmd, char **input_array);
 char	*check_env(t_data *data, char *var);
 void	update_env(t_data *data, char *var, char *str);
 void	delete_env(t_data *data, char *var);
@@ -243,7 +240,7 @@ void	init_signals(void);
 bool	check_last_signal(t_data *data);
 void	handle_sigint(int sig);
 //builtins_utils.c
-void	env(t_data *data, t_cmd *cmd, char **input_array);
+int		parse_env(char **input_array);
 t_env	*init_env(char **e, t_data *data);
 t_env	*new_env_node(char *s);
 bool	safe_chdir(char *path, int *status, char *s1, char *s2);

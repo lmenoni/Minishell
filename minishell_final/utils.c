@@ -46,7 +46,7 @@ int	parse_syntax_errors(t_token *token)
 			return (ft_printf_fd(2, SYN_NEWLINE));
 		if (token->type >= 3 && (token->next->type >= 3
 				|| token->next->type == PIPE))
-			return (ft_printf_fd(2, SYN_REDI));
+			return (ft_printf_fd(2, SYN_REDI, token->s));
 		token = token->next;
 	}
 	return (0);
@@ -54,9 +54,12 @@ int	parse_syntax_errors(t_token *token)
 
 void	reset_data(t_data *data)
 {
-	free(data->input);
-	free_token(data->token);
-	free_cmd_array(data);
+	if (data->input)
+		free(data->input);
+	if (data->token)
+		free_token(data->token);
+	if (data->cmd_arr)
+		free_cmd_array(data);
 	data->cmd_count = 0;
 	data->cmd_name = 0;
 	data->cmd_arr = NULL;
